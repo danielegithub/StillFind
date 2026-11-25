@@ -1,0 +1,44 @@
+name: Build CercaDoc
+
+# Costruisce l'app per Windows, macOS e Linux e verifica che non contenga moduli di rete.
+# Avvio: scheda "Actions" -> "Build CercaDoc" -> "Run workflow" (oppure push di un tag v*).
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Librerie Tk (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev xvfb
+      - name: Dipendenze
+        run: python -m pip install pyinstaller pypdf customtkinter snowballstemmer "sqlcipher3>=0.6.2" "pypdfium2>=5.10" Pillow numpy onnxruntime sentencepiece
+      - name: Costruzione e verifica offline
+        run: python build.py
+      - name: Archivio (macOS)
+        if: runner.os == 'macOS'
+        run: cd dist && ditto -c -k --sequesterRsrc --keepParent CercaDoc.app CercaDoc-macos.zip
+      - name: Archivio (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path dist/CercaDoc -DestinationPath dist/CercaDoc-windows.zip
+      - name: Archivio (Linux)
+        if: runner.os == 'Linux'
+        run: cd dist && tar czf CercaDoc-linux.tar.gz CercaDoc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CercaDoc-${{ runner.os }}
+          path: |
+            dist/CercaDoc-macos.zip
+            dist/CercaDoc-windows.zip
+            dist/CercaDoc-linux.tar.gz
