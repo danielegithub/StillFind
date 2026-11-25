@@ -65,7 +65,7 @@ def mac():
             send(items[i], "setTitle:", None, [ptr], [ns(title)])
 
     action = objc.sel_registerName(b"selectItem:")
-    handler = objc.objc_allocateClassPair(cls("NSObject"), b"CercaDocTrayAction", 0)
+    handler = objc.objc_allocateClassPair(cls("NSObject"), b"StillFindTrayAction", 0)
     objc.class_addMethod(handler, action, clicked, b"v@:@")
     objc.class_addMethod(handler, objc.sel_registerName(b"menuNeedsUpdate:"), refresh, b"v@:@")
     objc.objc_registerClassPair(handler)
@@ -83,7 +83,7 @@ def mac():
     item = send(bar, "statusItemWithLength:", ptr, [C.c_double], [-1.0])
     button = send(item, "button")
     send(button, "setTitle:", None, [ptr], [ns("⌕")])
-    send(button, "setToolTip:", None, [ptr], [ns("CercaDoc")])
+    send(button, "setToolTip:", None, [ptr], [ns("StillFind")])
     send(item, "setMenu:", None, [ptr], [menu])
     _ready()
     send(app, "run", None)
@@ -143,7 +143,7 @@ def windows():
     kernel.GetModuleHandleW.restype = W.HMODULE
     instance = kernel.GetModuleHandleW(None)
     wc = WindowClass()
-    wc.proc, wc.instance, wc.name = receive, instance, "CercaDocTray"
+    wc.proc, wc.instance, wc.name = receive, instance, "StillFindTray"
     if not user.RegisterClassW(C.byref(wc)):
         raise C.WinError()
     user.CreateWindowExW.restype = W.HWND
@@ -153,7 +153,7 @@ def windows():
     if not hwnd:
         raise C.WinError()
     user.LoadIconW.restype = W.HICON
-    icon = Icon(C.sizeof(Icon), hwnd, 1, 7, msg_tray, user.LoadIconW(None, C.c_void_p(32512)), "CercaDoc")
+    icon = Icon(C.sizeof(Icon), hwnd, 1, 7, msg_tray, user.LoadIconW(None, C.c_void_p(32512)), "StillFind")
     if not shell.Shell_NotifyIconW(0, C.byref(icon)):
         raise C.WinError()
     remove_icon = lambda: shell.Shell_NotifyIconW(2, C.byref(icon))
@@ -184,7 +184,7 @@ def linux():
         raise RuntimeError("Sessione grafica non disponibile.")
     ptr = C.c_void_p
     indicator.app_indicator_new.restype = ptr
-    instance = ptr(indicator.app_indicator_new(b"cercadoc", b"system-search", 0))
+    instance = ptr(indicator.app_indicator_new(b"stillfind", b"system-search", 0))
     gtk.gtk_menu_new.restype = gtk.gtk_menu_item_new_with_label.restype = ptr
     menu = ptr(gtk.gtk_menu_new())
     items, actions = [], []

@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Daniele Sisto
 """Agente leggero e lavoratore separato.
 
-L'agente (`python -m cercadoc --agent`) controlla le cartelle ogni `auto_scan_seconds` guardando solo le
+L'agente (`python -m stillfind --agent`) controlla le cartelle ogni `auto_scan_seconds` guardando solo le
 date dei file (niente lettura dei documenti) e avvia il **lavoratore** (`--worker`) solo se trova differenze.
 Il lavoratore è un processo a parte: quando finisce, tutta la memoria usata torna al sistema.
 
@@ -184,7 +184,7 @@ class Agent:
 def run_agent() -> int:
     lock = acquire_lock()
     if lock is None:
-        print("CercaDoc: un agente è già in esecuzione.", file=sys.stderr)
+        print("StillFind: un agente è già in esecuzione.", file=sys.stderr)
         return 1
     quit_token = hotkey.quit_token()
     shortcut = hotkey.Registration(lambda: load_config().get("global_shortcut", True), hotkey.show,

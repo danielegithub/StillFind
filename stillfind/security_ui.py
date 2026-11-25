@@ -60,7 +60,7 @@ def startup(configure=False):
     try:
         if spec["mode"] == "vault":
             while True:
-                phrase = simpledialog.askstring("Cassaforte CercaDoc", "Passphrase per aprire l’archivio",
+                phrase = simpledialog.askstring("Cassaforte StillFind", "Passphrase per aprire l’archivio",
                                                show="•",parent=root)
                 if phrase is None:
                     return False

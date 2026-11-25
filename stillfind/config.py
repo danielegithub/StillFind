@@ -9,7 +9,20 @@ import tempfile
 from pathlib import Path
 
 
-APP_DIR = Path(os.environ.get("CERCADOC_HOME") or Path.home() / ".cercadoc")
+def _app_dir():
+    if directory := os.environ.get("STILLFIND_HOME") or os.environ.get("CERCADOC_HOME"):
+        return Path(directory)
+    home = Path.home()
+    current = home / ".stillfind"
+    previous = home / ".cercadoc"
+    # Riusa l'archivio in sede, anche se una vecchia istanza lo sta ancora usando.
+    # Se esistono entrambi, un archivio o una configurazione StillFind ha precedenza.
+    if previous.is_dir() and not ((current / "index.db").exists() or (current / "config.json").exists()):
+        return previous
+    return current
+
+
+APP_DIR = _app_dir()
 CONFIG_PATH = APP_DIR / "config.json"
 DB_PATH = APP_DIR / "index.db"
 

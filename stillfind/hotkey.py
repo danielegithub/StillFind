@@ -17,7 +17,7 @@ SIGNAL = APP_DIR / "apri-ricerca"
 
 
 def command(*args):
-    return [sys.executable, *([] if getattr(sys, "frozen", False) else ["-m", "cercadoc"]), *args]
+    return [sys.executable, *([] if getattr(sys, "frozen", False) else ["-m", "stillfind"]), *args]
 
 
 WINDOW_ACTIONS = ("open", "settings", "about", "pause", "resume")
@@ -220,7 +220,7 @@ def _wayland():
             unref(handle)
             if not re.fullmatch(r"/[a-zA-Z0-9_/]+", session):
                 raise RuntimeError("Sessione del portale non valida.")
-            call(b"BindShortcuts", "(objectpath '" + session + "', [('search', {'description': <'Apri CercaDoc'>,"
+            call(b"BindShortcuts", "(objectpath '" + session + "', [('search', {'description': <'Apri StillFind'>,"
                  "'preferred_trigger': <'CTRL+ALT+k'>})], '', @a{sv} {})")
         except Exception as exc:
             failed.append(exc)
@@ -229,7 +229,7 @@ def _wayland():
                          string, integer, callback, ptr, ptr)
     subscribe(bus, desktop, b"org.freedesktop.portal.Request", b"Response", None, None, 0, on_signal, None, None)
     subscribe(bus, desktop, iface, b"Activated", path, None, 0, on_signal, None, None)
-    call(b"CreateSession", "({'session_handle_token': <'cercadoc" + str(os.getpid()) + "'>},)")
+    call(b"CreateSession", "({'session_handle_token': <'stillfind" + str(os.getpid()) + "'>},)")
     function(glib, "g_main_loop_run", None, ptr)(loop)
     if failed:
         raise failed[0]

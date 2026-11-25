@@ -1,7 +1,7 @@
-name: Build CercaDoc
+name: Build StillFind
 
 # Costruisce l'app per Windows, macOS e Linux e verifica che non contenga moduli di rete.
-# Avvio: scheda "Actions" -> "Build CercaDoc" -> "Run workflow" (oppure push di un tag v*).
+# Avvio: scheda "Actions" -> "Build StillFind" -> "Run workflow" (oppure push di un tag v*).
 on:
   workflow_dispatch:
   push:
@@ -28,17 +28,17 @@ jobs:
         run: python build.py
       - name: Archivio (macOS)
         if: runner.os == 'macOS'
-        run: cd dist && ditto -c -k --sequesterRsrc --keepParent CercaDoc.app CercaDoc-macos.zip
+        run: cd dist && ditto -c -k --sequesterRsrc --keepParent StillFind.app StillFind-macos.zip
       - name: Archivio (Windows)
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path dist/CercaDoc -DestinationPath dist/CercaDoc-windows.zip
+        run: Compress-Archive -Path dist/StillFind -DestinationPath dist/StillFind-windows.zip
       - name: Archivio (Linux)
         if: runner.os == 'Linux'
-        run: cd dist && tar czf CercaDoc-linux.tar.gz CercaDoc
+        run: cd dist && tar czf StillFind-linux.tar.gz StillFind
       - uses: actions/upload-artifact@v4
         with:
-          name: CercaDoc-${{ runner.os }}
+          name: StillFind-${{ runner.os }}
           path: |
-            dist/CercaDoc-macos.zip
-            dist/CercaDoc-windows.zip
-            dist/CercaDoc-linux.tar.gz
+            dist/StillFind-macos.zip
+            dist/StillFind-windows.zip
+            dist/StillFind-linux.tar.gz

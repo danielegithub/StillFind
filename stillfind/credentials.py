@@ -7,14 +7,15 @@ import subprocess
 import sys
 from pathlib import Path
 
-SERVICE = "CercaDoc"
+SERVICE = "StillFind"
+LEGACY_SERVICE = "CercaDoc"
 
 
-def _mac(action, account, key):
+def _mac(action, account, key, service):
     sec = C.CDLL("/System/Library/Frameworks/Security.framework/Security")
     cf = C.CDLL("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")
     vp, u32 = C.c_void_p, C.c_uint32
-    service, name = SERVICE.encode(), account.encode()
+    service, name = service.encode(), account.encode()
     item, data, size = vp(), vp(), u32()
     args = [None, len(service), service, len(name), name]
     if action == "put":
@@ -65,17 +66,17 @@ def _windows(action, account, key, directory):
         C.windll.kernel32.LocalFree(C.c_void_p(out.ptr))
 
 
-def credential(action, account, directory, key=None):
+def credential(action, account, directory, key=None, *, service=SERVICE):
     if sys.platform == "darwin":
-        return _mac(action, account, key)
+        return _mac(action, account, key, service)
     if sys.platform == "win32":
         return _windows(action, account, key, Path(directory))
     address = os.environ.get("DBUS_SESSION_BUS_ADDRESS", "")
     if address and any(not a.startswith("unix:") for a in address.split(";") if a):
         raise RuntimeError("Secret Service richiede un bus di sessione locale.")
-    op = {"put": ["store", "--label=CercaDoc"], "get": ["lookup"], "delete": ["clear"]}[action]
+    op = {"put": ["store", "--label=StillFind"], "get": ["lookup"], "delete": ["clear"]}[action]
     try:
-        result = subprocess.run(["secret-tool", *op, "application", SERVICE, "archive", account],
+        result = subprocess.run(["secret-tool", *op, "application", service, "archive", account],
                                 input=bytes(key) if key is not None else b"", capture_output=True, timeout=60)
     except FileNotFoundError as ex:
         raise RuntimeError("Per il portachiavi Linux occorre secret-tool (libsecret).") from ex

@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 Daniele Sisto
-"""Interfaccia grafica di CercaDoc (customtkinter: stesso Tk, aspetto moderno).
+"""Interfaccia grafica di StillFind (customtkinter: stesso Tk, aspetto moderno).
 
-Si avvia da `cercadoc.cli` (`run()`).
+Si avvia da `stillfind.cli` (`run()`).
 Funziona in modalità chiara e scura (segue il sistema o si sceglie in Impostazioni)."""
 from __future__ import annotations
 
@@ -305,16 +305,16 @@ class DiagnosticsDialog(ctk.CTkToplevel):
 
 # --------------------------------------------------------------------------
 class AboutDialog(ctk.CTkToplevel):
-    """Informazioni su CercaDoc: autore, licenza e assenza di garanzia (GPL-3.0, sezione 5d)."""
+    """Informazioni su StillFind: autore, licenza e assenza di garanzia (GPL-3.0, sezione 5d)."""
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.title("Informazioni su CercaDoc")
+        self.title("Informazioni su StillFind")
         self.geometry("520x420")
         self.resizable(False, False)
         self.configure(fg_color=PAL["bg"])
         self.transient(parent)
-        ctk.CTkLabel(self, text="CercaDoc", font=font(24, True), text_color=PAL["text"]
+        ctk.CTkLabel(self, text="StillFind", font=font(24, True), text_color=PAL["text"]
                      ).pack(anchor="w", padx=24, pady=(22, 0))
         ctk.CTkLabel(self, text=f"Versione {about.__version__}", font=font(13), text_color=PAL["muted"]
                      ).pack(anchor="w", padx=24)
@@ -518,7 +518,7 @@ class HelpDialog(ctk.CTkToplevel):
 
 
 class WelcomeView(ctk.CTkFrame):
-    """Primo avvio: una frase che spiega cosa fa CercaDoc e un solo passo, scegliere le cartelle."""
+    """Primo avvio: una frase che spiega cosa fa StillFind e un solo passo, scegliere le cartelle."""
 
     SUGGESTED = (("Documenti", ("Documents", "Documenti"), True),
                  ("Scrivania", ("Desktop", "Scrivania"), True),
@@ -531,7 +531,7 @@ class WelcomeView(ctk.CTkFrame):
         box = ctk.CTkFrame(self, fg_color="transparent")
         box.place(relx=0.5, rely=0.5, anchor="center")
         ctk.CTkLabel(box, text="🔍", font=font(46)).pack()
-        ctk.CTkLabel(box, text="CercaDoc", font=font(32, True), text_color=PAL["text"]).pack(pady=(2, 0))
+        ctk.CTkLabel(box, text="StillFind", font=font(32, True), text_color=PAL["text"]).pack(pady=(2, 0))
         ctk.CTkLabel(box, text="Trova le parole dentro i tuoi documenti:\\nPDF, Word, Excel, email e molto altro.",
                      font=font(15), text_color=PAL["muted"], justify="center").pack(pady=(6, 4))
         ctk.CTkLabel(box, text="🔒  Funziona senza internet: nulla esce dal tuo computer.", font=font(13, True),
@@ -555,7 +555,7 @@ class WelcomeView(ctk.CTkFrame):
         btn = primary_button(box, "Inizia", self._start)
         btn.configure(height=46, corner_radius=14, font=font(16, True))
         btn.pack(fill="x", pady=(24, 8))
-        ctk.CTkLabel(box, text="CercaDoc legge anche le sottocartelle. Potrai cambiare le cartelle quando vuoi\\n"
+        ctk.CTkLabel(box, text="StillFind legge anche le sottocartelle. Potrai cambiare le cartelle quando vuoi\\n"
                                "dalle Impostazioni. All'inizio serve qualche minuto, ma puoi già cercare.",
                      font=font(12), text_color=PAL["muted"], justify="center").pack()
 
@@ -582,7 +582,7 @@ class WelcomeView(ctk.CTkFrame):
     def _start(self):
         paths = [p for p, v in self.choices if v.get()]
         if not paths:
-            messagebox.showinfo("CercaDoc", "Spunta almeno una cartella, oppure scegline una.",
+            messagebox.showinfo("StillFind", "Spunta almeno una cartella, oppure scegline una.",
                                 parent=self.winfo_toplevel())
             return
         self.on_start(paths)
@@ -875,7 +875,7 @@ class SettingsDialog(ctk.CTkToplevel):
         # ---------- livello 1: quello che serve a tutti
         ctk.CTkLabel(body, text="Dove cercare", font=font(16, True), text_color=PAL["text"]
                      ).grid(row=0, column=0, sticky="w", pady=(4, 0))
-        ctk.CTkLabel(body, text="CercaDoc legge i documenti di queste cartelle. Con «Anche sottocartelle» spuntato "
+        ctk.CTkLabel(body, text="StillFind legge i documenti di queste cartelle. Con «Anche sottocartelle» spuntato "
                                 "legge pure tutto ciò che c'è al loro interno.",
                      font=font(12), text_color=PAL["muted"], wraplength=580, justify="left", anchor="w"
                      ).grid(row=1, column=0, sticky="w", pady=(0, 6))
@@ -1190,7 +1190,7 @@ class App(ctk.CTk):
         ctk.set_appearance_mode(self.cfg.get("theme", "system"))
         ctk.set_default_color_theme("blue")
         super().__init__()
-        self.title("CercaDoc")
+        self.title("StillFind")
         self.geometry("1240x780")
         self.minsize(940, 600)
         self.configure(fg_color=PAL["bg"])
@@ -1354,7 +1354,7 @@ class App(ctk.CTk):
         head.grid_columnconfigure(1, weight=1)
         names = ctk.CTkFrame(head, fg_color="transparent")
         names.grid(row=0, column=0, sticky="w")
-        ctk.CTkLabel(names, text="CercaDoc", font=font(24, True), text_color=PAL["text"]).pack(anchor="w")
+        ctk.CTkLabel(names, text="StillFind", font=font(24, True), text_color=PAL["text"]).pack(anchor="w")
         ctk.CTkLabel(names, text="Cerca dentro i tuoi documenti", font=font(13), text_color=PAL["muted"]).pack(anchor="w")
         ctk.CTkLabel(head, text="🔒  Funziona senza internet: nulla esce dal computer", font=font(12),
                      text_color=PAL["muted"]).grid(row=0, column=1, sticky="w", padx=22, pady=(14, 0))
@@ -1523,7 +1523,7 @@ class App(ctk.CTk):
         self.more.add_command(label="Scadenze…", command=lambda: DocumentList(self))
         self.more.add_separator()
         self.more.add_command(label="Come cercare", command=self.show_help)
-        self.more.add_command(label="Informazioni su CercaDoc", command=lambda: AboutDialog(self))
+        self.more.add_command(label="Informazioni su StillFind", command=lambda: AboutDialog(self))
         for seq in ("<Control-k>", "<Command-k>", "<Control-f>", "<Command-f>"):
             self.bind(seq, lambda e: (self.entry.focus_set(), "break")[1])
         for seq in ("<F3>", "<Control-g>", "<Command-g>"):  # occorrenza successiva / precedente nell'anteprima
@@ -2113,7 +2113,7 @@ class App(ctk.CTk):
             try:
                 system.open_file(r["path"])
             except Exception as ex:  # noqa: BLE001
-                messagebox.showerror("CercaDoc", f"Non riesco ad aprire il file:\n{ex}")
+                messagebox.showerror("StillFind", f"Non riesco ad aprire il file:\n{ex}")
 
     def reveal_selected(self):
         r = self._current()
@@ -2404,7 +2404,7 @@ def run(configure=False, action="open", quit_token=None) -> None:
                     app.after_idle(lambda: app._window_action(action))
                 app.mainloop()
         except (RuntimeError, OSError) as exc:
-            messagebox.showerror("Apertura di CercaDoc", str(exc))
+            messagebox.showerror("Apertura di StillFind", str(exc))
         finally:
             if sys.platform == "win32":
                 (config.APP_DIR / "window.pid").unlink(missing_ok=True)

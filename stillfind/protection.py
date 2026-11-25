@@ -15,7 +15,7 @@ import threading
 import weakref
 from pathlib import Path
 
-from .credentials import credential
+from .credentials import LEGACY_SERVICE, SERVICE, credential
 
 CLEAR = b"SQLite format 3\0"
 _session = bytearray()
@@ -100,7 +100,7 @@ def remember(spec, key):
 def session_key(spec):
     with _mutex:
         if _session_id != spec["id"] or not _session:
-            raise Locked("Cassaforte bloccata. Apri CercaDoc e inserisci la passphrase.")
+            raise Locked("Cassaforte bloccata. Apri StillFind e inserisci la passphrase.")
         return _session.copy()
 
 
@@ -108,7 +108,8 @@ def _key(path, spec):
     if spec["mode"] == "vault":
         return session_key(spec)
     if spec["mode"] == "auto":
-        key = credential("get", spec["id"], path.parent)
+        service = SERVICE if spec.get("credential_service") == SERVICE else LEGACY_SERVICE
+        key = credential("get", spec["id"], path.parent, service=service)
         if not key or not re.fullmatch(rb"x'[0-9a-f]{64}'", key):
             raise Locked("La chiave dell’archivio non è disponibile nel portachiavi.")
         return key
@@ -207,7 +208,7 @@ def unlock(path, phrase):
 
 
 def _phrase_key(phrase):
-    # Il prefisso distingue sempre una passphrase dalla sintassi per chiavi binarie di SQLCipher.
+    # Parte del formato della cassaforte. Cambiarlo renderebbe illeggibili gli archivi esistenti.
     return bytearray(b"CercaDoc:") + (phrase.encode("utf-8") if isinstance(phrase, str) else phrase)
 
 
@@ -332,6 +333,8 @@ def migrate(path, mode, phrase=None, minutes=10):
         source.close()
         source = None
         spec = {"mode": mode, "id": account, "minutes": minutes}
+        if mode == "auto":
+            spec["credential_service"] = SERVICE
         if new_key:
             with stage.open("rb") as f:
                 descriptor = _descriptor(path, f.read(16))
@@ -352,7 +355,8 @@ def migrate(path, mode, phrase=None, minutes=10):
             finally:
                 opened.close()
         if old["mode"] == "auto":
-            credential("delete", old["id"], path.parent)
+            service = SERVICE if old.get("credential_service") == SERVICE else LEGACY_SERVICE
+            credential("delete", old["id"], path.parent, service=service)
         if old["mode"] != "plain":
             _descriptor(path, old_header).unlink(missing_ok=True)
     finally:

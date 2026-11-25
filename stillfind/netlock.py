@@ -77,7 +77,7 @@ $profiles = @(Get-NetFirewallProfile -PolicyStore ActiveStore)
 if ($profiles.Count -ne 3 -or @($profiles | Where-Object {
     $_.Enabled -ne 'True' -or @($_.DisabledInterfaceAliases | Where-Object { $_ -and $_ -ne 'NotConfigured' }).Count
 }).Count) { exit 1 }
-$required = @($env:CERCADOC_FIREWALL_PROGRAMS -split '\|')
+$required = @($env:STILLFIND_FIREWALL_PROGRAMS -split '\|')
 $rules = Get-NetFirewallRule -PolicyStore ActiveStore -Direction Outbound -Enabled True -Action Block
 foreach ($rule in $rules) {
     if ($rule.Profile -ne 'Any' -or $rule.Platform -or $rule.PolicyAppId -or $rule.RemoteDynamicKeywordAddresses) { continue }
@@ -104,7 +104,7 @@ if ($required.Count) { exit 1 }
 """
     powershell = os.path.join(os.environ["SystemRoot"], "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
     result = subprocess.run([powershell, "-NoProfile", "-NonInteractive", "-Command", script],
-                            env=dict(os.environ, CERCADOC_FIREWALL_PROGRAMS="|".join(programs)),
+                            env=dict(os.environ, STILLFIND_FIREWALL_PROGRAMS="|".join(programs)),
                             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                             timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
     if result.returncode:

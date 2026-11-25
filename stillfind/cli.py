@@ -3,11 +3,11 @@
 """Riga di comando e avvio dell'interfaccia grafica.
 
 Uso:
-    python3 -m cercadoc                       # apre l'interfaccia grafica
-    python3 -m cercadoc --add-folder ~/Documenti
-    python3 -m cercadoc --index               # (re)indicizza da terminale
-    python3 -m cercadoc --search 'contratto AND affitto'
-    python3 -m cercadoc --self-test-offline
+    python3 -m stillfind                       # apre l'interfaccia grafica
+    python3 -m stillfind --add-folder ~/Documenti
+    python3 -m stillfind --index               # (re)indicizza da terminale
+    python3 -m stillfind --search 'contratto AND affitto'
+    python3 -m stillfind --self-test-offline
 
 Dipendenze: nessuna obbligatoria. Per i PDF installare:  pip install pypdf
 """
@@ -47,7 +47,7 @@ def _search_for_cli(con, cfg: dict, q: str, limit: int) -> list[dict]:
 
 def main() -> None:
     if sys.platform == "win32" and getattr(sys, "frozen", False):
-        # Un eseguibile senza console può comunque ricevere pipe esplicite da CercaDoc.
+        # Un eseguibile senza console può comunque ricevere pipe esplicite da StillFind.
         import ctypes
         import msvcrt
         import os
@@ -61,7 +61,7 @@ def main() -> None:
                 if handle and kernel.GetFileType(handle) == 3:
                     fd = msvcrt.open_osfhandle(handle, flags | os.O_BINARY)
                     setattr(sys, name, os.fdopen(fd, mode, encoding="utf-8"))
-    ap = argparse.ArgumentParser(description="CercaDoc - ricerca full-text offline")
+    ap = argparse.ArgumentParser(description="StillFind - ricerca full-text offline")
     ap.add_argument("--add-folder", metavar="CARTELLA", action="append", help="aggiunge una cartella da indicizzare")
     ap.add_argument("--no-subfolders", action="store_true", help="con --add-folder: non includere le sottocartelle")
     ap.add_argument("--remove-folder", metavar="CARTELLA", action="append")
@@ -140,11 +140,11 @@ def main() -> None:
             elif sys.stdin and sys.stdin.isatty() and not args.worker:
                 from getpass import getpass
                 try:
-                    protection.unlock(DB_PATH, getpass("Passphrase CercaDoc: "))
+                    protection.unlock(DB_PATH, getpass("Passphrase StillFind: "))
                 except protection.Locked as exc:
                     sys.exit(str(exc))
             else:
-                sys.exit("Cassaforte bloccata. Apri la finestra di CercaDoc per sbloccarla.")
+                sys.exit("Cassaforte bloccata. Apri la finestra di StillFind per sbloccarla.")
 
     if args.agent or args.worker or args.embed:
         from . import agent

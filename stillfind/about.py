@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 Daniele Sisto
-"""Informazioni su CercaDoc: nome, autore, licenza (avvisi legali richiesti dalla GPL-3.0, sezione 5d)."""
+"""Informazioni su StillFind: nome, autore, licenza (avvisi legali richiesti dalla GPL-3.0, sezione 5d)."""
 from __future__ import annotations
 
 __version__ = "0.1.0"
@@ -9,9 +9,9 @@ COPYRIGHT = f"Copyright (C) 2026 {AUTHOR}"
 LICENSE_NAME = "GNU General Public License versione 3 o successiva (GPL-3.0-or-later)"
 
 NOTICE = (
-    f"CercaDoc, di {AUTHOR}\n"
+    f"StillFind, di {AUTHOR}\n"
     f"{COPYRIGHT}\n\n"
-    "CercaDoc è software libero: puoi ridistribuirlo e modificarlo secondo i termini della "
+    "StillFind è software libero: puoi ridistribuirlo e modificarlo secondo i termini della "
     f"{LICENSE_NAME}, pubblicata dalla Free Software Foundation.\n\n"
     "Il programma è distribuito nella speranza che sia utile, ma SENZA ALCUNA GARANZIA, "
     "nemmeno implicita di commerciabilità o di idoneità a uno scopo particolare.\n\n"
@@ -23,4 +23,4 @@ NOTICE = (
 
 
 def version_text() -> str:
-    return f"CercaDoc {__version__}\n{COPYRIGHT}\nLicenza: {LICENSE_NAME}\nNessuna garanzia."
+    return f"StillFind {__version__}\n{COPYRIGHT}\nLicenza: {LICENSE_NAME}\nNessuna garanzia."

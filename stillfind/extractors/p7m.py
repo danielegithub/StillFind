@@ -3,7 +3,7 @@
 """File firmati `.p7m` (CMS / PKCS#7 SignedData): estrae il documento contenuto, anche firmato più volte.
 
 Lettore BER/DER minimo scritto qui: `asn1crypto` non si può usare perché importa `urllib.parse` e `socket`,
-che CercaDoc blocca. La firma non viene verificata: per la ricerca serve solo il contenuto."""
+che StillFind blocca. La firma non viene verificata: per la ricerca serve solo il contenuto."""
 from __future__ import annotations
 
 import base64

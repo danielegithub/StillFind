@@ -1,7 +1,9 @@
-# CercaDoc
+# StillFind
 
 App desktop per **cercare dentro i tuoi documenti**, al **100% offline**.  
-Funziona su **Windows, macOS e Linux** (tema chiaro e scuro). Indice e configurazione restano sul tuo computer, in `~/.cercadoc/`.
+Funziona su **Windows, macOS e Linux** (tema chiaro e scuro). Indice e configurazione restano sul tuo computer, in `~/.stillfind/`.
+
+Se usavi CercaDoc, StillFind riapre l’archivio in `~/.cercadoc/` con le stesse credenziali. Per indicare un’altra cartella dati puoi usare `STILLFIND_HOME`. Le configurazioni che usano già `CERCADOC_HOME` restano valide.
 
 ---
 
@@ -24,7 +26,7 @@ Funziona su **Windows, macOS e Linux** (tema chiaro e scuro). Indice e configura
 
 ## Modelli locali (facoltativi)
 
-CercaDoc funziona subito per parole chiave senza alcun modello. Due funzioni facoltative usano motori **interamente locali**, senza download automatici:
+StillFind funziona subito per parole chiave senza alcun modello. Due funzioni facoltative usano motori **interamente locali**, senza download automatici:
 
 1. **Ricerca per significato (embeddings)**  
    Trova documenti per concetto anche senza le parole esatte (es. *«spese riscaldamento»* → *«ripartizione caldaia»*) e alimenta *Documenti simili*.
@@ -46,11 +48,11 @@ CercaDoc funziona subito per parole chiave senza alcun modello. Due funzioni fac
 
 Nessun dato lascia il computer: zero telemetria, zero aggiornamenti automatici, zero download di modelli.
 
-- **Blocco a runtime**: all'avvio CercaDoc disabilita tutti i moduli di rete di Python (`socket`, `ssl`, `urllib`, `http`, `ftplib`, `smtplib`, `webbrowser`…).
+- **Blocco a runtime**: all'avvio StillFind disabilita tutti i moduli di rete di Python (`socket`, `ssl`, `urllib`, `http`, `ftplib`, `smtplib`, `webbrowser`…).
 - **Blocco nell'eseguibile**: i moduli di rete non vengono inclusi nel pacchetto; `build.py` ispeziona il risultato e fallisce se ne trova anche uno solo.
 - **Recinto di sistema**: il processo lavoratore (incluso il motore ONNX) viene avviato senza accesso alla rete tramite `sandbox-exec` su macOS e `unshare`/`bwrap` su Linux.
 - Anche la lettura avviata dalla finestra, la ricostruzione e l’OCR di un singolo file passano dal lavoratore separato. La finestra legge l’avanzamento dal database locale. Se il recinto non parte, la finestra segnala il problema. Su Windows occorrono regole di blocco in uscita per l’eseguibile e gli strumenti OCR installati, attive su tutti i profili.
-- **Verifica diretta**: esegui `python3 -m cercadoc --self-test-offline` (e, a programma aperto, controlla con `lsof -nP -i | grep -i python` o `netstat -ano`).
+- **Verifica diretta**: esegui `python3 -m stillfind --self-test-offline` (e, a programma aperto, controlla con `lsof -nP -i | grep -i python` o `netstat -ano`).
 
 *Nota*: aprire un file con doppio clic lo affida al programma predefinito del sistema (es. il browser per un `.html`).
 
@@ -58,17 +60,17 @@ Nessun dato lascia il computer: zero telemetria, zero aggiornamenti automatici, 
 
 ## Sicurezza e privacy dei dati
 
-- **Temporanei OCR.** CercaDoc scrive le pagine renderizzate e i file di lavoro dell’OCR in `.ocr-tmp`, una sottocartella privata dell’indice. Li elimina a fine lavoro e, all’avvio successivo, ripulisce quelli lasciati da un arresto improvviso. I lavori ancora attivi possono proseguire.
-- **Dischi scollegati.** In *Impostazioni → Opzioni avanzate → Conservazione dei dischi scollegati* puoi scegliere i giorni di attesa dalla prima assenza rilevata. Il valore iniziale **0** conserva i documenti a tempo indeterminato. Alla prima scansione dopo la scadenza, CercaDoc li rimuove dall’indice. Quando ricolleghi il disco, la scansione li indicizza di nuovo.
+- **Temporanei OCR.** StillFind scrive le pagine renderizzate e i file di lavoro dell’OCR in `.ocr-tmp`, una sottocartella privata dell’indice. Li elimina a fine lavoro e, all’avvio successivo, ripulisce quelli lasciati da un arresto improvviso. I lavori ancora attivi possono proseguire.
+- **Dischi scollegati.** In *Impostazioni → Opzioni avanzate → Conservazione dei dischi scollegati* puoi scegliere i giorni di attesa dalla prima assenza rilevata. Il valore iniziale **0** conserva i documenti a tempo indeterminato. Alla prima scansione dopo la scadenza, StillFind li rimuove dall’indice. Quando ricolleghi il disco, la scansione li indicizza di nuovo.
 - **Rimozione selettiva.** Fai clic destro su un risultato per dimenticare il file o la cartella che lo contiene. Da *⋯ → Dimentica una cartella…* puoi scegliere anche una cartella su un disco scollegato. La rimozione include sottocartelle, testo, passaggi, vettori ed entità rimaste senza riferimenti. Gli originali restano sul disco. Per consentire di nuovo l’indicizzazione del percorso, scegli *Impostazioni → Opzioni avanzate → Percorsi dimenticati → Includi di nuovo* e salva.
 - **Archivio cifrato opzionale (SQLCipher)**: attivabile al primo avvio o da *Impostazioni → Opzioni avanzate*. Cifra testo, cronologia, entità e **anche i vettori** (salvati dentro il database cifrato, mai in chiaro su disco), con migrazione guidata e reversibile.
   - **Portachiavi di sistema**: chiave locale custodita da DPAPI (Windows), Keychain (macOS) o Secret Service (Linux).
   - **Cassaforte con passphrase**: chiave solo in RAM, blocco automatico per inattività o manuale (*⋯ → Blocca cassaforte*). Nessuna chiave viene mai salvata in `config.json`.
-- **Integrità dei modelli**: prima di caricare modello e tokenizer, CercaDoc ne verifica l'impronta **SHA-256**, controlla che il grafo usi solo operazioni ONNX standard senza riferimenti esterni e carica esattamente i byte verificati.
+- **Integrità dei modelli**: prima di caricare modello e tokenizer, StillFind ne verifica l'impronta **SHA-256**, controlla che il grafo usi solo operazioni ONNX standard senza riferimenti esterni e carica esattamente i byte verificati.
 - **Audit e oscuramento reale**:
   - **Mappa dei dati personali** (*⋯*): individua in un clic tutti i file che contengono dati sensibili (CF, email, nomi, ecc.), anche in cartelle esposte come Scrivania o Download.
   - **Oscura copia…** (nell'anteprima): crea una copia oscurata senza toccare l'originale. Sui PDF copre irreversibilmente i pixel delle pagine approvate eliminando testo copiabile e metadati; sui testi sostituisce i valori con `[OMISSIS]`.
-- **Difese locali**: protezione anti ZIP/XML bomb e cartella dati `~/.cercadoc/` con permessi riservati all'utente.
+- **Difese locali**: protezione anti ZIP/XML bomb e cartella dati `~/.stillfind/` con permessi riservati all'utente.
 
 ---
 
@@ -79,7 +81,7 @@ python3 -m pip install customtkinter pypdf snowballstemmer "sqlcipher3>=0.6.2" "
 # Opzionale, per la ricerca per significato:
 python3 -m pip install onnxruntime sentencepiece
 
-python3 -m cercadoc
+python3 -m stillfind
 ```
 
 Su una macchina isolata dalla rete puoi installare gli stessi pacchetti da una cartella locale di wheel:  
@@ -88,12 +90,12 @@ Su una macchina isolata dalla rete puoi installare gli stessi pacchetti da una c
 Comandi principali da terminale:
 
 ```bash
-python3 -m cercadoc --add-folder ~/Documenti   # aggiunge una cartella
-python3 -m cercadoc --index                    # indicizza da terminale
-python3 -m cercadoc --search 'affitto:pdf'     # cerca da terminale
-python3 -m cercadoc --agent                    # agente in background + icona di sistema
-python3 -m cercadoc --semantic on              # attiva ricerca per significato (--embed per i vettori)
-python3 -m cercadoc --self-test-offline        # verifica il blocco della rete
+python3 -m stillfind --add-folder ~/Documenti   # aggiunge una cartella
+python3 -m stillfind --index                    # indicizza da terminale
+python3 -m stillfind --search 'affitto:pdf'     # cerca da terminale
+python3 -m stillfind --agent                    # agente in background + icona di sistema
+python3 -m stillfind --semantic on              # attiva ricerca per significato (--embed per i vettori)
+python3 -m stillfind --self-test-offline        # verifica il blocco della rete
 ```
 
 ---
@@ -113,7 +115,7 @@ python3 -m venv .venv-build
 
 *(Su Windows sostituisci `.venv-build/bin/...` con `.venv-build\Scripts\...`.)*
 
-- **Output**: `dist/CercaDoc.app` (macOS), `dist/CercaDoc/CercaDoc.exe` (Windows), `dist/CercaDoc/CercaDoc` (Linux).
+- **Output**: `dist/StillFind.app` (macOS), `dist/StillFind/StillFind.exe` (Windows), `dist/StillFind/StillFind` (Linux).
 - **Verifica automatica**: `build.py` esclude i moduli di rete, controlla che nessuno sia presente nell'archivio compilato e lancia `--self-test-offline` sull'eseguibile prodotto.
 - **Ricerca per significato nell'app compilata**: copia la cartella `models/` accanto all'eseguibile.
 - **Tutte e tre le piattaforme via CI**: il workflow [`.github/workflows/build.yml`](.github/workflows/build.yml) compila e verifica gli archivi per Windows, macOS e Linux su GitHub Actions.
@@ -122,7 +124,7 @@ python3 -m venv .venv-build
 ### Test
 
 ```bash
-python3 -m unittest -q test_cercadoc test_privacy_features
+python3 -m unittest -q test_stillfind test_privacy_features
 ```
 
 ---
@@ -130,4 +132,4 @@ python3 -m unittest -q test_cercadoc test_privacy_features
 ## Licenza
 
 Copyright (C) 2026 Daniele Sisto — rilasciato sotto licenza **GNU GPL v3 o successiva** ([LICENSE](LICENSE)).  
-Puoi usarlo, modificarlo e ridistribuirlo gratuitamente; chi distribuisce versioni modificate deve pubblicarne il codice sorgente con la stessa licenza e mantenere l'attribuzione «CercaDoc, di Daniele Sisto» (GPL-3.0, sez. 7b). Le licenze delle librerie di terze parti sono in [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).
+Puoi usarlo, modificarlo e ridistribuirlo gratuitamente; chi distribuisce versioni modificate deve pubblicarne il codice sorgente con la stessa licenza e mantenere l'attribuzione «StillFind, di Daniele Sisto» (GPL-3.0, sez. 7b). Le licenze delle librerie di terze parti sono in [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).

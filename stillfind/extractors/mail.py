@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Daniele Sisto
 """Email salvate (.eml): mittente, destinatari, data, oggetto, corpo e nomi degli allegati.
 
-Non usa `email.parser`: la libreria standard importa `urllib.parse`, che CercaDoc blocca.
+Non usa `email.parser`: la libreria standard importa `urllib.parse`, che StillFind blocca.
 Il formato (RFC 5322 / MIME) è letto a mano; solo `email.header` serve per le intestazioni codificate.
 """
 from __future__ import annotations

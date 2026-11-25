@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 Daniele Sisto
-"""Blocco di ogni accesso alla rete (CercaDoc funziona solo offline)."""
+"""Blocco di ogni accesso alla rete (StillFind funziona solo offline)."""
 from __future__ import annotations
 
 import os
@@ -16,7 +16,7 @@ NETWORK_MODULES = (
 
 
 def block_network() -> None:
-    """Impedisce a CercaDoc qualsiasi accesso alla rete.
+    """Impedisce a StillFind qualsiasi accesso alla rete.
 
     1. Se un modulo di rete è già caricato, lo rende inutilizzabile.
     2. Da qui in poi `import socket`, `import urllib.request`, ecc. falliscono
@@ -25,7 +25,7 @@ def block_network() -> None:
     import socket as _s  # se escluso dalla build, qui solleva ImportError: va bene
 
     def deny(*_a, **_k):
-        raise OSError("CercaDoc funziona solo offline: connessione di rete bloccata")
+        raise OSError("StillFind funziona solo offline: connessione di rete bloccata")
 
     class OfflineSocket(_s.socket):
         def connect(self, *a, **k):

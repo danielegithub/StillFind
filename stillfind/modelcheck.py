@@ -234,7 +234,7 @@ def verified_runtime_source(path: Path, expected: str):
                                 wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE)
         create_file.restype = wintypes.HANDLE
         # Il percorso privato evita anche sostituzioni di una cartella antenata del modello installato.
-        with tempfile.TemporaryDirectory(prefix="cercadoc_model_") as directory:
+        with tempfile.TemporaryDirectory(prefix="stillfind_model_") as directory:
             snapshot = Path(directory) / "model.onnx"
             with snapshot.open("xb") as target:
                 _copy_model(path, target)
