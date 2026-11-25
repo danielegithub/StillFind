@@ -121,12 +121,6 @@ python3 -m venv .venv-build
 - **Tutte e tre le piattaforme via CI**: il workflow [`.github/workflows/build.yml`](.github/workflows/build.yml) compila e verifica gli archivi per Windows, macOS e Linux su GitHub Actions.
 - **App non firmate**: su macOS al primo avvio usa tasto destro → *Apri*; su Windows *Ulteriori informazioni* → *Esegui comunque*.
 
-### Test
-
-```bash
-python3 -m unittest -q test_stillfind test_privacy_features
-```
-
 ---
 
 ## Licenza

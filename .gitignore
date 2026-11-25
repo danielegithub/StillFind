@@ -6,7 +6,6 @@ dist/
 .venv*
 venv/
 .DS_Store
-suggerimenti.md
 .pytest_cache/
 models/
 
