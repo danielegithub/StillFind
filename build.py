@@ -26,10 +26,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from stillfind.offline import NETWORK_MODULES  # noqa: E402  (stessa lista usata a runtime)
+from stillfind.core.offline import NETWORK_MODULES  # noqa: E402  (stessa lista usata a runtime)
 
 SYSTEM = platform.system()  # Windows | Darwin | Linux
-# moduli da escludere dal pacchetto (oltre a quelli di rete elencati in stillfind/offline.py)
+# moduli da escludere dal pacchetto (oltre a quelli di rete elencati in stillfind/core/offline.py)
 EXTRA_EXCLUDES = ["pip", "setuptools", "unittest", "pydoc", "doctest", "distutils", "multiprocessing"]
 # nomi di file/moduli che indicano capacità di rete
 FORBIDDEN = re.compile(r"(^|[/\\._])(_socket|_ssl|socket|ssl|urllib|http|ftplib|smtplib|asyncio|"
@@ -44,7 +44,7 @@ def executable(dist: Path) -> Path:
 
 def main() -> int:
     cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean", "--onedir", "--windowed",
-           "--name", "StillFind", "--hidden-import", "pypdf", "--hidden-import", "stillfind.gui",
+           "--name", "StillFind", "--hidden-import", "pypdf", "--hidden-import", "stillfind.ui.app",
            "--paths", str(HERE),
            "--collect-data", "customtkinter", "--collect-all", "pypdfium2_raw", "--collect-data", "pypdfium2",
            "--collect-all", "sqlcipher3", "--hidden-import", "PIL.ImageTk",

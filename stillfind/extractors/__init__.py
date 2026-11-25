@@ -1,85 +1,56 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 Daniele Sisto
-"""Estrazione del testo dai file: `extract()` sceglie l'estrattore dall'estensione."""
+"""Estrazione del testo dai file: il registro sceglie l'estrattore dall'estensione."""
 from __future__ import annotations
 
-import hashlib
 import threading
-from pathlib import Path
 
-from .. import private_tmp
-from . import ocr
-from .fatturapa import extract_xml
-from .mail import extract_eml
-from .meta import read_metadata
-from .office import extract_docx, extract_odf, extract_pptx, extract_xlsx
-from .p7m import guess_ext, unwrap_all
-from .pdf import extract_pdf
-from .text import extract_html, extract_rtf, extract_text_file
-
-
-IMAGE_EXTS = {"png", "jpg", "jpeg", "tif", "tiff", "bmp"}
+from stillfind.extractors.archives import ArchiveExtractor, Members
+from stillfind.extractors.base import ExtractionRequest, Extractor
+from stillfind.extractors.fatturapa import FatturaPaExtractor
+from stillfind.extractors.mail import EmlExtractor
+from stillfind.extractors.meta import MetadataReader
+from stillfind.extractors.ocr import ImageExtractor
+from stillfind.extractors.office import DocxExtractor, OdfExtractor, PptxExtractor, XlsxExtractor
+from stillfind.extractors.p7m import P7mExtractor
+from stillfind.extractors.pdf import PdfExtractor
+from stillfind.extractors.text import HtmlExtractor, PlainTextExtractor, RtfExtractor
 
 
-EXTRACTORS = {
-    "docx": extract_docx, "pptx": extract_pptx, "xlsx": extract_xlsx,
-    "odt": extract_odf, "ods": extract_odf, "odp": extract_odf,
-    "html": extract_html, "htm": extract_html, "rtf": extract_rtf,
-    "eml": extract_eml, "xml": extract_xml,
-}
+class ExtractorRegistry:
+    """Associa le estensioni agli estrattori e legge i file. I tipi sconosciuti si leggono come testo semplice."""
 
+    def __init__(self, fallback: Extractor):
+        self.fallback = fallback
+        self._by_ext: dict[str, Extractor] = {}
 
-def _extract_p7m(path: str, cfg: dict, stop, info) -> tuple[str, bool]:
-    """Estrae il documento contenuto nel file firmato e ne legge il testo (in una cartella privata e temporanea)."""
-    inner = unwrap_all(Path(path).read_bytes())
-    if inner is None:
-        raise RuntimeError("file .p7m senza documento (firma separata o formato non riconosciuto)")
-    max_bytes = int(cfg.get("max_file_mb", 50) or 50) * 1024 * 1024
-    if len(inner) > max_bytes:
-        raise RuntimeError("documento contenuto oltre il limite di dimensione")
-    ext = guess_ext(Path(path).name, inner)
-    if info is not None:
-        info["inner_sha256"] = hashlib.sha256(inner).hexdigest()
-        info["inner_ext"] = ext
-    if ext == "p7m" or ext == "bin":
-        raise RuntimeError("tipo di documento contenuto non riconosciuto")
-    with private_tmp.workspace() as tmp:  # permessi solo per l'utente
-        f = Path(tmp) / f"contenuto.{ext}"
-        f.write_bytes(inner)
-        text, used_ocr = extract(str(f), ext, cfg, stop=stop, info=info)
-    return text, used_ocr
+    def register(self, extractor: Extractor) -> None:
+        for ext in extractor.extensions:
+            self._by_ext[ext] = extractor
 
+    def for_extension(self, ext: str) -> Extractor:
+        return self._by_ext.get(ext, self.fallback)
 
-def extract(path: str, ext: str, cfg: dict, stop: threading.Event | None = None,
-            cache: "ocr._OcrCache | None" = None, info: dict | None = None) -> tuple[str, bool]:
-    """Restituisce (testo, ocr_usato). `info` riceve `blank_pages` per i PDF e `meta` (metadati) per tutti."""
-    if cfg.get("_archive_budget"):
-        from .archives import OFFICE
-        if ext in OFFICE:
+    @property
+    def image_extensions(self) -> set[str]:
+        return set(ImageExtractor.extensions)
+
+    def extract(self, path: str, ext: str, cfg: dict, stop: threading.Event | None = None,
+                cache=None, info: dict | None = None) -> tuple[str, bool]:
+        """Restituisce (testo, ocr_usato). `info` riceve `blank_pages` per i PDF e `meta` (metadati) per tutti."""
+        if cfg.get("_archive_budget") and ext in Members.OFFICE:
             cfg["_archive_budget"].reserve_office(path)
-    if info is not None:
-        info["meta"] = read_metadata(path, ext, info)
-    if ext == "p7m":
-        return _extract_p7m(path, cfg, stop, info)
-    if ext in ("zip", "epub"):
-        from .archives import extract_archive
-        return extract_archive(path, ext, cfg, stop, info)
-    if ext == "pdf":
-        return extract_pdf(path, cfg, stop=stop, cache=cache, info=info)
-    if ext in ("pptx", "xlsx"):
-        return EXTRACTORS[ext](path, info=info), False
-    if ext == "xml":
-        return extract_xml(path, info), False
-    if ext == "eml":
-        from .archives import Members
-        members = Members(cfg, stop)
-        text = extract_eml(path, info, members if not cfg.get("_inside_container") else None)
-        members.report(info)
-        return text + "".join(members.parts), members.ocr
-    if ext in IMAGE_EXTS:
-        if not ocr.ocr_available():
-            raise RuntimeError("Tesseract non installato")
-        if cfg.get("_ocr_started"):
-            cfg["_ocr_started"]()
-        return ocr._tesseract(path, cfg["ocr_lang"], stop=stop), True
-    return EXTRACTORS.get(ext, extract_text_file)(path), False
+        if info is not None:
+            info["meta"] = MetadataReader.read(path, ext, info)
+        return self.for_extension(ext).extract(ExtractionRequest(path, ext, cfg, stop, cache, info))
+
+
+registry = ExtractorRegistry(PlainTextExtractor())
+for _extractor in (DocxExtractor(), PptxExtractor(), XlsxExtractor(), OdfExtractor(), HtmlExtractor(),
+                   RtfExtractor(), EmlExtractor(), FatturaPaExtractor(), PdfExtractor(), P7mExtractor(),
+                   ArchiveExtractor(), ImageExtractor()):
+    registry.register(_extractor)
+del _extractor
+
+IMAGE_EXTS = registry.image_extensions
+extract = registry.extract

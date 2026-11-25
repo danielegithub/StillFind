@@ -74,6 +74,25 @@ Nessun dato lascia il computer: zero telemetria, zero aggiornamenti automatici, 
 
 ---
 
+## Architettura del codice
+
+Il codice è in `stillfind/`, diviso per responsabilità. Ogni concetto è una classe; i moduli che restano a funzioni (`core/facts.py`, `core/stemmer.py`, `core/labels.py`, `core/system.py`, `ui/theme.py`) sono tabelle di regole o piccole utilità senza stato.
+
+| Pacchetto | Contenuto |
+|---|---|
+| `core/` | `Settings` (configurazione), `ProcessLock`, `PrivateWorkspace`, errori, isolamento dalla rete a livello Python |
+| `storage/` | `Database` (connessione e stato), `Schema` (migrazioni), `ArchiveProtection` (archivio cifrato), `CredentialStore`, `ArchiveEraser`, `VectorStore` |
+| `extractors/` | `Extractor` e una sottoclasse per formato (`PdfExtractor`, `DocxExtractor`, `EmlExtractor`, `P7mExtractor`…), `ExtractorRegistry`, `Tesseract`, `MetadataReader` |
+| `indexing/` | `Indexer` (scansione e lettura), `DocumentStore`, `Sources`, `RelationGraph`, `TextVersions`, `DuplicateFinder` |
+| `search/` | `Query` e `SearchFilters` (cosa scrive l'utente), `SearchEngine` (ricerca FTS5), `DocumentPreview` |
+| `semantic/` | `SemanticIndex`, `EmbeddingJob`, `SemanticSearch`, `Embedder`, `ModelCatalog` (modelli locali verificati) |
+| `runtime/` | `Agent`, `WorkerRun`, `WorkerLauncher`, `NetworkIsolation`, `PowerMonitor`, `AppSignals`, `ShortcutBackend` e `TrayBackend` con una sottoclasse per sistema operativo |
+| `ui/` | `App` (finestra principale), `dialogs/` (una finestra per file), `views/` (elenco risultati, schermata iniziale, collegamenti), `theme.py`, `widgets.py` |
+| `tools/` | `CsvExporter`, `SavedSearches`, `PersonalDataAudit`, `Redactor` |
+| `cli.py` | `CommandLine`: gli argomenti e le operazioni da terminale |
+
+---
+
 ## Avvio da sorgente
 
 ```bash
