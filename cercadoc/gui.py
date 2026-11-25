@@ -77,6 +77,97 @@ def card(master, **kw):
                         border_color=PAL["line"], **kw)
 
 
+def _action_icon(action):
+    from PIL import Image, ImageDraw
+
+    mask = Image.new("L", (64, 64))
+    draw = ImageDraw.Draw(mask)
+    if action == "open":
+        draw.line([(29, 12), (10, 12), (10, 54), (52, 54), (52, 35)], fill=255, width=5)
+        draw.line([(29, 35), (53, 11)], fill=255, width=5)
+        draw.line([(35, 11), (53, 11), (53, 29)], fill=255, width=5)
+    elif action == "folder":
+        draw.line([(7, 51), (7, 13), (27, 13), (33, 20), (57, 20), (57, 51), (7, 51)],
+                  fill=255, width=5, joint="curve")
+        draw.line([(8, 27), (55, 27)], fill=255, width=4)
+    elif action == "copy":
+        draw.line([(15, 42), (10, 42), (10, 9), (40, 9), (40, 14)], fill=255, width=5)
+        draw.rounded_rectangle((21, 19, 54, 55), radius=4, outline=255, width=5)
+    elif action == "redact":
+        draw.rounded_rectangle((9, 10, 55, 54), radius=5, outline=255, width=5)
+        draw.line([(18, 22), (39, 22)], fill=255, width=4)
+        draw.rectangle((17, 31, 47, 39), fill=255)
+    else:
+        raise ValueError(action)
+
+    def tinted(color):
+        icon = Image.new("RGBA", mask.size, color)
+        icon.putalpha(mask)
+        return icon
+
+    light, dark_color = ("white", "white") if action == "open" else PAL["text"]
+    return ctk.CTkImage(tinted(light), tinted(dark_color), size=(20, 20))
+
+
+class PreviewAction(ctk.CTkButton):
+    def __init__(self, master, action, label, command):
+        primary = action == "open"
+        self._tip_text = label
+        self._tip = self._tip_job = None
+
+        def activate():
+            self._hide_tip()
+            command()
+
+        super().__init__(master, text="", image=_action_icon(action), command=activate,
+                         width=38, height=36, corner_radius=9, border_width=1, border_spacing=0,
+                         fg_color=PAL["accent"] if primary else "transparent",
+                         border_color=PAL["accent"] if primary else PAL["line"],
+                         hover_color=PAL["accent_hover"] if primary else PAL["ghost_hover"])
+        tk.Frame.configure(self, takefocus=True)
+        self.bind("<Enter>", self._schedule_tip)
+        self.bind("<Leave>", self._hide_tip)
+        # CTkButton.bind indirizza gli eventi ai figli grafici. Il focus di Tab arriva alla cornice.
+        tk.Misc.bind(self, "<FocusIn>", self._show_tip)
+        for event in ("<FocusOut>", "<Escape>", "<Unmap>"):
+            tk.Misc.bind(self, event, self._hide_tip)
+        for key in ("<Return>", "<space>"):
+            tk.Misc.bind(self, key, self._press)
+
+    def _press(self, event):
+        self.invoke()
+        return "break"
+
+    def _schedule_tip(self, event):
+        if self._tip is None and self._tip_job is None:
+            self._tip_job = self.after(450, self._show_tip)
+
+    def _show_tip(self, event=None):
+        self._hide_tip()
+        top = self.winfo_toplevel()
+        self._tip = tk.Label(top, text=self._tip_text, bg=col("text"), fg=col("card"),
+                             padx=8, pady=4, takefocus=False)
+        x = self.winfo_rootx() - top.winfo_rootx()
+        y = self.winfo_rooty() - top.winfo_rooty()
+        below = y + self.winfo_height() + 4
+        h = self._tip.winfo_reqheight()
+        self._tip.place(x=max(0, min(x, top.winfo_width() - self._tip.winfo_reqwidth())),
+                        y=below if below + h <= top.winfo_height() else max(0, y - h - 4))
+        self._tip.lift()
+
+    def _hide_tip(self, event=None):
+        if self._tip_job is not None:
+            self.after_cancel(self._tip_job)
+            self._tip_job = None
+        if self._tip is not None:
+            self._tip.destroy()
+            self._tip = None
+
+    def destroy(self):
+        self._hide_tip()
+        super().destroy()
+
+
 # --------------------------------------------------------------------------
 class DiagnosticsDialog(ctk.CTkToplevel):
     """Stato dell'archivio: file che non si sono potuti leggere e PDF senza testo."""
@@ -1355,13 +1446,13 @@ class App(ctk.CTk):
         self.btn_back.grid_remove()
         pb = ctk.CTkFrame(pv, fg_color="transparent")
         pb.grid(row=1, column=0, sticky="ew", padx=16, pady=(10, 0))
-        self.btn_open = primary_button(pb, "Apri il file", self.open_selected)
-        self.btn_open.pack(side="left")
-        self.btn_reveal = ghost_button(pb, "Mostra nella cartella", self.reveal_selected)
-        self.btn_reveal.pack(side="left", padx=(8, 0))
-        self.btn_copy = ghost_button(pb, "Copia testo", self.copy_text)
-        self.btn_copy.pack(side="left", padx=(8, 0))
-        ghost_button(pb, "Oscura copia…", lambda: features_ui.RedactDialog(self)).pack(side="left", padx=(8, 0))
+        for icon, label, command in (
+            ("open", "Apri il file", self.open_selected),
+            ("folder", "Mostra nella cartella", self.reveal_selected),
+            ("copy", "Copia testo", self.copy_text),
+            ("redact", "Oscura il testo in una copia…", lambda: features_ui.RedactDialog(self)),
+        ):
+            PreviewAction(pb, icon, label, command).pack(side="left", padx=(0, 6))
         # --- vista del testo: brani attorno alle parole oppure documento intero, con ‹ › tra le occorrenze
         nav = ctk.CTkFrame(pv, fg_color="transparent")
         nav.grid(row=2, column=0, sticky="ew", padx=16, pady=(10, 0))
