@@ -3,11 +3,11 @@
 """Contenitori locali con un solo livello, limite cumulativo e percorsi temporanei generati."""
 import posixpath
 import re
-import tempfile
 import zipfile
 from pathlib import Path, PurePosixPath
 import xml.etree.ElementTree as ET
 
+from .. import private_tmp
 from ..errors import Stopped
 from .office import MAX_ZIP_XML_BYTES
 from .text import _decode
@@ -74,7 +74,7 @@ class Members:
             return
         if not charged:
             self.consume(len(data))
-        with tempfile.TemporaryDirectory(prefix="cercadoc_member_") as tmp:
+        with private_tmp.workspace() as tmp:
             # Mai usare il percorso del membro come destinazione sul filesystem.
             f = Path(tmp) / ("documento." + ext)
             f.write_bytes(data)

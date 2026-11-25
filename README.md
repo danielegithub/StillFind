@@ -10,13 +10,15 @@ Funziona su **Windows, macOS e Linux** (tema chiaro e scuro). Indice e configura
 - **Formati letti**: testo (`txt`, `md`, `csv`, `log`, `rtf`, `html`, `json`, `tex`, `xml`), **Office** (`docx`, `xlsx`, `pptx`), **OpenDocument** (`odt`, `ods`, `odp`), **PDF** (anche misti o scansionati), **email `.eml`** (inclusi gli allegati supportati), **fatture FatturaPA `.xml`**, **file firmati `.p7m`** (anche `.xml.p7m` e firme multiple), archivi **`.zip`** (un livello), **`.epub`** e **immagini** con OCR (`png`, `jpg`, `tif`, `bmp`). Indicizza anche titolo, autore e oggetto.
 - **Ricerca rapida e precisa**: ignora maiuscole e accenti, riconosce singolari/plurali e radici italiane (Snowball) e propone *«Intendevi…?»* in caso di refusi.
   - Filtri da menu (**Tipo**, **Data**, **Cartella**, **Cerca in**) o da tastiera: `"frase esatta"`, `OR`, `NOT`, `NEAR`, `ext:pdf` (o `parola:pdf`), `name:`, `in:Cartella`, `after:2024-01`, `before:2024-12`, `cf:`, `piva:`, `iban:`, `protocollo:`, `importo:1200..1500`, `~450` (±5%).
-- **Anteprima completa**: numero di pagina nei PDF, elenco espandibile *Altre occorrenze*, vista *Occorrenze* o *Testo completo* (navigazione con `F3` / `⌘/Ctrl+G`) e copia rapida del testo.
+- Le ricerche con più parole danno precedenza ai documenti che le contengono nello stesso passaggio. Il passaggio segue il paragrafo e si ferma al cambio di pagina, foglio o slide.
+- **Anteprima e posizioni.** Risultati e brani indicano la pagina PDF, il nome del foglio Excel o il numero della slide PowerPoint. La vista *Testo completo* conserva gli a capo e segnala per ciascuna pagina PDF il testo digitale, l’OCR o le pagine ancora da leggere. Puoi espandere *Altre occorrenze*, passare tra le corrispondenze con `F3` o `⌘/Ctrl+G` e copiare il testo.
 - **Collegamenti, versioni e scadenze**:
   - **Collegati**: trova documenti con lo stesso CF, P.IVA, IBAN, protocollo, thread email o file firmato, più la scheda cronologica della pratica.
   - **Confronta versioni**: affianca le differenze di parole e importi anche tra formati diversi (es. `.docx` ↔ PDF OCR ↔ `.p7m`).
   - **Scadenze**: estrae date interne e scadenze, con vista dedicata e avviso opzionale a 30 giorni.
   - **Strumenti**: ricerca **duplicati** (SHA-256), esportazione in **CSV**, cronologia e ricerche salvate, diagnostica con rilettura o OCR di un singolo file.
-- **Leggero e automatico**: controlla le cartelle in background, riconosce spostamenti e rinomine senza rileggere i file, lavora a bassa priorità CPU (con pausa opzionale a batteria) e si richiama con `Ctrl+Alt+K` (`⌘+⌥+K` su macOS) o dall'icona di sistema con `--agent`.
+- **Leggero e automatico**: controlla le cartelle in background, riconosce spostamenti e rinomine senza rileggere i file, lavora a bassa priorità CPU (con pausa opzionale a batteria).
+- **Icona di sistema**. Apri *Cerca…*, *Impostazioni* o *Informazioni*, controlla quanti file sono indicizzati e quanti attendono l’OCR, oppure metti in pausa e riprendi la lettura. La pausa resta attiva anche dopo il riavvio. *Esci* chiude la finestra e l’agente. La scorciatoia `Ctrl+Alt+K` (`⌘+⌥+K` su macOS) e un secondo avvio riportano in primo piano la finestra aperta.
 
 ---
 
@@ -47,6 +49,7 @@ Nessun dato lascia il computer: zero telemetria, zero aggiornamenti automatici, 
 - **Blocco a runtime**: all'avvio CercaDoc disabilita tutti i moduli di rete di Python (`socket`, `ssl`, `urllib`, `http`, `ftplib`, `smtplib`, `webbrowser`…).
 - **Blocco nell'eseguibile**: i moduli di rete non vengono inclusi nel pacchetto; `build.py` ispeziona il risultato e fallisce se ne trova anche uno solo.
 - **Recinto di sistema**: il processo lavoratore (incluso il motore ONNX) viene avviato senza accesso alla rete tramite `sandbox-exec` su macOS e `unshare`/`bwrap` su Linux.
+- Anche la lettura avviata dalla finestra, la ricostruzione e l’OCR di un singolo file passano dal lavoratore separato. La finestra legge l’avanzamento dal database locale. Se il recinto non parte, la finestra segnala il problema. Su Windows occorrono regole di blocco in uscita per l’eseguibile e gli strumenti OCR installati, attive su tutti i profili.
 - **Verifica diretta**: esegui `python3 -m cercadoc --self-test-offline` (e, a programma aperto, controlla con `lsof -nP -i | grep -i python` o `netstat -ano`).
 
 *Nota*: aprire un file con doppio clic lo affida al programma predefinito del sistema (es. il browser per un `.html`).
@@ -55,6 +58,9 @@ Nessun dato lascia il computer: zero telemetria, zero aggiornamenti automatici, 
 
 ## Sicurezza e privacy dei dati
 
+- **Temporanei OCR.** CercaDoc scrive le pagine renderizzate e i file di lavoro dell’OCR in `.ocr-tmp`, una sottocartella privata dell’indice. Li elimina a fine lavoro e, all’avvio successivo, ripulisce quelli lasciati da un arresto improvviso. I lavori ancora attivi possono proseguire.
+- **Dischi scollegati.** In *Impostazioni → Opzioni avanzate → Conservazione dei dischi scollegati* puoi scegliere i giorni di attesa dalla prima assenza rilevata. Il valore iniziale **0** conserva i documenti a tempo indeterminato. Alla prima scansione dopo la scadenza, CercaDoc li rimuove dall’indice. Quando ricolleghi il disco, la scansione li indicizza di nuovo.
+- **Rimozione selettiva.** Fai clic destro su un risultato per dimenticare il file o la cartella che lo contiene. Da *⋯ → Dimentica una cartella…* puoi scegliere anche una cartella su un disco scollegato. La rimozione include sottocartelle, testo, passaggi, vettori ed entità rimaste senza riferimenti. Gli originali restano sul disco. Per consentire di nuovo l’indicizzazione del percorso, scegli *Impostazioni → Opzioni avanzate → Percorsi dimenticati → Includi di nuovo* e salva.
 - **Archivio cifrato opzionale (SQLCipher)**: attivabile al primo avvio o da *Impostazioni → Opzioni avanzate*. Cifra testo, cronologia, entità e **anche i vettori** (salvati dentro il database cifrato, mai in chiaro su disco), con migrazione guidata e reversibile.
   - **Portachiavi di sistema**: chiave locale custodita da DPAPI (Windows), Keychain (macOS) o Secret Service (Linux).
   - **Cassaforte con passphrase**: chiave solo in RAM, blocco automatico per inattività o manuale (*⋯ → Blocca cassaforte*). Nessuna chiave viene mai salvata in `config.json`.

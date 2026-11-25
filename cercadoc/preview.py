@@ -9,7 +9,7 @@ import unicodedata
 from bisect import bisect_right
 
 from .config import DB_PATH
-from .search import HIT_END, HIT_START
+from .search import HIT_END, HIT_START, section_label
 from .stemmer import stem, strip_accents
 from .ui_text import thousands
 
@@ -94,8 +94,33 @@ def page_for(starts: list[int], offset: int) -> int | None:
     return bisect_right(starts, offset) or None if starts else None
 
 
+class Layout:
+    """Intervalli in caratteri del testo indicizzato, prima di ogni formattazione."""
+    def __init__(self, passages=(), sections=()):
+        self.passages = list(passages)
+        self.starts = [a for a, _ in self.passages]
+        self.sections = list(sections)
+        self.section_starts = [r[0] for r in self.sections]
+
+    def at(self, offset, length):
+        left, right, label, page = 0, length, "", None
+        i = bisect_right(self.section_starts, offset)
+        if i < len(self.sections):
+            right = self.section_starts[i]
+        if i:
+            left, kind, title, n, state = self.sections[i-1]
+            label = section_label(kind, title, n, state)
+            page = n if kind == "page" else None
+        j = bisect_right(self.starts, offset) - 1
+        if j >= 0:
+            a, b = self.passages[j]
+            if offset < b:
+                left, right = max(left, a), min(right, b)
+        return left, right, label, page
+
+
 def occurrences(content: str, terms: list[str], starts: list[int] | None = None, max_items: int = 12,
-                width: int = 70, gap: int = 200) -> tuple[list[dict], int]:
+                width: int = 70, gap: int = 200, layout=None) -> tuple[list[dict], int]:
     """Le occorrenze delle parole cercate come voci per l'elenco «Altre occorrenze».
     Restituisce (voci, numero di occorrenze nel documento). Ogni voce: `index` (posizione tra tutte le occorrenze,
     la stessa del testo completo nell'anteprima), `page` (o None) e `parts`: [(testo, "hit" | "")] con un po'
@@ -103,17 +128,18 @@ def occurrences(content: str, terms: list[str], starts: list[int] | None = None,
     e nella stessa pagina stanno nella stessa voce."""
     spans = hit_spans(content, terms)
     items: list[dict] = []
-    last_end, last_page = -gap, None
+    layout = layout or Layout(sections=[(s, "page", "", n, "") for n, s in enumerate(starts or [], 1)])
+    last_end, last_start = -gap, None
     for k, (a, b) in enumerate(spans):
-        page = page_for(starts or [], a)
-        if items and a - last_end < gap and page == last_page:
+        left, right, label, page = layout.at(a, len(content))
+        if items and a - last_end < gap and left == last_start:
             items[-1]["count"] += 1
             last_end = b
             continue
         if len(items) >= max_items:
             break
-        last_end, last_page = b, page
-        lo, hi = max(0, a - width), min(len(content), b + width)
+        last_end, last_start = b, left
+        lo, hi = max(left, a - width), min(right, b + width)
         text = content[lo:hi].replace("\r", " ").replace("\n", " ")  # stessa lunghezza: le posizioni restano valide
         parts, pos = [], lo
         for x, y in spans[k:]:
@@ -124,77 +150,105 @@ def occurrences(content: str, terms: list[str], starts: list[int] | None = None,
         parts.append((text[pos - lo:], ""))
         parts[0] = (("…" if lo > 0 else "") + parts[0][0], "")
         parts[-1] = (parts[-1][0] + ("…" if hi < len(content) else ""), parts[-1][1])
-        items.append({"index": k, "page": page, "count": 1, "parts": [p for p in parts if p[0]]})
+        items.append({"index": k, "page": page, "location": label, "count": 1, "parts": [p for p in parts if p[0]]})
     return items, len(spans)
 
 
-def full_text_parts(content: str, terms: list[str], limit: int = FULL_TEXT_LIMIT) -> list[tuple[str, str]]:
-    """Il testo del documento (fino a `limit` caratteri) con tutte le occorrenze evidenziate, come (testo, tag)."""
-    text = content.replace("\r\n", "\n").replace("\r", "\n")
-    if not text.strip():
+def _full_range(content, lo, hi, hits, layout):
+    # Ordina intestazioni ed evidenziazioni nelle coordinate del testo originale.
+    # I ritorni a capo di Windows vengono normalizzati soltanto per la visualizzazione.
+    events = []
+    for a, b in hits:
+        events.extend(((a, 2, "hit"), (b, 0, "")))
+    if layout:
+        states = {"native": "testo digitale", "short": "testo breve, OCR da eseguire",
+                  "error": "errore OCR", "pending": "OCR da eseguire", "ocr_empty": "OCR senza testo",
+                  "native_ocr_empty": "testo digitale, OCR senza testo"}
+        first = max(0, bisect_right(layout.section_starts, lo) - 1)
+        for start, kind, title, number, state in layout.sections[first:]:
+            if start > hi or start == hi < len(content):
+                break
+            heading = section_label(kind, title, number, state)
+            if state in states:
+                heading += " · " + states[state]
+            events.append((max(lo, start), 1, heading))
+    pos, tag, parts = lo, "", []
+    for offset, event, value in sorted(events):
+        if offset > pos:
+            parts.append((content[pos:offset], tag))
+        if event == 1:
+            parts.append((("\n" if offset > lo else "") + value + "\n", "title"))
+        else:
+            tag = value
+        pos = offset
+    parts.append((content[pos:hi], tag))
+    return [(t.replace("\r\n", "\n").replace("\r", "\n"), k) for t, k in parts if t]
+
+
+def full_text_parts(content: str, terms: list[str], limit: int = FULL_TEXT_LIMIT, layout=None) -> list[tuple[str, str]]:
+    if not content.strip() and not (layout and layout.sections):
         return [("Nessun testo estratto: il file è stato trovato solo per il nome.", "dim")]
-    shown = text[:limit]
-    parts: list[tuple[str, str]] = []
-    pos = 0
-    for a, b in hit_spans(shown, terms):
-        parts += [(shown[pos:a], ""), (shown[a:b], "hit")]
-        pos = b
-    parts.append((shown[pos:], ""))
-    if len(text) > limit:
+    hi = min(len(content), limit)
+    parts = _full_range(content, 0, hi, hit_spans(content[:hi], terms), layout)
+    if hi < len(content):
         parts.append((f"\n\n… Il testo continua: qui si vedono i primi {thousands(limit)} caratteri su "
-                      f"{thousands(len(text))}. «Copia testo» copia tutto il documento.", "dim"))
+                      f"{thousands(len(content))}. «Copia testo» copia tutto il documento.", "dim"))
     return parts
 
 
-def anchored_parts(content, start, end, full=False, limit=FULL_TEXT_LIMIT):
+def anchored_parts(content, start, end, full=False, limit=FULL_TEXT_LIMIT, layout=None):
     """Anteprima posizionata sui caratteri del testo originale, anche oltre i primi 400.000."""
     a = max(0, min(start, len(content)))
     b = min(len(content), max(a + 1, end))
+    left, right, label, _ = (layout or Layout()).at(a, len(content))
     if full:
         # Centriamo la finestra sul punto richiesto solo quando altrimenti resterebbe fuori.
         lo = min(max(0, len(content) - limit), max(0, a - limit // 2)) if b > limit else 0
         hi = min(len(content), max(lo + limit, b))
     else:
-        lo, hi = max(0, a - 150), min(len(content), b + 150)
-    parts = ([("…\n", "dim")] if lo else [])
-    parts += [(content[lo:a], ""), (content[a:b], "hit"), (content[b:hi], "")]
-    if hi < len(content):
+        b = min(b, right)
+        lo, hi = max(left, a - 150), min(right, b + 150)
+    parts = [(label + "\n", "title")] if label and not full else []
+    if lo > (0 if full else left):
+        parts.append(("…\n", "dim"))
+    parts.extend(_full_range(content, lo, hi, [(a, b)], layout if full else None))
+    if hi < (len(content) if full else right):
         parts.append(("\n…", "dim"))
     return [(t.replace("\r\n", "\n").replace("\r", "\n"), tag) for t, tag in parts if t]
 
 
-def excerpts(content: str, terms: list[str], width: int = 140, max_n: int = 8):
-    """Brani del testo attorno alle occorrenze (insensibile agli accenti).
-    Restituisce [(testo, [(inizio, fine)...])]."""
-    rx = _term_regex(terms) if terms else None
-    if rx is None:
-        return [(content[:600].replace("\r\n", "\n").replace("\n", " ⏎ "), [])] if content else []
-    out: list[tuple[str, list[tuple[int, int]]]] = []
-    last_end = -1
-    chunk_size = 100_000
-    overlap = width + 64
-    offset = 0
-    n = len(content)
-    while offset < n and len(out) < max_n:
-        chunk = content[offset:offset + chunk_size]
-        norm, pos = _norm_with_map(chunk)
-        for m in rx.finditer(norm):
-            oa, ob = _map_span(chunk, pos, m.start(), m.end())
-            abs_a, abs_b = offset + oa, offset + ob
-            if abs_a < last_end:
-                continue
-            a, b = max(0, abs_a - width), min(n, abs_b + width)
-            piece = content[a:b].replace("\r\n", "\n").replace("\n", " ⏎ ")
-            pnorm, ppos = _norm_with_map(piece)
-            marks = [_map_span(piece, ppos, x.start(), x.end()) for x in rx.finditer(pnorm)]
-            out.append((piece, marks))
-            last_end = b
-            if len(out) >= max_n:
-                break
-        if offset + chunk_size >= n:
+def _excerpts(content, terms, width, max_n, layout, preferred=None):
+    skip = None
+    if preferred is not None:
+        lo, hi, label, _ = layout.at(preferred, len(content))
+        skip = lo, hi
+        for text, marks, _, cut_left, cut_right in _excerpts(content[lo:hi], terms, width, max_n, Layout()):
+            yield text, marks, label, cut_left, cut_right
+            max_n -= 1
+        if max_n <= 0 or hi - lo == len(content):
+            return
+    hits = hit_spans(content, terms)
+    if skip:
+        hits = [(a, b) for a, b in hits if not skip[0] <= a < skip[1]]
+    i = 0
+    for _ in range(max_n):
+        if i >= len(hits):
             break
-        offset += chunk_size - overlap
-    return out
+        a, b = hits[i]
+        left, right, label, _ = layout.at(a, len(content))
+        lo, hi = max(left, a-width), min(right, b+width)
+        marks = []
+        while i < len(hits) and hits[i][0] < hi:
+            x, y = hits[i]
+            marks.append((x-lo, min(y, hi)-lo))
+            i += 1
+        yield content[lo:hi], marks, label, lo > left, hi < right
+
+
+def excerpts(content: str, terms: list[str], width: int = 140, max_n: int = 8):
+    if not terms:
+        return [(content[:600], [])] if content else []
+    return [(piece, marks) for piece, marks, *_ in _excerpts(content, terms, width, max_n, Layout())]
 
 
 def snippet_parts(snippet: str) -> list[tuple[str, str]]:
@@ -204,7 +258,7 @@ def snippet_parts(snippet: str) -> list[tuple[str, str]]:
         return []
     parts: list[tuple[str, str]] = []
     # i puntini ci sono già nello snippet di FTS5, e solo dove il testo è tagliato: non se ne aggiungono altri
-    for i, chunk in enumerate(snippet.replace("\r\n", "\n").replace("\n", " ⏎ ").split(HIT_START)):
+    for i, chunk in enumerate(snippet.replace("\r\n", "\n").split(HIT_START)):
         if i == 0:
             parts.append((chunk, ""))
             continue
@@ -214,31 +268,53 @@ def snippet_parts(snippet: str) -> list[tuple[str, str]]:
     return [p for p in parts if p[0]]
 
 
-def preview_parts(content: str, terms: list[str], max_n: int = 8) -> list[tuple[str, str]]:
-    """Anteprima a brani (le occorrenze, fino a `max_n`) come parti (testo, tag). Può essere lenta su testi
-    molto lunghi: la finestra la chiama in un thread."""
+def preview_parts(content: str, terms: list[str], max_n: int = 8, layout=None, preferred=None) -> list[tuple[str, str]]:
     if not content.strip():
         return [("Nessun testo estratto: il file è stato trovato solo per il nome.", "dim")]
-    ex = excerpts(content, terms, max_n=max_n)
-    if not ex:
-        return [("Nessuna occorrenza nel contenuto (trovato nel nome del file). Anteprima iniziale:\n\n", "dim"),
-                (content[:800].replace("\r\n", "\n"), "")]
-    parts: list[tuple[str, str]] = []
-    for text, marks in ex:
+    layout = layout or Layout()
+    parts = []
+    for text, marks, label, cut_left, cut_right in _excerpts(content, terms, 140, max_n, layout, preferred):
+        if label:
+            parts.append((label + "\n", "title"))
+        if cut_left:
+            parts.append(("…", "dim"))
         pos = 0
-        parts.append(("…", "dim"))
         for a, b in marks:
             parts += [(text[pos:a], ""), (text[a:b], "hit")]
             pos = b
-        parts += [(text[pos:], ""), ("…\n\n", "dim")]
-    return parts
+        parts += [(text[pos:], ""), ("…\n\n" if cut_right else "\n\n", "dim")]
+    if not parts:
+        if terms:
+            parts.append(("Nessuna occorrenza nel contenuto (trovato nel nome del file). Anteprima iniziale:\n\n", "dim"))
+        # Anche l'anteprima iniziale conserva le intestazioni quando attraversa più sezioni.
+        end = min(800, len(content))
+        pos = 0
+        for start, kind, title, n, state in layout.sections:
+            if start >= end:
+                break
+            parts += [(content[pos:start], ""), (section_label(kind, title, n, state) + "\n", "title")]
+            pos = start
+        parts.append((content[pos:end], ""))
+    return [(t.replace("\r\n", "\n").replace("\r", "\n"), tag) for t, tag in parts if t]
+
+
+def read_document(doc_id):
+    con = protection.connection(DB_PATH)
+    try:
+        con.execute("BEGIN")
+        row = con.execute("SELECT content FROM fts WHERE rowid=?", (doc_id,)).fetchone()
+        passages = con.execute("SELECT start,end FROM passaggi WHERE doc_id=? ORDER BY start", (doc_id,))
+        sections = con.execute("SELECT start,tipo,titolo,n,lettura FROM pages WHERE doc_id=? ORDER BY n", (doc_id,))
+        return (row[0] if row else "") or "", Layout(passages, sections)
+    finally:
+        con.close()
 
 
 def read_page_starts(doc_id: int) -> list[int]:
     """Posizioni in cui cominciano le pagine del documento (vuoto se non ha pagine), con una connessione propria."""
     con = protection.connection(DB_PATH)
     try:
-        return [r[0] for r in con.execute("SELECT start FROM pages WHERE doc_id=? ORDER BY n", (doc_id,))]
+        return [r[0] for r in con.execute("SELECT start FROM pages WHERE doc_id=? AND tipo='page' ORDER BY n", (doc_id,))]
     finally:
         con.close()
 

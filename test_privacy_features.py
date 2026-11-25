@@ -11,11 +11,12 @@ import subprocess
 import sys
 import time
 import tempfile
+import uuid
 import unittest
 from unittest import mock
 import zipfile
 
-from cercadoc import agent, config, db, indexer, library, protection, redaction, search, semantic
+from cercadoc import agent, archive, config, db, hotkey, indexer, library, private_tmp, protection, redaction, search, semantic, sources
 from cercadoc.extractors import extract, ocr
 
 
@@ -72,6 +73,189 @@ class PrivateIndex(unittest.TestCase):
                         ocr_lang="eng", pause_on_battery=False)
         protection.forget()
         self.addCleanup(protection.forget)
+
+    def test_private_ocr_workspaces_survive_other_launch_and_clean_crashed_jobs(self):
+        with private_tmp.workspace() as work:
+            self.assertEqual(work.parent, self.home / ".ocr-tmp")
+            if os.name != "nt":
+                self.assertEqual(work.parent.stat().st_mode & 0o777, 0o700)
+                self.assertEqual(work.stat().st_mode & 0o777, 0o700)
+            (work / "pagina.png").write_bytes(b"privato")
+            crashed = subprocess.run([sys.executable, "-c",
+                "from cercadoc import private_tmp; import os; "
+                "job=private_tmp.workspace(); p=job.__enter__(); (p/'pagina.png').write_bytes(b'privato'); os._exit(9)"],
+                timeout=10)
+            self.assertEqual(crashed.returncode, 9)
+            self.assertEqual(len(list(work.parent.glob("lavoro-*"))), 2)
+            subprocess.run([sys.executable, "-m", "cercadoc", "--list"], stdout=subprocess.DEVNULL,
+                           check=True, timeout=10)
+            self.assertEqual(list(work.parent.glob("lavoro-*")), [work])
+            self.assertEqual((work / "pagina.png").read_bytes(), b"privato")
+        self.assertFalse(work.exists())
+        rc, output, _ = ocr._run_subprocess([sys.executable, "-c", "import tempfile;print(tempfile.gettempdir())"],
+                                            timeout=10)
+        self.assertEqual(rc, 0)
+        self.assertEqual(Path(output.decode().strip()).parent, private_tmp.root_path())
+        self.assertFalse(list(private_tmp.root_path().glob("lavoro-*")))
+
+    def test_offline_timer_survives_restarts_resets_and_purges_only_expired_sources(self):
+        disk = self.docs / "disco"
+        disk.mkdir()
+        (disk / "atto.txt").write_text("documento esterno")
+        (self.docs / "conserva.txt").write_text("documento interno")
+        cfg = dict(self.cfg, folders=[{"path": str(self.docs), "recursive": False}, {"path": str(disk)}])
+        unplugged = self.home.parent / "scollegato"
+        with mock.patch.object(sources.time, "time", return_value=1000) as clock:
+            indexer.index_all(cfg)
+            disk.rename(unplugged)
+            self.assertTrue(indexer.index_all(cfg, dry_run=True)["changes"])
+            indexer.index_all(cfg)
+            clock.return_value += 50 * 86400
+            self.assertEqual(indexer.index_all(cfg)["removed"], 0)  # conservazione illimitata
+            disk_back = unplugged.rename(disk)
+            cfg["offline_retention_days"] = 3
+            self.assertTrue(indexer.index_all(cfg, dry_run=True)["changes"])  # va azzerata la data
+            indexer.index_all(cfg)
+            disk_back.rename(unplugged)
+            indexer.index_all(cfg)
+            clock.return_value += 3 * 86400 - 1
+            self.assertEqual(indexer.index_all(cfg)["removed"], 0)
+            clock.return_value += 1
+            self.assertTrue(indexer.index_all(cfg, dry_run=True)["changes"])
+            self.assertEqual(indexer.index_all(cfg)["removed"], 1)
+            with closing(db.connect()) as con:
+                self.assertEqual(con.execute("SELECT name FROM docs").fetchall(), [("conserva.txt",)])
+                self.assertFalse(con.execute("SELECT 1 FROM dirs WHERE path=?", (str(disk),)).fetchone())
+            unplugged.rename(disk)
+            self.assertEqual(indexer.index_all(cfg)["added"], 1)
+
+    def test_unmounted_volume_with_an_empty_mountpoint_keeps_its_documents(self):
+        mount = self.docs / "supporto"
+        mount.mkdir()
+        (mount / "esterno.txt").write_text("dati esterni")
+        attached = True
+        ismount = os.path.ismount
+        def mounted(path):
+            return attached if Path(path) == mount else ismount(path)
+        with mock.patch.object(sources.os.path, "ismount", side_effect=mounted):
+            indexer.index_all(self.cfg)
+            mount.rename(self.home / "volume-staccato")
+            mount.mkdir()  # directory ancora accessibile sul disco interno
+            attached = False
+            self.assertEqual(indexer.index_all(self.cfg)["removed"], 0)
+            with closing(db.connect()) as con:
+                self.assertIsNotNone(con.execute("SELECT assente_da FROM sorgenti WHERE path=?", (str(mount),)).fetchone()[0])
+                self.assertEqual(con.execute("SELECT count(*) FROM docs").fetchone(), (1,))
+
+    def test_unplug_during_extraction_preserves_last_searchable_content(self):
+        path = self.docs / "verbale.txt"
+        path.write_text("versione conservata")
+        indexer.index_all(self.cfg)
+        path.write_text("versione successiva più lunga")
+        def unplug(*args, **kwargs):
+            self.docs.rename(self.home.parent / "scollegato")
+            raise FileNotFoundError(str(path))
+        with mock.patch.object(indexer, "extract", side_effect=unplug):
+            indexer.index_all(dict(self.cfg, offline_retention_days=1))
+        with closing(db.connect()) as con:
+            self.assertEqual(con.execute("SELECT content FROM fts").fetchone(), ("versione conservata",))
+            self.assertIsNotNone(con.execute("SELECT assente_da FROM sorgenti").fetchone()[0])
+
+    def test_forget_folder_cleans_graph_vectors_and_cache_without_affecting_siblings(self):
+        import numpy as np
+        scope = self.docs / "atti_%"
+        other = self.docs / "atti_%2"
+        scope.mkdir()
+        other.mkdir()
+        a = scope / "pratica.txt"
+        b = other / "pratica.txt"
+        a.write_text("segreto alpha@example.it comune@example.it")
+        b.write_text("conservare comune@example.it")
+        indexer.index_all(self.cfg)
+        with closing(db.connect()) as con:
+            docs = dict(con.execute("SELECT path,id FROM docs"))
+            for doc_id in docs.values():
+                con.execute("INSERT INTO pages(doc_id,n,start) VALUES(?,1,0)", (doc_id,))
+                con.execute("INSERT INTO vec_chunks(id,doc_id,start,end) VALUES(?,?,0,5)", (doc_id, doc_id))
+                con.execute("INSERT INTO vec_done VALUES(?,1,1,'prova')", (doc_id,))
+            store = semantic.open_store(con=con)
+            store.add([docs[str(a)], docs[str(b)]], np.eye(store.dim)[:2])
+            ocr._OcrCache(con, "parziale", "ita", str(a)).put(1, "cache sensibile")
+            con.commit()
+            db.set_paused(con, True)
+            config.save_config(self.cfg)
+            with agent.spawn_worker(from_window=True, target=str(scope), forget="folder") as worker:
+                self.assertNotIn(str(scope), worker.args)
+                self.assertEqual(worker.wait(timeout=15), 0)
+            self.assertTrue(db.worker_status(con)["manual_pause"])
+            self.assertEqual(db.worker_status(con)["removed"], 1)
+            self.assertEqual(con.execute("SELECT path FROM docs").fetchall(), [(str(b),)])
+            self.assertFalse(search.search(con, "segreto"))
+            for table in ("passaggi", "vec_chunks", "pages", "vec_done", "analisi"):
+                self.assertFalse(con.execute(f"SELECT 1 FROM {table} WHERE doc_id=?", (docs[str(a)],)).fetchone())
+            self.assertFalse(con.execute("SELECT 1 FROM entita WHERE valore_normalizzato='alpha@example.it'").fetchone())
+            self.assertTrue(con.execute("SELECT 1 FROM entita WHERE valore_normalizzato='comune@example.it'").fetchone())
+            self.assertFalse(con.execute("SELECT 1 FROM ocr_cache").fetchone())
+            self.assertEqual(store.count(), 1)
+            self.assertIsNone(store.mean([docs[str(a)]]))
+            self.assertTrue(a.exists())
+            (scope / "nuovo.txt").write_text("da saltare")
+            indexer.index_all(self.cfg)
+            self.assertEqual(con.execute("SELECT count(*) FROM docs").fetchone(), (1,))
+            self.assertEqual(archive.forget(con, str(b), False), 1)
+            self.assertTrue(b.exists())
+            db.reset_index(con)
+            self.assertEqual(indexer.index_all(self.cfg)["added"], 0)
+            with con:
+                con.execute("DELETE FROM esclusioni WHERE path=?", (str(b),))
+            self.assertEqual(indexer.index_all(self.cfg)["added"], 1)
+
+    def test_interrupted_vector_removal_retries_without_optional_libraries(self):
+        import numpy as np
+        target = self.docs / "da togliere.txt"
+        target.write_text("contenuto privato")
+        config.save_config(self.cfg)
+        indexer.index_all(self.cfg)
+        with closing(db.connect()) as con:
+            doc_id, = con.execute("SELECT id FROM docs").fetchone()
+            con.execute("INSERT INTO vec_chunks VALUES(7,?,0,5)", (doc_id,))
+            store = semantic.open_store(con=con)
+            store.add([7, 8], np.eye(store.dim)[:2])
+            con.commit()
+            with mock.patch("cercadoc.vector_files.os.replace", side_effect=OSError("pubblicazione interrotta")), \
+                 self.assertRaisesRegex(OSError, "interrotta"):
+                archive.forget(con, target, False)
+            self.assertFalse(con.execute("SELECT 1 FROM docs").fetchone())
+            self.assertEqual(con.execute("SELECT id FROM vettori_da_togliere").fetchall(), [(7,)])
+            self.assertTrue(indexer.index_all(self.cfg, dry_run=True)["changes"])
+            subprocess.run([sys.executable, "-S", "-m", "cercadoc", "--index"],
+                           check=True, capture_output=True, timeout=15)
+            self.assertFalse(con.execute("SELECT 1 FROM vettori_da_togliere").fetchone())
+            self.assertEqual(store.count(), 1)
+            self.assertIsNone(store.mean([7]))
+            self.assertIsNotNone(store.mean([8]))
+            self.assertEqual(set(db.vector_files(self.path)), {store.vec_path, store.ids_path, store.manifest})
+
+    @unittest.skipUnless(importlib.util.find_spec("sqlcipher3"), "SQLCipher richiesto")
+    def test_forget_inside_vault_removes_encrypted_vectors_and_keeps_exclusion_private(self):
+        target = self.docs / "nome-riservato.txt"
+        target.write_text("email riservata soloqui@example.it")
+        indexer.index_all(self.cfg)
+        protection.migrate(self.path, "vault", "frase di collaudo")
+        with closing(db.connect()) as con:
+            doc_id, = con.execute("SELECT id FROM docs").fetchone()
+            with con:
+                con.execute("INSERT INTO vec_chunks VALUES(17,?,0,5)", (doc_id,))
+                con.execute("INSERT INTO vector_values VALUES(17,?)", (bytes(384),))
+            with agent.spawn_worker(from_window=True, target=str(target), forget="file") as proc:
+                self.assertEqual(proc.wait(timeout=15), 0)
+            for table in ("docs", "passaggi", "brani_fts", "entita", "fts", "vec_chunks", "vector_values", "vettori_da_togliere"):
+                self.assertFalse(con.execute(f"SELECT 1 FROM {table}").fetchone(), table)
+            self.assertEqual(con.execute("SELECT path FROM esclusioni").fetchall(), [(archive.path_key(target),)])
+            self.assertFalse(db.vector_files(self.path))
+        for item in self.home.iterdir():
+            if item.is_file():
+                self.assertNotIn(target.name.encode(), item.read_bytes())
 
     def test_history_order_retention_and_named_criteria(self):
         with closing(db.connect()) as con:
@@ -172,10 +356,121 @@ class PrivateIndex(unittest.TestCase):
             self.assertGreater(semantic.open_store(con=con).count(), 0)
             self.assertFalse(db.vector_files(self.path))
 
+    def test_worker_pause_resume_contention_and_recovery(self):
+        config.save_config(self.cfg)
+        (self.docs / "prova.txt").write_text("firmato")
+        with closing(db.connect()) as con:
+            db.set_paused(con, True)
+            run = uuid.uuid4().hex
+            with agent.spawn_worker(sandbox=False, run=run) as proc:
+                try:
+                    # La prima riga viene emessa dopo il commit, da un altro processo.
+                    self.assertIn('"phase": "scan"', proc.stdout.readline())
+                    state = agent.read_status(con)
+                    self.assertEqual((state["run"], state["indexed"], state["manual_pause"]), (run, 0, True))
+                    with agent.spawn_worker(sandbox=False) as other:
+                        self.assertEqual(other.wait(timeout=10), agent.BUSY)
+                    self.assertEqual(agent.read_status(con)["run"], run)
+                    db.set_paused(con, False)
+                    proc.communicate(timeout=15)
+                    self.assertEqual(proc.returncode, 0)
+                finally:
+                    if proc.poll() is None:
+                        proc.kill()
+            self.assertEqual((agent.read_status(con)["phase"], agent.read_status(con)["indexed"]), ("done", 1))
+            db.set_paused(con, True)
+            with agent.spawn_worker(sandbox=False) as interrupted:
+                self.assertIn('"phase": "scan"', interrupted.stdout.readline())
+                interrupted.kill()
+                interrupted.wait(timeout=10)
+            self.assertEqual(agent.read_status(con)["phase"], "error")
+            self.assertTrue(db.worker_status(con)["manual_pause"])
+
+    @unittest.skipUnless(sys.platform == "darwin", "recinto nativo macOS")
+    def test_window_worker_cancel_target_retry_and_rebuild(self):
+        config.save_config(dict(self.cfg, network_sandbox=False))
+        doc = self.docs / "prova.txt"
+        doc.write_text("prima")
+        indexer.index_all(self.cfg)
+        doc.write_text("seconda versione")
+        new = self.docs / "nuovo.txt"
+        new.write_text("altra pratica")
+        with closing(db.connect()) as con:
+            db.set_paused(con, True)
+            run = uuid.uuid4().hex
+            with agent.spawn_worker(from_window=True, run=run, rebuild=True) as proc:
+                self.assertEqual(proc.args[0], "/usr/bin/sandbox-exec")
+                # Ferma annulla anche una ricostruzione in attesa prima di azzerare l'indice.
+                agent.stop_file(run).touch()
+                self.assertEqual(proc.wait(timeout=15), 0)
+            self.assertTrue(db.worker_status(con)["stopped"])
+            self.assertEqual(con.execute("SELECT content FROM fts").fetchone(), ("prima",))
+            db.set_paused(con, False)
+            with agent.spawn_worker(from_window=True, target=str(doc), retry_errors=True) as proc:
+                self.assertNotIn(str(doc), proc.args)
+                self.assertEqual(proc.wait(timeout=15), 0)
+            self.assertEqual(con.execute("SELECT content FROM fts").fetchall(), [("seconda versione",)])
+            with agent.spawn_worker(from_window=True, target=str(doc), force_ocr=True) as proc:
+                self.assertNotEqual(proc.wait(timeout=15), 0)
+            self.assertIn("OCR", db.worker_status(con)["error"])
+            with agent.spawn_worker(from_window=True, rebuild=True) as proc:
+                self.assertEqual(proc.wait(timeout=15), 0)
+            self.assertEqual(db.worker_status(con)["indexed"], 2)
+
+    @unittest.skipUnless(sys.platform == "darwin" and importlib.util.find_spec("sqlcipher3"),
+                         "recinto macOS e SQLCipher")
+    def test_window_worker_reads_target_inside_unlocked_vault(self):
+        config.save_config(self.cfg)
+        target = self.docs / "riservato.txt"
+        target.write_text("testo originale")
+        indexer.index_all(self.cfg)
+        protection.migrate(self.path, "vault", "frase di collaudo")
+        target.write_text("testo aggiornato")
+        with closing(db.connect()) as con, agent.spawn_worker(from_window=True, target=str(target)) as proc:
+            self.assertNotIn(str(target), proc.args)
+            self.assertNotIn("frase di collaudo", proc.args)
+            self.assertEqual(proc.wait(timeout=15), 0)
+            self.assertEqual(con.execute("SELECT content FROM fts").fetchone(), ("testo aggiornato",))
+            self.assertEqual(db.worker_status(con)["updated"], 1)
+            self.assertEqual(db.worker_status(con)["indexed"], 1)
+
+    def test_ocr_queue_counts_documents_and_tray_uses_the_same_snapshot(self):
+        from cercadoc import tray
+        for name in ("uno.png", "due.png", "testo.txt"):
+            (self.docs / name).write_text("test")
+        progress = []
+        with mock.patch.object(ocr, "ocr_available", return_value=True), \
+             mock.patch.object(ocr, "_tesseract", return_value="riconosciuto"):
+            indexer.index_all(dict(self.cfg, ocr=True), progress.append)
+        self.assertEqual(max(st["ocr_pending"] for st in progress), 2)
+        self.assertIn(1, [st["ocr_pending"] for st in progress if st["phase"] == "index"])
+        with mock.patch.object(tray, "status", [3, 1, True]):
+            self.assertEqual(tray.entries(), [("open", "Cerca…"), (None, "3 file indicizzati · 1 OCR in coda"),
+                             ("resume", "Riprendi"), ("settings", "Impostazioni"), ("about", "Informazioni"),
+                             ("quit", "Esci")])
+
+    def test_second_window_forwards_dialog_without_opening_tk(self):
+        from cercadoc import gui
+        with mock.patch.object(hotkey, "APP_DIR", self.home), \
+             mock.patch.object(hotkey, "SIGNAL", self.home / "apri-ricerca"), \
+             agent.acquire_lock(self.home / "window.lock"), \
+             mock.patch.object(gui.security_ui, "startup", side_effect=AssertionError("seconda GUI")):
+            gui.run(action="settings")
+            self.assertTrue(hotkey.consume("open"))
+            self.assertTrue(hotkey.consume("settings"))
+
+    @unittest.skipIf(sys.platform == "win32", "Windows usa il firewall")
+    def test_window_requires_a_sandbox_before_launch(self):
+        with mock.patch.object(agent.netlock, "wrapper", return_value=None), \
+             mock.patch.object(subprocess, "Popen", side_effect=AssertionError("avvio fuori recinto")):
+            with self.assertRaisesRegex(RuntimeError, "recinto"):
+                agent.spawn_worker(sandbox=False, from_window=True)
+
     def test_idle_lock_before_open_signal(self):
         from types import SimpleNamespace
         from cercadoc import gui
-        session = SimpleNamespace(protection={"mode":"vault","minutes":2}, _last_input=time.monotonic()-121)
+        session = SimpleNamespace(protection={"mode":"vault","minutes":2}, _last_input=time.monotonic()-121,
+                                  _quit_token=hotkey.quit_token())
         with mock.patch.object(gui.security_ui, "restart") as reset:
             gui.App._session_tick(session)
         reset.assert_called_once_with(session)

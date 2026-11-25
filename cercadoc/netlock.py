@@ -53,6 +53,65 @@ def wrap_command(cmd: list[str]) -> tuple[list[str], str | None]:
     return (w[0] + cmd, w[1]) if w else (cmd, None)
 
 
+def isolated_command(cmd):
+    """La GUI richiede un recinto anche se il ripiego dell'agente è abilitato."""
+    if sys.platform == "win32":
+        return [*cmd, "--verify-firewall"]
+    wrapped, method = wrap_command(cmd)
+    if method is None:
+        raise RuntimeError("Indicizzazione sospesa. Il recinto senza rete non è disponibile su questo sistema.")
+    return wrapped
+
+
+def verify_windows_firewall():
+    """Verifica le regole effettive prima della lettura, inclusi gli eseguibili esterni dell'OCR."""
+    from .extractors.ocr import which
+    programs = {sys.executable, getattr(sys, "_base_executable", sys.executable)}
+    programs.update(path for name in ("tesseract", "pdftoppm") if (path := which(name)))
+    # Le regole possono essere limitate a porte, indirizzi, servizi, utenti o interfacce.
+    # Accettiamo solo blocchi in uscita generali sul programma, per tutti i profili.
+    script = r"""
+$ErrorActionPreference = 'Stop'
+if ((Get-Service MpsSvc).Status -ne 'Running' -or (Get-Service BFE).Status -ne 'Running') { exit 1 }
+$profiles = @(Get-NetFirewallProfile -PolicyStore ActiveStore)
+if ($profiles.Count -ne 3 -or @($profiles | Where-Object {
+    $_.Enabled -ne 'True' -or @($_.DisabledInterfaceAliases | Where-Object { $_ -and $_ -ne 'NotConfigured' }).Count
+}).Count) { exit 1 }
+$required = @($env:CERCADOC_FIREWALL_PROGRAMS -split '\|')
+$rules = Get-NetFirewallRule -PolicyStore ActiveStore -Direction Outbound -Enabled True -Action Block
+foreach ($rule in $rules) {
+    if ($rule.Profile -ne 'Any' -or $rule.Platform -or $rule.PolicyAppId -or $rule.RemoteDynamicKeywordAddresses) { continue }
+    if ($rule.EnforcementStatus -ne 'Full') { continue }
+    $app = $rule | Get-NetFirewallApplicationFilter
+    if (!$app.Program) { continue }
+    $exe = [Environment]::ExpandEnvironmentVariables($app.Program)
+    if ($required -notcontains $exe -or ($app.Package -and $app.Package -ne 'Any')) { continue }
+    $ports = $rule | Get-NetFirewallPortFilter
+    $addr = $rule | Get-NetFirewallAddressFilter
+    $svc = $rule | Get-NetFirewallServiceFilter
+    $iface = $rule | Get-NetFirewallInterfaceFilter
+    $type = $rule | Get-NetFirewallInterfaceTypeFilter
+    $sec = $rule | Get-NetFirewallSecurityFilter
+    $scope = @($ports.Protocol; $ports.LocalPort; $ports.RemotePort; $addr.LocalAddress; $addr.RemoteAddress;
+               $svc.Service; $iface.InterfaceAlias; $type.InterfaceType; $sec.LocalUser; $sec.RemoteUser;
+               $sec.RemoteMachine)
+    if (@($scope | Where-Object { $_ -and $_ -ne 'Any' }).Count) { continue }
+    if ($sec.Authentication -ne 'NotRequired' -or $sec.Encryption -ne 'NotRequired') { continue }
+    $required = @($required | Where-Object { $_ -ne $exe })
+    if (!$required.Count) { exit 0 }
+}
+if ($required.Count) { exit 1 }
+"""
+    powershell = os.path.join(os.environ["SystemRoot"], "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
+    result = subprocess.run([powershell, "-NoProfile", "-NonInteractive", "-Command", script],
+                            env=dict(os.environ, CERCADOC_FIREWALL_PROGRAMS="|".join(programs)),
+                            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                            timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
+    if result.returncode:
+        raise RuntimeError("Per indicizzare occorre il firewall di Windows attivo e una regola di blocco "
+                           "in uscita su tutti i profili per " + ", ".join(sorted(programs)))
+
+
 def check_isolation() -> bool | None:
     """Prova che il recinto isola davvero: True = rete bloccata, False = rete ancora raggiungibile,
     None = non verificabile (nessun meccanismo, o programma installato senza interprete Python)."""

@@ -26,14 +26,31 @@ def startup(configure=False):
     spec = protection.settings(path)
     if spec["mode"] != "vault" and not configure:
         return True
+    token = hotkey.quit_token()
     root = tk.Tk()
     root.withdraw()
     shortcut = hotkey.Registration(lambda: config.load_config().get("global_shortcut", True),
                                    hotkey.signal_window, lambda _: None)
+    def tray_action(action):
+        if action == "quit":
+            hotkey.quit_all()
+        else:
+            hotkey.signal(action)
+            hotkey.signal_window()
+
+    tray = hotkey.Registration(lambda: True, tray_action, lambda _: None, tray=lambda: None)
+    if sys.platform == "darwin":
+        root.createcommand("::tk::mac::ReopenApplication", hotkey.signal_window)
+
     def focus_dialog():
         nonlocal focus_job
-        if hotkey.SIGNAL.exists():
-            hotkey.SIGNAL.unlink(missing_ok=True)
+        if token != hotkey.quit_token():
+            dialog = root.grab_current()
+            if isinstance(dialog, simpledialog.Dialog):
+                dialog.cancel()
+            elif dialog and hasattr(dialog, "request_close"):
+                dialog.request_close()
+        elif hotkey.consume("open"):
             dialog = root.grab_current()
             if dialog:
                 dialog.lift()
@@ -54,12 +71,13 @@ def startup(configure=False):
                     messagebox.showerror("Cassaforte",str(exc),parent=root)
                 finally:
                     del phrase
-        if configure:
+        if configure and token == hotkey.quit_token():
             wizard(root, spec)
         return True
     finally:
         root.after_cancel(focus_job)
         shortcut.close()
+        tray.close()
         root.destroy()
 
 
@@ -136,5 +154,6 @@ def wizard(root, spec):
         win.after(50,poll)
     ok = ttk.Button(bar,text="Applica protezione",command=start)
     ok.pack(side="right",padx=6)
+    win.request_close = lambda: win.destroy() if not ok.instate(["disabled"]) else None
     win.grab_set()
     root.wait_window(win)

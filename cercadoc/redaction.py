@@ -9,7 +9,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from . import facts
+from . import facts, private_tmp
 from .pdf_render import scale_for, serialized
 from .extractors.ocr import which
 from .extractors.text import _decode
@@ -78,9 +78,10 @@ def _ocr_rects(image, lang, types, terms):
         raise RuntimeError("Per controllare anche il testo nelle immagini serve Tesseract.")
     data = io.BytesIO()
     image.save(data, format="PNG")
-    run = subprocess.run([exe, "stdin", "stdout", "-l", lang, "tsv"], input=data.getvalue(),
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=180,
-                         env=dict(os.environ, OMP_THREAD_LIMIT="1"))
+    with private_tmp.workspace() as tmp:
+        run = subprocess.run([exe, "stdin", "stdout", "-l", lang, "tsv"], input=data.getvalue(),
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=180,
+                             env=private_tmp.child_environment(tmp))
     if run.returncode:
         raise RuntimeError("OCR non riuscito. Verifica la lingua installata nelle Impostazioni.")
     words, boxes, offset = [], [], 0

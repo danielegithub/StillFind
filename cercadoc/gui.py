@@ -7,7 +7,6 @@ Funziona in modalità chiara e scura (segue il sistema o si sceglie in Impostazi
 from __future__ import annotations
 
 import os
-import json
 import queue
 import re
 import sqlite3
@@ -15,13 +14,14 @@ import subprocess
 import sys
 import threading
 import time
+import uuid
 import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, simpledialog, ttk
 
 import customtkinter as ctk
 
-from . import about, background, config, db, duplicates, errors, export, indexer, models, preview, semantic, system, ui_text
+from . import about, agent, config, db, duplicates, errors, export, models, preview, semantic, system, ui_text
 from . import search as searcher
 from . import facts, features_ui, hotkey, protection, relations, security_ui
 from .relations_ui import CompareDialog, DocumentList, RelationsPane
@@ -618,7 +618,7 @@ class ResultList(ctk.CTkFrame):
         segs = [(f"▾ Nascondi le occorrenze ({ui_text.thousands(total)})\n", base + ("more",))]
         for k, it in enumerate(items):
             tags = base + ("occ", f"occ{k}")
-            segs.append((f"Pag. {it['page']} — " if it["page"] else "", tags + ("xpage",)))
+            segs.append((it["location"] + " — " if it.get("location") else "", tags + ("xpage",)))
             segs += [(text, tags + ("xsnip",) + (("hit",) if tag == "hit" else ())) for text, tag in it["parts"]]
             segs.append(("\n", tags + ("xsnip",)))
         more = total - sum(it["count"] for it in items)
@@ -732,6 +732,31 @@ class ResultList(ctk.CTkFrame):
             self.select(0, see=True)
 
 
+class ForgetFolderDialog(simpledialog.Dialog):
+    def body(self, master):
+        folders = [row[0] for row in self.parent.con.execute(
+            "SELECT path FROM dirs UNION SELECT folder FROM docs ORDER BY 1 COLLATE NOCASE")]
+        ttk.Label(master, text="Cartella da dimenticare").pack(anchor="w")
+        self.choice = ttk.Combobox(master, values=folders, state="readonly", width=64)
+        self.choice.pack(fill="x", pady=6)
+        if folders:
+            self.choice.set(self.parent.folder_filter if self.parent.folder_filter in folders else folders[0])
+        ttk.Label(master, text="La rimozione include le sottocartelle. Gli originali restano sul disco.\n"
+                              "Puoi includere di nuovo la cartella dalle Impostazioni.").pack(anchor="w")
+        return self.choice
+
+    def buttonbox(self):
+        bar = ttk.Frame(self)
+        bar.pack(anchor="e", padx=8, pady=8)
+        ttk.Button(bar, text="Annulla", command=self.cancel).pack(side="left", padx=5)
+        ttk.Button(bar, text="Dimentica", command=self.ok,
+                   state="normal" if self.choice.get() else "disabled").pack(side="left")
+        self.bind("<Escape>", self.cancel)
+
+    def apply(self):
+        self.result = self.choice.get()
+
+
 class SettingsDialog(ctk.CTkToplevel):
     """Impostazioni su due livelli: in vista solo ciò che serve a tutti; il resto sotto «Opzioni avanzate»."""
 
@@ -814,13 +839,16 @@ class SettingsDialog(ctk.CTkToplevel):
         self.excl = self._field(self.adv, r, "Cartelle da escludere",
                                 "Nomi separati da virgola (per esempio: Temp, Cache). Vengono saltate ovunque si trovino.",
                                 ", ".join(cfg["exclude_dirs"]))
-        self.ocr_lang = self._mini_field(self.adv, r + 2, 0, "Lingua delle scansioni (es. ita+eng)",
+        limits = ctk.CTkFrame(self.adv, fg_color="transparent")
+        limits.grid(row=self.adv.grid_size()[1], column=0, columnspan=2, sticky="ew")
+        limits.grid_columnconfigure((0, 1), weight=1, uniform="campi")
+        self.ocr_lang = self._mini_field(limits, 0, 0, "Lingua OCR (es. ita+eng)",
                                          str(cfg.get("ocr_lang", "ita+eng")))
-        self.ocr_max_pages = self._mini_field(self.adv, r + 2, 1, "Pagine massime lette per ogni PDF scansionato",
+        self.ocr_max_pages = self._mini_field(limits, 0, 1, "Pagine massime per PDF scansionato",
                                               str(cfg.get("ocr_max_pages", 50)))
-        self.max_file_mb = self._mini_field(self.adv, r + 4, 0, "Dimensione massima dei file (MB)",
+        self.max_file_mb = self._mini_field(limits, 2, 0, "Dimensione massima dei file (MB)",
                                             str(cfg.get("max_file_mb", 50)))
-        self.auto_scan = self._mini_field(self.adv, r + 4, 1, "Controllo novità (secondi, 0 = mai)",
+        self.auto_scan = self._mini_field(limits, 2, 1, "Controllo novità (secondi, 0 = mai)",
                                           str(cfg.get("auto_scan_seconds", 60)))
         self.pause_battery = ctk.BooleanVar(value=bool(cfg.get("pause_on_battery")))
         ctk.CTkSwitch(self.adv, text="Non leggere i documenti quando il computer va a batteria",
@@ -863,6 +891,18 @@ class SettingsDialog(ctk.CTkToplevel):
                       variable=self.shortcut, font=font(13)).grid(row=r+20, column=0, columnspan=2, sticky="w", pady=6)
         ghost_button(self.adv, "Protezione e cifratura dell’archivio…",
                      lambda: security_ui.restart(app, True)).grid(row=r+21, column=0, columnspan=2, sticky="w", pady=8)
+        self.retention = self._field(self.adv, r+22, "Conservazione dei dischi scollegati",
+                                     "Giorni dalla prima assenza rilevata. Con 0 i file restano nell’indice.",
+                                     str(cfg.get("offline_retention_days", 0)))
+        self.restore_paths = []
+        forgotten = [p for p, in app.con.execute("SELECT path FROM esclusioni ORDER BY path")]
+        if forgotten:
+            ctk.CTkLabel(self.adv, text="Percorsi dimenticati", font=font(13, True)).grid(
+                row=r+25, column=0, columnspan=2, sticky="w", pady=(12, 2))
+            self.forgotten = ttk.Combobox(self.adv, state="readonly", values=forgotten, width=35)
+            self.forgotten.grid(row=r+26, column=0, sticky="ew")
+            self.forgotten.current(0)
+            ghost_button(self.adv, "Includi di nuovo", self._include_again).grid(row=r+26, column=1, sticky="w")
         self.adv.grid_remove()
 
         # ---------- pulsanti
@@ -872,6 +912,14 @@ class SettingsDialog(ctk.CTkToplevel):
         ghost_button(bar, "Annulla", self._cancel).grid(row=0, column=1, padx=8)
         primary_button(bar, "Salva", self.save).grid(row=0, column=2)
         self.after(150, self._grab)
+
+    def _include_again(self):
+        path = self.forgotten.get()
+        if path:
+            self.restore_paths.append(path)
+            remaining = [p for p in self.forgotten["values"] if p != path]
+            self.forgotten.configure(values=remaining)
+            self.forgotten.set(remaining[0] if remaining else "")
 
     def _toggle_adv(self):
         self._adv_open = not self._adv_open
@@ -996,6 +1044,9 @@ class SettingsDialog(ctk.CTkToplevel):
         auto_sec = self._parse_int(self.auto_scan, "Controllo novità (secondi)", 0, 60)
         if auto_sec is None:
             return
+        days = self._parse_int(self.retention, "Giorni di conservazione", 0, 0)
+        if days is None:
+            return
         exts = self._extensions()
         if not exts:
             messagebox.showerror("Impostazioni", "Spunta almeno un tipo di documento da cercare "
@@ -1010,6 +1061,7 @@ class SettingsDialog(ctk.CTkToplevel):
         c["ocr_lang"] = self.ocr_lang.get().strip() or "ita+eng"
         c["ocr_max_pages"] = ocr_max
         c["max_file_mb"] = max_mb
+        c["offline_retention_days"] = days
         c["auto_scan_seconds"] = auto_sec
         c["pause_on_battery"] = bool(self.pause_battery.get())
         c["semantic_search"] = bool(self.semantic.get())
@@ -1020,6 +1072,7 @@ class SettingsDialog(ctk.CTkToplevel):
         c["theme"] = THEMES[self.theme.get()]
         config.save_config(c)
         with self.app.con:
+            self.app.con.executemany("DELETE FROM esclusioni WHERE path=?", ((p,) for p in self.restore_paths))
             relations.set_rules(self.app.con, c)
         if not c["semantic_search"]:
             self.app._embedder = None
@@ -1041,7 +1094,7 @@ class App(ctk.CTk):
     MODE_HITS, MODE_FULL = "Occorrenze", "Testo completo"
     MODE_LINKS = "Collegati"
 
-    def __init__(self):
+    def __init__(self, quit_token=None):
         self.cfg = config.load_config()
         ctk.set_appearance_mode(self.cfg.get("theme", "system"))
         ctk.set_default_color_theme("blue")
@@ -1059,9 +1112,15 @@ class App(ctk.CTk):
         self.msgs: queue.Queue = queue.Queue()
         self._preview_seq = 0  # numero dell'anteprima richiesta: scarta i calcoli superati
         self.indexing = False
-        self.stop_evt = threading.Event()
-        self._worker: threading.Thread | None = None
+        self._quit_token = hotkey.quit_token() if quit_token is None else quit_token
+        self._worker = None
+        self._own_run = None
+        self._request = None
+        self._state = None
+        self._pending_dialog = None
+        self._pause_job = None
         self._reindex_pending: dict | None = None
+        self._forget_queue = []
         self._auto_scan_job = None
         self.rows: dict[str, dict] = {}  # compatibilità: risultati dell'ultima ricerca (per l'esportazione)
         self._debounce = None
@@ -1077,6 +1136,7 @@ class App(ctk.CTk):
         self._search_con: sqlite3.Connection | None = None
         self._date_custom: tuple | None = None  # (dopo, prima, etichetta, testo «dal», testo «al») scelti a mano
         self._pv_content: str | None = None     # testo del documento in anteprima (None = non ancora letto)
+        self._pv_layout = None
         self._pv_terms: list[str] = []
         self._pv_hits_parts: list | None = None  # anteprima a brani
         self._pv_full_parts: list | None = None  # testo completo evidenziato (si prepara alla prima richiesta)
@@ -1090,8 +1150,6 @@ class App(ctk.CTk):
         self._embedder = None                   # modello del significato: si carica alla prima ricerca che lo usa
         self._embedder_lock = threading.Lock()
         self._embedder_failed = False
-        self._embed_proc = None                 # processo che calcola i vettori (separato, senza rete)
-        self._embed_retry_at = 0.0
         self._forced_q: str | None = None  # testo cercato premendo Invio (anche se molto corto)
         self.welcome: WelcomeView | None = None
         self._build()
@@ -1099,7 +1157,8 @@ class App(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self._close)
         self._shortcut = hotkey.Registration(lambda: self.cfg.get("global_shortcut", True),
                                              hotkey.signal_window, lambda s: self.msgs.put(("shortcut_error", s)))
-        self._tray = hotkey.Registration(lambda: True, hotkey.signal_window, lambda _: None, tray=True)
+        self._tray = hotkey.Registration(lambda: True, lambda action: self.msgs.put(("tray", action)),
+                                         lambda _: None, tray=lambda: self._state)
         if self.protection["mode"] == "vault":
             for event in ("<KeyPress>", "<ButtonPress>", "<Motion>", "<MouseWheel>"):
                 self.bind_all(event, self._activity, add="+")
@@ -1117,20 +1176,58 @@ class App(ctk.CTk):
         self._last_input = time.monotonic()
 
     def _session_tick(self):
+        if self._quit_token != hotkey.quit_token():
+            self._close()
+            return
         if self.protection["mode"] == "vault" and time.monotonic() - self._last_input >= 60 * self.protection["minutes"]:
             security_ui.restart(self)
             return
-        if hotkey.SIGNAL.exists():
-            hotkey.SIGNAL.unlink(missing_ok=True)
-            self.deiconify()
-            self.lift()
-            self.focus_force()
-            modal = self.grab_current()
-            if modal:
-                modal.focus_set()
-            elif not self.welcome:
-                self.entry.focus_set()
+        try:
+            for action in hotkey.WINDOW_ACTIONS:
+                if hotkey.consume(action):
+                    self._window_action(action)
+            if self._pending_dialog and not self.grab_current():
+                action, self._pending_dialog = self._pending_dialog, None
+                self._window_action(action)
+            self._sync_worker()
+        except Exception as exc:
+            self.status.configure(text=f"Stato dell’archivio non disponibile · {exc}")
         self.after(400, self._session_tick)
+
+    def _window_action(self, action):
+        if action == "quit":
+            hotkey.quit_all()
+            self._close()
+            return
+        if action in ("pause", "resume"):
+            if self._pause_job:
+                self.after_cancel(self._pause_job)
+                self._pause_job = None
+            # Un documento grande può occupare il writer. Tk deve restare reattivo.
+            if not db.try_set_paused(self.con, action == "pause"):
+                self._pause_job = self.after(200, lambda: self._window_action(action))
+                return
+            if action == "resume":
+                self.start_index(silent=True)
+                hotkey.signal("agent-wake")
+            self._sync_worker()
+            return
+        self.deiconify()
+        self.lift()
+        self.focus_force()
+        dialog = {"settings": SettingsDialog, "about": AboutDialog}.get(action)
+        existing = next((w for w in self.winfo_children() if dialog and isinstance(w, dialog)), None)
+        modal = self.grab_current()
+        if existing or modal:
+            window = existing or modal
+            window.lift()
+            window.focus_force()
+            if modal and dialog and not existing:
+                self._pending_dialog = action
+        elif dialog:
+            dialog(self)
+        elif not self.welcome:
+            self.entry.focus_set()
 
     def _show_welcome(self):
         self.welcome = WelcomeView(self, self._finish_welcome)
@@ -1317,6 +1414,10 @@ class App(ctk.CTk):
         self.menu.add_command(label="Copia percorso", command=self.copy_path)
         self.menu.add_command(label="Confronta versioni", command=self.compare_selected)
         self.menu.add_command(label="Oscura copia…", command=lambda: features_ui.RedactDialog(self))
+        self.menu.add_separator()
+        self.menu.add_command(label="Dimentica questo file…", command=self._forget_result)
+        self.menu.add_command(label="Dimentica la cartella che lo contiene…",
+                              command=lambda: self._forget_result(folder=True))
         self.more = tk.Menu(self, tearoff=0)
         self.more.add_command(label="Cronologia e ricerche salvate…", command=lambda: features_ui.LibraryDialog(self))
         self.more.add_command(label="Mappa dei dati personali…", command=lambda: features_ui.AuditDialog(self))
@@ -1325,6 +1426,7 @@ class App(ctk.CTk):
         self.more.add_command(label="Salva i risultati in un file CSV…", command=self.export_results)
         self.more.add_command(label="Cerca nuovi documenti adesso", command=self.start_index)
         self.more.add_separator()
+        self.more.add_command(label="Dimentica una cartella…", command=self._forget_folder)
         self.more.add_command(label="Stato dell'archivio…", command=lambda: DiagnosticsDialog(self))
         self.more.add_command(label="Documenti duplicati…", command=lambda: DuplicatesDialog(self))
         self.more.add_command(label="Scadenze…", command=lambda: DocumentList(self))
@@ -1615,15 +1717,17 @@ class App(ctk.CTk):
         segs: list[tuple[str, tuple]] = [
             (ui_text.icon(r["ext"]) + "  ", ("icon",)), (r["name"], ("title",)),
             (f"     {where}  ·  {stamp}", ("meta",)), ("\n", ())]
-        if r.get("error"):
+        if r.get("error") and not r["error"].startswith("Lettura parziale"):
             segs.append(("Non sono riuscito a leggere il contenuto: il file si trova solo per nome.\n", ("snip", "warn")))
         elif q:
             parts = preview.snippet_parts(r.get("snippet", ""))
-            page = f"Pag. {r['page']} — " if r.get("page") else ""
+            page = r["location"] + " — " if r.get("location") else ""
             if parts:
                 segs.append((page, ("snip", "warn")))
                 for text, tag in parts:
-                    segs.append((text.replace(" ⏎ ", " "), ("snip", "hit") if tag == "hit" else ("snip",)))
+                    segs.append((text.rstrip("\n").replace("\n", " ") + ("\n" if text.endswith("\n") else ""), ("snip", "hit") if tag == "hit" else ("snip",)))
+            elif r.get("passage_start") is not None:
+                segs.append((page + r["snippet"].replace("\n", " ") + "\n", ("snip",)))
             elif r.get("semantic"):  # trovato per significato: non ci sono parole da evidenziare, si mostra il passaggio
                 segs.append((f"{page}≈ {r['snippet']}\n", ("snip",)))
             else:
@@ -1659,7 +1763,7 @@ class App(ctk.CTk):
         self.prev.configure(state="normal")
         self.prev.delete("1.0", "end")
         for text, tag in parts:
-            self.prev._textbox.insert("end", text.replace(" ⏎ ", "\n"), tag)  # a capo veri, non simboli
+            self.prev._textbox.insert("end", text, tag)
         self.prev.configure(state="disabled")
         self._index_hits()
         if goto is not None and self._hit_ranges:
@@ -1673,7 +1777,7 @@ class App(ctk.CTk):
         self.links.reset()
         self.links.grid_remove()
         self.prev.grid()
-        self._pv_content = self._pv_hits_parts = self._pv_full_parts = None
+        self._pv_layout = self._pv_content = self._pv_hits_parts = self._pv_full_parts = None
         self.pv_title.configure(text="Anteprima")
         self.pv_path.configure(text="Seleziona un risultato per leggerne il contenuto")
         self._set_preview([])
@@ -1745,11 +1849,13 @@ class App(ctk.CTk):
         if self._pv_full_busy:
             return
         self._pv_full_busy = True
+        layout = self._pv_layout
         seq, content, terms, anchor = self._preview_seq, self._pv_content, self._pv_terms, self._anchor
 
         def work():
             try:
-                parts = preview.anchored_parts(content, *anchor, full=True) if anchor else preview.full_text_parts(content, terms)
+                parts = (preview.anchored_parts(content, *anchor, full=True, layout=layout) if anchor else
+                         preview.full_text_parts(content, terms, layout=layout))
             except Exception as ex:  # noqa: BLE001
                 parts = [(f"Non riesco a mostrare il testo: {ex}", "err")]
             self.msgs.put(("preview_full", (seq, parts)))
@@ -1768,7 +1874,8 @@ class App(ctk.CTk):
 
         def work():
             try:
-                items, total = preview.occurrences(preview.read_content(doc_id), terms, preview.read_page_starts(doc_id))
+                content, layout = preview.read_document(doc_id)
+                items, total = preview.occurrences(content, terms, layout=layout)
             except Exception:  # noqa: BLE001
                 items, total = [], 0
             self.msgs.put(("occurrences", (seq, doc_id, items, total)))
@@ -1832,7 +1939,7 @@ class App(ctk.CTk):
             return
         self._preview_seq += 1
         seq = self._preview_seq
-        self._pv_content = self._pv_hits_parts = self._pv_full_parts = None
+        self._pv_layout = self._pv_content = self._pv_hits_parts = self._pv_full_parts = None
         self._pv_full_busy = False
         self._pending_hit = None
         anchor = (r["offset"], r.get("end", r["offset"] + 1)) if r.get("offset") is not None else None
@@ -1844,27 +1951,30 @@ class App(ctk.CTk):
         stamp = (f"Documento del {'/'.join(reversed(r['document_date'].split('-')))} ({r['date_source']})" if r.get("document_date")
                  else f"Modifica del file: {ui_text.relative_date(r['mtime'])}")
         self.pv_path.configure(text=f"{where}  ·  {stamp}"
-                                    + ("  ·  testo letto da scansione" if r.get("ocr") else ""))
-        if r.get("error"):
+                                    + ("  ·  OCR utilizzato nel documento" if r.get("ocr") else ""))
+        if r.get("error") and not r["error"].startswith("Lettura parziale"):
             self._set_preview([(f"Non sono riuscito a leggere questo file: {r['error']}\n", "err"),
                                ("Il file si trova comunque cercando il suo nome.\n", "dim")])
             return
         # subito: l'estratto già calcolato da SQLite; poi, in un thread, tutte le occorrenze
         quick = preview.snippet_parts(r.get("snippet", ""))
+        if quick and r.get("location"):
+            quick.insert(0, (r["location"] + "\n", "title"))
         self._set_preview(quick + [("\nCarico gli altri punti in cui compare…", "dim")] if quick
                           else [("Carico l'anteprima…", "dim")])
         terms = searcher.query_terms(self.qvar.get())
         doc_id = r["id"]
 
         def work():
-            content = None
+            content = layout = None
             try:
-                content = preview.read_content(doc_id)
-                parts = (preview.anchored_parts(content, *anchor) if anchor else
-                         preview.preview_parts(content, terms, max_n=preview.OCCURRENCES_SHOWN))
+                content, layout = preview.read_document(doc_id)
+                parts = (preview.anchored_parts(content, *anchor, layout=layout) if anchor else
+                         preview.preview_parts(content, terms, max_n=preview.OCCURRENCES_SHOWN, layout=layout,
+                                               preferred=r.get("passage_start")))
             except Exception as ex:  # noqa: BLE001
                 parts = [(f"Non riesco a mostrare l'anteprima: {ex}", "err")]
-            self.msgs.put(("preview", (seq, parts, content, terms)))
+            self.msgs.put(("preview", (seq, parts, content, terms, layout)))
 
         threading.Thread(target=work, daemon=True).start()
 
@@ -1881,6 +1991,25 @@ class App(ctk.CTk):
         self.menu.entryconfigure(2, label=f"Copia {n} percorsi" if n > 1 else "Copia percorso")
         self.menu.entryconfigure(3, state="normal" if n == 2 else "disabled")
         self.menu.tk_popup(e.x_root, e.y_root)
+
+    def _forget_result(self, folder=False):
+        row = self.results.active_result()
+        if row:
+            path = os.path.dirname(row["path"]) if folder else row["path"]
+            self._confirm_forget(path, folder)
+
+    def _forget_folder(self):
+        path = ForgetFolderDialog(self, "Dimentica una cartella dall’archivio").result
+        if path:
+            self.start_index(force=True, target=path, forget="folder")
+
+    def _confirm_forget(self, path, folder):
+        subject = "questa cartella e tutte le sottocartelle" if folder else "questo file"
+        if messagebox.askyesno("Dimentica dall’archivio",
+                               f"Rimuovere dall’indice {subject}?\n\n{path}\n\n"
+                               "Gli originali restano sul disco. Potrai includere di nuovo il percorso "
+                               "dalle opzioni avanzate delle Impostazioni.", parent=self):
+            self.start_index(force=True, target=path, forget="folder" if folder else "file")
 
     def compare_selected(self):
         rows = self._selected_rows()
@@ -1932,107 +2061,141 @@ class App(ctk.CTk):
             self.btn_stop.grid_forget()
 
     def stop_index(self):
-        if self.indexing:
-            self._reindex_pending = None
-            self.stop_evt.set()
-            self.status.configure(text="Mi fermo…")
+        self._reindex_pending = None
+        self._forget_queue.clear()
+        self._interrupt_index()
+
+    def _interrupt_index(self):
+        st = agent.read_status(self.con)
+        runs = {self._own_run}
+        if st["phase"] in agent.ACTIVE:
+            runs.add(st["run"])
+        for run in runs:
+            if run:
+                agent.stop_file(run).touch(mode=0o600)
+        self.status.configure(text="Mi fermo…")
 
     def rebuild_index(self):
-        if self.indexing:
-            self._reindex_pending = None
-            self.stop_evt.set()
-            if self._worker and self._worker.is_alive():
-                self._worker.join(timeout=2.0)
-            self.indexing = False
-            self._show_progress(False)
-            while True:
-                try:
-                    self.msgs.get_nowait()
-                except queue.Empty:
-                    break
-        db.reset_index(self.con)
         self._dirs_sig = None
         self.folder_filter = None
-        self._refresh_filters()
-        self.do_search()
-        self.start_index(force=True)
+        self.start_index(force=True, rebuild=True)
 
-    def start_index(self, silent: bool = False, force: bool = False, retry_errors: bool = False,
-                    target: str | None = None, force_ocr: bool = False):
-        if not self.cfg["folders"] and not target:
+    def start_index(self, silent=False, force=False, retry_errors=False, target=None, force_ocr=False, rebuild=False,
+                    forget=None):
+        if not self.cfg["folders"] and not target and not rebuild:
             if not silent:
                 self.status.configure(text="Scegli le cartelle da Impostazioni.")
             return
-        if self.indexing:
+        st = agent.read_status(self.con)
+        req = dict(silent=silent, force=force, retry_errors=retry_errors, target=target,
+                   force_ocr=force_ocr, rebuild=rebuild, forget=forget)
+        if self._worker is not None or st["phase"] in agent.ACTIVE:
             if force:
-                self._reindex_pending = dict(silent=silent, retry_errors=retry_errors, target=target, force_ocr=force_ocr)
-                self.stop_evt.set()
-                self.status.configure(text="Riparto con le nuove impostazioni…")
+                if forget:
+                    self._forget_queue.append(req)
+                else:
+                    self._reindex_pending = req
+                if st["phase"] != "forget" and not (self._request or {}).get("forget"):
+                    self._interrupt_index()
             return
-        self.indexing = True
-        self._silent = silent
+        if st["manual_pause"] and not force:
+            self.status.configure(text="Indicizzazione in pausa")
+            return
+        run = uuid.uuid4().hex
         self._last_scan = time.monotonic()
-        self.stop_evt.clear()
+        self._silent = silent
+        try:
+            self._worker = agent.spawn_worker(from_window=True, run=run, retry_errors=retry_errors, target=target,
+                                              force_ocr=force_ocr, rebuild=rebuild, quit_token=self._quit_token, forget=forget)
+        except (OSError, RuntimeError) as exc:
+            agent.launch_failed(self.con, run, str(exc))
+            self.status.configure(text=str(exc))
+            return
+        self._own_run, self._request = run, req
+        self.indexing = True
         if not silent:
-            self.status.configure(text="Cerco i documenti nelle cartelle…")
-            self._show_progress(True, "indeterminate")
+            self.status.configure(text="Rimozione dall’archivio…" if forget else "Cerco i documenti nelle cartelle…")
+            self._show_progress(True)
 
-        cfg_snap = dict(self.cfg)
-        cfg_snap["folders"] = [dict(f) for f in self.cfg["folders"]]
-
-        def work():
-            background.lower_thread_priority()  # la lettura dei documenti non deve rallentare il computer
-            try:
-                st = indexer.index_all(cfg_snap, lambda s: self.msgs.put(("progress", s)),
-                                       self.stop_evt, retry_errors=retry_errors, target=target, force_ocr=force_ocr)
-                self.msgs.put(("done", st))
-            except Exception as ex:  # noqa: BLE001
-                self.msgs.put(("error", str(ex)))
-
-        self._worker = threading.Thread(target=work, daemon=True)
-        self._worker.start()
-
-    def _maybe_embed(self):
-        """Se la ricerca per significato è attiva e ci sono documenti senza vettori, avvia il calcolo in un
-        processo separato (priorità bassa, senza rete). Un solo calcolo alla volta."""
-        if self._embed_proc is not None or time.monotonic() < self._embed_retry_at:
+    def _sync_worker(self):
+        code = self._worker.poll() if self._worker is not None else None
+        st = agent.read_status(self.con)
+        active = st["phase"] in agent.ACTIVE
+        launch_error = None
+        if code is not None:
+            if self._worker.stdin:
+                self._worker.stdin.close()
+            if code == agent.BUSY:
+                if self._request.get("forget"):
+                    self._forget_queue.insert(0, self._request)
+                    if active and st["phase"] != "forget":
+                        self._interrupt_index()
+                elif (self._request["force"] or not active) and self._reindex_pending is None:
+                    self._reindex_pending = self._request
+            elif code and (st["run"] != self._own_run or st["phase"] != "error"):
+                launch_error = "Il lavoratore non è partito nel recinto senza rete."
+                if not active:
+                    agent.launch_failed(self.con, self._own_run, launch_error)
+                    st = db.worker_status(self.con)
+            agent.stop_file(self._own_run).unlink(missing_ok=True)
+            self._worker = self._own_run = self._request = None
+        previous = self._state
+        self._state = st
+        self.indexing = active or self._worker is not None
+        if not self.indexing and self._forget_queue:
+            self.start_index(**self._forget_queue.pop(0))
             return
-        if not semantic.available(self.cfg):
+        if not self.indexing and self._reindex_pending:
+            req, self._reindex_pending = self._reindex_pending, None
+            self.start_index(**req)
             return
-        con = protection.connection(config.DB_PATH)
-        try:
-            before = semantic.pending_count(con)
-        finally:
-            con.close()
-        if not before:
+        if launch_error:
+            self._show_progress(False)
+            self.status.configure(text=launch_error)
             return
-        from . import agent
-        try:
-            proc = agent.spawn_worker(bool(self.cfg.get("network_sandbox", True)), mode="--embed")
-        except OSError:
+        if st == previous and code is None:
             return
-        self._embed_proc = proc
-
-        def watch():
-            with proc.stdout:
-                for line in proc.stdout:
-                    try:
-                        self.msgs.put(("embed_progress", json.loads(line)))
-                    except ValueError:
-                        pass
-            proc.wait()
-            if proc.stdin:
-                proc.stdin.close()
-            if self._closing:
-                return
-            c = protection.connection(config.DB_PATH)
-            try:
-                stuck = semantic.pending_count(c) >= before  # ne restano quanti prima: non è avanzato
-            finally:
-                c.close()
-            self.msgs.put(("embed_done", stuck))
-
-        threading.Thread(target=watch, daemon=True).start()
+        if st["phase"] == "forget":
+            self.status.configure(text="Rimozione dall’archivio…")
+        elif st.get("forgotten"):
+            self._show_progress(False)
+            self._clear_preview()
+            self._refresh_filters()
+            self.do_search()
+            self.status.configure(text=f"File rimossi dall’archivio · {st['removed']}" +
+                                       (" · Indicizzazione in pausa" if st["manual_pause"] else ""))
+        elif st["manual_pause"] and st["phase"] != "error":
+            self._show_progress(active)
+            self.status.configure(text="Indicizzazione in pausa")
+        elif active:
+            if st.get("paused"):
+                self._show_progress(True)
+                self.status.configure(text="In pausa a batteria. Riprendo quando colleghi l’alimentatore.")
+            elif st["phase"] == "embed":
+                self._show_progress(True, "determinate", st.get("done", 0) / max(1, st.get("total", 0)))
+                self.status.configure(text=f"Calcolo del significato · {st.get('done', 0)} di {st.get('total', 0)}")
+            elif st["phase"] == "index" and st.get("total"):
+                self._show_progress(True, "determinate", st["done"] / st["total"])
+                self.status.configure(text=f"Lettura {min(st['done'] + 1, st['total'])} di {st['total']} · "
+                                           f"{st.get('current', '')} · puoi già cercare")
+            elif not self._silent or st["run"] != self._own_run:
+                self._show_progress(True)
+                self.status.configure(text=f"Cerco i documenti nelle cartelle… {st.get('scanned', 0)} trovati")
+        elif self._worker is None:
+            self._show_progress(False)
+            self._refresh_filters()
+            if st["phase"] == "error":
+                self.status.configure(text="Lettura interrotta · " + st["error"])
+            elif st.get("stopped"):
+                self.status.configure(text="Lettura interrotta")
+            elif st["phase"] == "done":
+                details = [f"{st[k]} {label}" for k, label in (("added", "nuovi"), ("updated", "modificati"),
+                           ("moved", "spostati"), ("removed", "non più presenti"), ("errors", "non letti")) if st.get(k)]
+                if st.get("missing"):
+                    details.append("Cartelle non trovate · " + ", ".join(st["missing"]))
+                self.status.configure(text=" · ".join([self._idle_status(), *details]))
+            if previous is not None or st["phase"] == "done":
+                self.do_search()
 
     def reschedule_auto_scan(self):
         if self._auto_scan_job is not None:
@@ -2057,88 +2220,20 @@ class App(ctk.CTk):
             self.start_index(silent=True)
 
     def _poll(self):
-        # Svuota la coda ma applica solo l'ULTIMO avanzamento: con migliaia di file piccoli
-        # i messaggi arrivano più in fretta di quanto la finestra riesca a disegnarli.
-        latest, others = None, []
         try:
-            for _ in range(20000):
+            while not self.msgs.empty():
                 kind, data = self.msgs.get_nowait()
-                if kind == "progress":
-                    latest = data
-                else:
-                    others.append((kind, data))
-        except queue.Empty:
-            pass
-        batch = ([("progress", latest)] if latest else []) + others
-        try:
-            for kind, data in batch:
-                if kind == "progress":
-                    if data["phase"] == "index" or not self._silent:
-                        cur = data.get("current")
-                        total = data.get("total", 0)
-                        done = data.get("done", 0)
-                        if data.get("paused"):
-                            self._show_progress(True, "indeterminate")
-                            self.status.configure(text="In pausa: il computer va a batteria. "
-                                                       "Riprendo quando colleghi l'alimentatore.")
-                        elif data["phase"] == "index" and total > 0:
-                            self._show_progress(True, "determinate", done / total)
-                            self.status.configure(
-                                text=f"Sto leggendo i documenti: {ui_text.thousands(min(done + 1, total))} di "
-                                     f"{ui_text.thousands(total)}" + (f"  ·  {cur}" if cur else "") + "  ·  puoi già cercare")
-                        else:
-                            self._show_progress(True, "indeterminate")
-                            self.status.configure(
-                                text=(f"Leggo: {cur}" if cur else
-                                      f"Cerco i documenti nelle cartelle…  {ui_text.thousands(data['scanned'])} trovati"))
-                elif kind == "done":
-                    self._show_progress(False)
-                    self.indexing = False
-                    if self._reindex_pending:
-                        req = self._reindex_pending
-                        self._reindex_pending = None
-                        self.start_index(**req)
-                        continue
-                    self._refresh_filters()
-                    if data.get("stopped"):
-                        self.status.configure(text="Lettura interrotta")
-                        continue
-                    self._maybe_embed()
-                    changes = data["added"] + data["updated"] + data["moved"] + data["removed"]
-                    if changes or not self._silent:
-                        parts = [f"{data['added']} nuovi"] if data["added"] else []
-                        if data["updated"]:
-                            parts.append(f"{data['updated']} modificati")
-                        if data["moved"]:
-                            parts.append(f"{data['moved']} rinominati o spostati")
-                        if data["removed"]:
-                            parts.append(f"{data['removed']} non più presenti")
-                        msg = self._idle_status() + (" · " + ", ".join(parts) if parts else "")
-                        if data["errors"]:
-                            msg += f" · {data['errors']} non letti"
-                        if data["missing"]:
-                            msg += f" · cartelle non trovate: {', '.join(data['missing'])}"
-                        self.status.configure(text=msg)
-                        self.do_search()
-                elif kind == "embed_progress":
-                    if not self.indexing and data.get("total"):
-                        self.status.configure(
-                            text=f"Sto calcolando il significato dei documenti: "
-                                 f"{ui_text.thousands(min(data.get('done', 0) + 1, data['total']))} di "
-                                 f"{ui_text.thousands(data['total'])}  ·  puoi già cercare")
-                elif kind == "embed_done":
-                    self._embed_proc = None
-                    if data:  # nessun progresso (modello rifiutato…): si riprova più tardi
-                        self._embed_retry_at = time.monotonic() + 3600
-                    if not self.indexing:
-                        self.status.configure(text=self._idle_status())
-                        self.do_search()
+                if kind == "tray":
+                    self._window_action(data)
+                    if self._closing:
+                        return
                 elif kind == "results":
                     if data[0] == self._search_seq:
                         self._apply_results(*data[1:])
                 elif kind == "preview":
-                    seq, parts, content, terms = data
+                    seq, parts, content, terms, layout = data
                     if seq == self._preview_seq:
+                        self._pv_layout = layout
                         self._pv_hits_parts, self._pv_content, self._pv_terms = parts, content, terms
                         self._render_preview() if content is not None else self._set_preview(parts)
                 elif kind == "occurrences":
@@ -2159,11 +2254,6 @@ class App(ctk.CTk):
                             self._render_preview()
                 elif kind == "shortcut_error":
                     self.status.configure(text=f"Scorciatoia globale non disponibile · {data}")
-                elif kind == "error":
-                    self._show_progress(False)
-                    self.indexing = False
-                    self._reindex_pending = None
-                    self.status.configure(text=f"Non sono riuscito a leggere i documenti: {data}")
         except Exception as ex:  # noqa: BLE001 - un errore qui non deve fermare per sempre l'aggiornamento
             try:
                 self.status.configure(text=f"Errore interno: {ex}")
@@ -2182,18 +2272,16 @@ class App(ctk.CTk):
         self._shortcut.close()
         self._tray.close()
         self._reindex_pending = None
-        self.stop_evt.set()
-        if self._embed_proc is not None:
+        if self._worker is not None:
+            agent.stop_file(self._own_run).touch(mode=0o600)
             try:
-                self._embed_proc.terminate()  # riprenderà dal documento dopo l'ultimo completato
-                self._embed_proc.wait(timeout=3)
+                self._worker.wait(timeout=3)
             except subprocess.TimeoutExpired:
-                self._embed_proc.kill()
-                self._embed_proc.wait()
-            except OSError:
-                pass
-        if self._worker and self._worker.is_alive():
-            self._worker.join(timeout=2.0)
+                self._worker.kill()
+                self._worker.wait()
+            if self._worker.stdin:
+                self._worker.stdin.close()
+            agent.stop_file(self._own_run).unlink(missing_ok=True)
         try:
             self.con.close()
         except Exception:
@@ -2201,19 +2289,32 @@ class App(ctk.CTk):
         self.destroy()
 
 
-def run(configure=False) -> None:
+def run(configure=False, action="open", quit_token=None) -> None:
     from .agent import acquire_lock
+    token = hotkey.quit_token()
+    if quit_token is not None and token != quit_token:
+        return
     lock = acquire_lock(config.APP_DIR / "window.lock")
     if lock is None:
+        hotkey.signal(action)
         hotkey.signal_window()
         return
-    sys.setswitchinterval(0.002)  # la lettura dei documenti (CPU) non deve affamare la finestra
-    try:
+    with lock:
         try:
-            if security_ui.startup(configure):
-                App().mainloop()
+            if sys.platform == "win32":
+                (config.APP_DIR / "window.pid").write_text(str(os.getpid()), encoding="ascii")
+            if not security_ui.startup(configure) or token != hotkey.quit_token():
+                return
+            with acquire_lock(config.APP_DIR / "window-tray.lock", blocking=True):
+                app = App(token)
+                if sys.platform == "darwin":
+                    app.createcommand("::tk::mac::ReopenApplication", lambda: app._window_action("open"))
+                if action != "open":
+                    app.after_idle(lambda: app._window_action(action))
+                app.mainloop()
         except (RuntimeError, OSError) as exc:
             messagebox.showerror("Apertura di CercaDoc", str(exc))
-    finally:
-        protection.forget()
-        lock.close()
+        finally:
+            if sys.platform == "win32":
+                (config.APP_DIR / "window.pid").unlink(missing_ok=True)
+            protection.forget()

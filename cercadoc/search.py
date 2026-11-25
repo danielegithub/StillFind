@@ -58,27 +58,11 @@ def _simple_query(q: str, where: str = WHERE_ALL) -> str:
     return f"{cols} : ({expr})" if cols and expr else expr
 
 
-# «stesso passaggio»: le parole cercate devono stare entro questo numero di parole l'una dall'altra
-NEAR_DISTANCE = 30
-
-
-def _proximity_query(q: str) -> str:
-    """Query FTS5 con le parole cercate vicine tra loro nel contenuto (stesso passaggio), usata solo
-    per dare precedenza a quei documenti. Vuota se la ricerca non è semplice o ha una sola parola."""
-    q = q.strip()
-    if not q or _RAW.search(q):
+def _passage_query(q: str) -> str:
+    """La corrispondenza FTS deve ricadere in un singolo passaggio strutturale."""
+    if _RAW.search(q) or len(re.findall(r"\w+", _COMPOUND.sub(" codice ", q))) < 2:
         return ""
-    units = ['"' + " ".join(re.findall(r"\w+", c)) + '"' for c in _COMPOUND.findall(q)]
-    words = [w for w in re.findall(r"\w+", _COMPOUND.sub(" ", q)) if w not in _OPS]
-    for w in words:
-        if w.isdecimal():
-            units.append(f'"{w}"')
-        else:
-            s = stem(w)
-            units.append(f'"{s}"*' if len(s) >= 3 else f'"{w}"')
-    if len(units) < 2:
-        return ""
-    return "content : NEAR(" + " ".join(units) + f", {NEAR_DISTANCE})"
+    return _simple_query(q, WHERE_CONTENT)
 
 
 # filtri scritti nella ricerca: ext:pdf  after:2024-01  before:2024-12-31  in:Fatture  in:"Fatture 2025"
@@ -268,6 +252,19 @@ def _ext_sql(ext) -> tuple[str, list]:
     return f" AND d.ext IN ({','.join('?' * len(ext))})", ext
 
 
+def _best_passages_sql(scope=""):
+    """Una riga per documento identifica il miglior brano che soddisfa tutta la query."""
+    return f"""WITH trovati AS MATERIALIZED (
+            SELECT p.doc_id,p.start,snippet(brani_fts,0,'{HIT_START}','{HIT_END}','…',20) AS brano,
+                   brani_fts.rank AS peso,coalesce(pg.lettura='ocr',0) AS da_ocr
+            FROM brani_fts JOIN passaggi p ON p.id=brani_fts.rowid
+            LEFT JOIN pages pg ON pg.doc_id=p.doc_id AND pg.n=p.pagina
+            WHERE brani_fts MATCH ?{scope}), estratti AS (
+            SELECT *,length(brano)-length(replace(brano,'{HIT_START}','')) AS evidenze FROM trovati),
+            migliori AS (SELECT *,row_number() OVER(PARTITION BY doc_id ORDER BY evidenze DESC,peso,da_ocr,start) AS n
+                         FROM estratti) """
+
+
 def search(con, q: str, ext=None, order: str = "rank", limit: int = 500,
            under: str | None = None, after: float | None = None, before: float | None = None,
            where: str = WHERE_ALL) -> list[dict]:
@@ -289,18 +286,26 @@ def search(con, q: str, ext=None, order: str = "rank", limit: int = 500,
     fsql, fargs = document_filter(flt, ext, under)
     order_sql = {"rank": "bm25(fts, 8.0, 1.0, 0.3, 0.5)", "date": "d.mtime DESC",
                  "document_date": _DOC_DATE_ORDER, "name": "d.name COLLATE NOCASE"}[order]
-    near = _proximity_query(q) if order == "rank" and where != WHERE_NAME else ""
-    if near:
-        # prima i documenti con le parole nello stesso passaggio, poi gli altri (sempre per rilevanza)
-        order_sql = "(d.id IN (SELECT rowid FROM fts WHERE fts MATCH ?)) DESC, " + order_sql
-    sql = f"""SELECT d.id, d.path, d.name, d.folder, d.ext, d.size, d.mtime,
-                     snippet(fts, 1, '{HIT_START}', '{HIT_END}', '…', 20), d.ocr, d.error, a.data_iso, a.fonte
-              FROM fts JOIN docs d ON d.id = fts.rowid LEFT JOIN analisi a ON a.doc_id=d.id
+    passage_query = _passage_query(q) if order == "rank" and where != WHERE_NAME else ""
+    snippet = f"snippet(fts, 1, '{HIT_START}', '{HIT_END}', '…', 20)"
+    prefix, join, start = "", "", "NULL"
+    args = []
+    if passage_query:
+        # FTS lavora sui paragrafi indicizzati. A parità di passaggio, privilegia un estratto
+        # che mostra più corrispondenze e conserva lo stesso brano per l'anteprima.
+        prefix = _best_passages_sql()
+        join = " LEFT JOIN migliori b ON b.doc_id=d.id AND b.n=1 "
+        order_sql = "b.doc_id IS NOT NULL DESC,b.evidenze DESC," + order_sql
+        snippet = f"coalesce(b.brano,{snippet})"
+        start = "b.start"
+        args.append(passage_query)
+    sql = prefix + f"""SELECT d.id, d.path, d.name, d.folder, d.ext, d.size, d.mtime,
+                     {snippet}, d.ocr, d.error, a.data_iso, a.fonte,{start}
+              FROM fts JOIN docs d ON d.id = fts.rowid LEFT JOIN analisi a ON a.doc_id=d.id {join}
               WHERE fts MATCH ?{fsql}
               ORDER BY {order_sql} LIMIT ?"""
-    args: list = [match, *fargs]
-    if near:
-        args.append(near)
+    match_arg = len(args)
+    args.extend([match, *fargs])
     args += [limit]
     try:
         rows = con.execute(sql, args).fetchall()
@@ -311,39 +316,64 @@ def search(con, q: str, ext=None, order: str = "rank", limit: int = 500,
         safe = _simple_query(q, where)
         if not safe:
             return []
-        args[0] = safe
+        args[match_arg] = safe
         rows = con.execute(sql, args).fetchall()
-    return [dict(zip(_DOC_KEYS, r)) for r in rows]
+    results = [dict(zip((*_DOC_KEYS, "passage_start"), r)) for r in rows]
+    if not passage_query and where != WHERE_NAME and not _RAW.search(q):
+        # L'ordine è già deciso. Per gli estratti interroghiamo soltanto i documenti visibili.
+        content_query = _simple_query(q, WHERE_CONTENT)
+        for i in range(0, len(results), 400):
+            batch = {r["id"]: r for r in results[i:i + 400]}
+            slots = ",".join("?" for _ in batch)
+            passages = _best_passages_sql(f" AND p.doc_id IN ({slots})")
+            for doc, start, snippet in con.execute(passages + "SELECT doc_id,start,brano FROM migliori WHERE n=1",
+                                                    (content_query, *batch)):
+                batch[doc].update(passage_start=start, snippet=snippet)
+    return results
 
 
 def page_at(con, doc_id: int, offset: int) -> int | None:
     """Numero della pagina del documento che contiene la posizione `offset` del testo; None se il documento
     non ha pagine (solo i PDF le hanno)."""
-    row = con.execute("SELECT n FROM pages WHERE doc_id = ? AND start <= ? ORDER BY n DESC LIMIT 1",
+    row = con.execute("SELECT n FROM pages WHERE tipo='page' AND doc_id = ? AND start <= ? ORDER BY n DESC LIMIT 1",
                       (doc_id, max(0, offset))).fetchone()
     return row[0] if row else None
 
 
-def add_pages(con, rows: list[dict], limit: int = 100) -> None:
-    """Aggiunge a ogni risultato (i primi `limit`) la chiave `page`: la pagina del passaggio trovato, o None.
-    La posizione del passaggio si ricava dall'estratto (che è un pezzo identico del testo) o, per i risultati
-    trovati per significato, da `offset`. Si guarda solo nei documenti che hanno pagine."""
+def section_label(kind, title, number, state):
+    if kind == "sheet":
+        return f"Foglio {title}"
+    if kind == "slide":
+        return f"Slide {title}"
+    return f"Pag. {number}" + (" · OCR" if state == "ocr" else "")
+
+
+def add_pages(con, rows: list[dict], limit: int | None = None) -> None:
+    """Riferimento del primo termine evidenziato o del brano già individuato."""
     for r in rows[:limit]:
-        r["page"] = None
-        if not con.execute("SELECT 1 FROM pages WHERE doc_id = ? LIMIT 1", (r["id"],)).fetchone():
+        r["page"] = r["location"] = None
+        doc_id = r["id"]
+        if not con.execute("SELECT 1 FROM pages WHERE doc_id=? LIMIT 1", (doc_id,)).fetchone():
             continue
         offset = r.get("offset")
         if offset is None:
+            offset = r.get("passage_start")
+        if offset is None:
             snip = r.get("snippet") or ""
             if HIT_START not in snip:
-                continue  # trovato solo nel nome: nessun passaggio
+                continue
+            snip = snip.removeprefix("…").removesuffix("…")
+            before = snip.split(HIT_START, 1)[0]
             plain = snip.replace(HIT_START, "").replace(HIT_END, "")
-            plain = plain[1:] if plain.startswith("…") else plain
-            plain = plain[:-1] if plain.endswith("…") else plain
-            row = con.execute("SELECT instr(content, ?) - 1 FROM fts WHERE rowid = ?", (plain, r["id"])).fetchone()
-            offset = row[0] if row and row[0] is not None and row[0] >= 0 else None
-        if offset is not None:
-            r["page"] = page_at(con, r["id"], offset)
+            row = con.execute("SELECT instr(content,?) FROM fts WHERE rowid=?", (plain, doc_id)).fetchone()
+            if not row or not row[0]:
+                continue
+            offset = row[0] - 1 + len(before)
+        row = con.execute("SELECT tipo,titolo,n,lettura FROM pages WHERE doc_id=? AND start<=? "
+                          "ORDER BY n DESC LIMIT 1", (doc_id, offset)).fetchone()
+        if row:
+            r["location"] = section_label(*row)
+            r["page"] = row[2] if row[0] == "page" else None
 
 
 def plain_text_and_filters(q: str) -> tuple[str, dict]:

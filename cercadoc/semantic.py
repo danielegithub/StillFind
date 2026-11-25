@@ -3,7 +3,7 @@
 """Ricerca per significato: passaggi, calcolo dei vettori (lavoratore) e ricerca ibrida (finestra, terminale).
 
 Come funziona:
-  * ogni documento è diviso in **passaggi** di circa 120 parole (con 20 di sovrapposizione); la tabella
+  * si rispettano i passaggi strutturali del documento. Solo quelli lunghi richiedono più vettori. La tabella
     `vec_chunks` ricorda dove comincia e finisce ciascuno (posizioni nel testo dell'archivio), e il suo
     numero è anche l'identificativo del vettore in `vectors.VectorStore`;
   * `vec_done` segna i documenti già calcolati (con data e dimensione del file al momento del calcolo): un
@@ -101,9 +101,8 @@ def split_passages(text: str, words: int = PASSAGE_WORDS, overlap: int = OVERLAP
 
 
 def _document_spans(con, doc_id, text, maximum):
-    # Le finestre non attraversano il cambio di pagina. Paragrafi brevi contigui restano insieme.
-    bounds = list(con.execute("SELECT min(start), max(end) FROM passaggi WHERE doc_id=? "
-                              "GROUP BY pagina ORDER BY min(start)", (doc_id,)))
+    bounds = list(con.execute("SELECT start,end FROM passaggi WHERE doc_id=? ORDER BY start LIMIT ?",
+                              (doc_id, maximum)))
     spans = []
     for start, end in bounds or [(0, len(text))]:
         spans.extend((start + a, start + b) for a, b in

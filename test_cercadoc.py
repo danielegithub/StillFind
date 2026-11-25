@@ -799,7 +799,7 @@ class CercaDocTests(unittest.TestCase):
         res = preview.excerpts(content, ["contratto"])
         self.assertEqual(len(res), 1)
         piece, marks = res[0]
-        self.assertIn("⏎", piece)
+        self.assertIn("\n", piece)
         self.assertEqual([piece[a:b] for a, b in marks], ["contratto"])
 
     # --- XLSX con numeri, valori, inlineStr e nomi fogli
@@ -1206,9 +1206,109 @@ class CercaDocTests(unittest.TestCase):
                              ["a_lontane.txt", "b_vicine.txt"])
         finally:
             con.close()
-        self.assertEqual(searcher._proximity_query("contratto"), "")                 # una parola sola
-        self.assertEqual(searcher._proximity_query('"area nord" canone'), "")        # sintassi esplicita
-        self.assertIn('"PR 00124 2025"', searcher._proximity_query("PR-00124/2025 canone"))
+        self.assertEqual(searcher._passage_query("contratto"), "")                 # una parola sola
+        self.assertEqual(searcher._passage_query('"area nord" canone'), "")        # sintassi esplicita
+        self.assertIn('"PR 00124 2025"', searcher._passage_query("PR-00124/2025 canone"))
+
+    def test_sheet_and_slide_positions_follow_the_document_order(self):
+        _make_xlsx(self.tmp / "libro.xlsx")
+        with zipfile.ZipFile(self.tmp / "relazione.pptx", "w") as z:
+            z.writestr("ppt/presentation.xml", '<pres xmlns:r="urn:rel"><sldIdLst><sldId id="72" r:id="b"/>'
+                       '<sldId id="64" r:id="a"/></sldIdLst></pres>')
+            z.writestr("ppt/_rels/presentation.xml.rels", '<rels><rel Id="a" Target="slides/slide1.xml"/>'
+                       '<rel Id="b" Target="slides/slide9.xml"/></rels>')
+            z.writestr("ppt/slides/slide1.xml", "<slide><p><t>Seconda diapositiva</t></p></slide>")
+            z.writestr("ppt/slides/slide9.xml", "<slide><p><t>Prima diapositiva</t></p></slide>")
+            z.writestr("ppt/slides/_rels/slide1.xml.rels", '<rels><rel Id="n" Target="../notesSlides/notesSlide4.xml"/></rels>')
+            z.writestr("ppt/notesSlides/notesSlide4.xml", "<notes><p><t>Riservato</t><br/><t>Note del relatore</t></p></notes>")
+        cfg = dict(config.DEFAULT_CONFIG, folders=[{"path": str(self.tmp)}])
+        self.assertEqual(indexer.index_all(cfg)["added"], 2)
+        with db.connect() as con:
+            for term, location in (("Appunto", "Foglio Note"), ("mensile", "Foglio Fatture 2025"),
+                                   ("Prima", "Slide 1"), ("Riservato", "Slide 2")):
+                row, = searcher.search(con, term)
+                searcher.add_pages(con, [row])
+                self.assertEqual(row["location"], location)
+                self.assertIsNone(row["page"])
+                content, layout = preview.read_document(row["id"])
+                parts = preview.preview_parts(content, [term], layout=layout)
+                self.assertIn((location + "\n", "title"), parts)
+                if term == "Riservato":
+                    self.assertIn("\nNote del relatore", "".join(t for t, _ in parts))
+                    self.assertNotIn("Prima diapositiva", "".join(t for t, _ in parts))
+        con.close()
+        self.assertEqual(indexer.index_all(cfg)["updated"], 0)
+
+    def test_same_paragraph_beats_adjacent_terms_across_a_break(self):
+        (self.tmp / "separati.txt").write_text("alfa\n\nbeta")
+        (self.tmp / "insieme.txt").write_text("alfa " + "intervallo " * 80 + "beta")
+        cfg = dict(config.DEFAULT_CONFIG, folders=[{"path": str(self.tmp)}])
+        indexer.index_all(cfg)
+        with db.connect() as con:
+            rows = searcher.search(con, "alfa beta")
+            self.assertEqual([r["name"] for r in rows], ["insieme.txt", "separati.txt"])
+            self.assertIsNone(rows[1]["passage_start"])
+            content, layout = preview.read_document(rows[1]["id"])
+            self.assertNotIn("beta", "".join(t for t, _ in preview.preview_parts(content, ["alfa"], layout=layout)))
+            spans = semantic._document_spans(con, rows[1]["id"], content, 5)
+            self.assertEqual([content[a:b] for a, b in spans], ["alfa", "beta"])
+        con.close()
+
+    def test_ocr_extension_only_reads_newly_eligible_pages(self):
+        (self.tmp / "misto.pdf").write_bytes(b"%PDF-campione")
+        cfg = dict(config.DEFAULT_CONFIG, folders=[{"path": str(self.tmp)}], ocr=True, ocr_max_pages=2)
+        reader = self._fake_pdf_reader(["Testo digitale " * 5, "", "", ""])
+        calls = []
+        def recognize(path, pages, cfg, **kwargs):
+            calls.append(pages)
+            return {p: ("Riconosciuto pagina " + str(p) if p == 2 else "") for p in pages}
+        with mock.patch("pypdf.PdfReader", return_value=reader), \
+             mock.patch.object(ocr, "ocr_available", return_value=True), \
+             mock.patch.object(ocr, "ocr_pdf_pages", side_effect=recognize):
+            indexer.index_all(cfg)
+            cfg["ocr_max_pages"] = 3
+            self.assertTrue(indexer.index_all(cfg, dry_run=True)["changes"])
+            indexer.index_all(cfg)
+            self.assertEqual(indexer.index_all(cfg)["updated"], 0)
+        self.assertEqual(calls, [[2], [3]])
+        with db.connect() as con:
+            row, = searcher.search(con, "Riconosciuto")
+            searcher.add_pages(con, [row])
+            self.assertEqual(row["location"], "Pag. 2 · OCR")
+            content, layout = preview.read_document(row["id"])
+            self.assertEqual([s[-1] for s in layout.sections], ["native", "ocr", "ocr_empty", "pending"])
+            parts = preview.preview_parts(content, ["Riconosciuto"], layout=layout)
+            self.assertIn(("Pag. 2 · OCR\n", "title"), parts)
+            full = "".join(t for t, _ in preview.full_text_parts(content, [], layout=layout))
+            self.assertIn("Pag. 3 · OCR senza testo", full)
+            self.assertIn("Pag. 4 · OCR da eseguire", full)
+        con.close()
+
+    def test_pdf_ocr_failure_is_local_to_one_page(self):
+        (self.tmp / "pratica.pdf").write_bytes(b"%PDF-prova")
+        cfg = dict(config.DEFAULT_CONFIG, folders=[{"path": str(self.tmp)}], ocr=True)
+        pages = ["Prospetto digitale con un paragrafo certamente leggibile", "", ""]
+        from contextlib import contextmanager
+        @contextmanager
+        def renderer(path, tmp, stop):
+            yield lambda n: str(n)
+        def recognize(image, lang, stop):
+            if image == "2":
+                raise RuntimeError("pagina illeggibile")
+            return "Ultima pagina riconosciuta"
+        with mock.patch("pypdf.PdfReader", return_value=self._fake_pdf_reader(pages)), \
+             mock.patch.object(ocr, "ocr_available", return_value=True), \
+             mock.patch.object(ocr, "_render_pages", renderer), mock.patch.object(ocr, "_tesseract", recognize):
+            self.assertEqual(indexer.index_all(cfg)["errors"], 1)
+            self.assertEqual(indexer.index_all(cfg)["updated"], 0)
+        with db.connect() as con:
+            self.assertEqual(con.execute("SELECT lettura FROM pages ORDER BY n").fetchall(),
+                             [("native",), ("error",), ("ocr",)])
+            self.assertTrue(searcher.search(con, "Prospetto digitale"))
+            row, = searcher.search(con, "Ultima pagina")
+            searcher.add_pages(con, [row])
+            self.assertEqual(row["location"], "Pag. 3 · OCR")
+        con.close()
 
     # --- PDF pagina-per-pagina OCR + PDF protetto da password
     def test_extract_pdf_mixed_pages_triggers_page_ocr(self):

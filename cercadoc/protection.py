@@ -12,6 +12,7 @@ import secrets
 import sqlite3
 import sys
 import threading
+import weakref
 from pathlib import Path
 
 from .credentials import credential
@@ -46,7 +47,32 @@ def _descriptor(path, salt):
     return Path(str(path) + ".key-" + salt.hex() + ".json")
 
 
+class _ArchiveSettings:
+    def __init__(self, path):
+        self.spec = _read_settings(path)
+
+
+_open_settings = weakref.WeakValueDictionary()
+
+
+def _archive_settings(path):
+    # Su POSIX chiudere un secondo fd sul DB libera i lock SQLite dell'intero
+    # processo. Leggiamo la testata prima della prima connessione e riusiamo la
+    # modalità finché almeno una connessione tiene aperto lo stesso archivio.
+    path = Path(path).resolve()
+    with _mutex:
+        active = _open_settings.get(path)
+        if active is None:
+            active = _ArchiveSettings(path)
+            _open_settings[path] = active
+        return active
+
+
 def settings(path):
+    return _archive_settings(path).spec.copy()
+
+
+def _read_settings(path):
     try:
         with Path(path).open("rb") as f:
             prefix = f.read(16)
@@ -112,6 +138,7 @@ class Lease:
 
     def close(self):
         self.file.close()
+        self.archive_settings = None
 
 
 def _open(path, driver, key, lease=None, readonly=False):
@@ -151,7 +178,8 @@ def connection(path, readonly=False):
     lease = Lease(path)
     key = bytearray()
     try:
-        spec = settings(path)
+        lease.archive_settings = _archive_settings(path)
+        spec = lease.archive_settings.spec
         key = _key(path, spec)
         return _open(path, cipher() if key else sqlite3, key, lease, readonly)
     except BaseException:

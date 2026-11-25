@@ -25,6 +25,7 @@ DEFAULT_CONFIG = {
     "ocr_lang": "ita+eng",
     "ocr_max_pages": 50,
     "auto_scan_seconds": 60,  # controllo automatico di file nuovi/modificati/spostati (0 = mai)
+    "offline_retention_days": 0,  # 0 = conserva i documenti delle sorgenti scollegate
     "network_sandbox": True,   # il lavoratore parte in un recinto senza rete (se il sistema lo permette)
     "pause_on_battery": False,  # a batteria la lettura dei documenti aspetta l'alimentatore
     "semantic_search": False,  # ricerca per significato (serve il modello in `models/`, vedi semantic.py)

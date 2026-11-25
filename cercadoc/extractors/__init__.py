@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 import hashlib
-import tempfile
 import threading
 from pathlib import Path
 
+from .. import private_tmp
 from . import ocr
 from .fatturapa import extract_xml
 from .mail import extract_eml
@@ -43,7 +43,7 @@ def _extract_p7m(path: str, cfg: dict, stop, info) -> tuple[str, bool]:
         info["inner_ext"] = ext
     if ext == "p7m" or ext == "bin":
         raise RuntimeError("tipo di documento contenuto non riconosciuto")
-    with tempfile.TemporaryDirectory(prefix="cercadoc_p7m_") as tmp:  # permessi solo per l'utente
+    with private_tmp.workspace() as tmp:  # permessi solo per l'utente
         f = Path(tmp) / f"contenuto.{ext}"
         f.write_bytes(inner)
         text, used_ocr = extract(str(f), ext, cfg, stop=stop, info=info)
@@ -66,6 +66,8 @@ def extract(path: str, ext: str, cfg: dict, stop: threading.Event | None = None,
         return extract_archive(path, ext, cfg, stop, info)
     if ext == "pdf":
         return extract_pdf(path, cfg, stop=stop, cache=cache, info=info)
+    if ext in ("pptx", "xlsx"):
+        return EXTRACTORS[ext](path, info=info), False
     if ext == "xml":
         return extract_xml(path, info), False
     if ext == "eml":
@@ -77,5 +79,7 @@ def extract(path: str, ext: str, cfg: dict, stop: threading.Event | None = None,
     if ext in IMAGE_EXTS:
         if not ocr.ocr_available():
             raise RuntimeError("Tesseract non installato")
+        if cfg.get("_ocr_started"):
+            cfg["_ocr_started"]()
         return ocr._tesseract(path, cfg["ocr_lang"], stop=stop), True
     return EXTRACTORS.get(ext, extract_text_file)(path), False

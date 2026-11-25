@@ -22,6 +22,8 @@ def _decode(data: bytes) -> str:
 def extract_html(path: str) -> str:
     raw = _decode(Path(path).read_bytes())
     raw = re.sub(r"(?is)<(script|style).*?</\1>", " ", raw)
+    raw = re.sub(r"(?i)<br\b[^>]*>", "\n", raw)
+    raw = re.sub(r"(?i)</(?:p|div|li|tr|h[1-6])\s*>", "\n\n", raw)
     raw = re.sub(r"(?s)<[^>]+>", " ", raw)
     return html.unescape(raw)
 
@@ -126,7 +128,7 @@ def extract_rtf(path: str) -> str:
                     skip_chars = uc
                 elif not ignorable:
                     if word in ("par", "line"):
-                        out.append("\n")
+                        out.append("\n\n" if word == "par" else "\n")
                     elif word == "tab":
                         out.append("\t")
                     elif word == "emdash":

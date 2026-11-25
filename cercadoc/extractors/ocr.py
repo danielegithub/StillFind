@@ -12,8 +12,10 @@ import sys
 import tempfile
 import threading
 import time
+from contextlib import contextmanager
 from glob import glob
 
+from .. import private_tmp
 from ..errors import Stopped
 
 
@@ -48,9 +50,13 @@ def _run_subprocess(cmd: list[str], timeout: float,
                     stop: threading.Event | None = None) -> tuple[int, bytes, bytes]:
     """Esegue un comando esterno (OCR) in secondo piano, con un solo thread di calcolo,
     interrompendolo subito se `stop` viene attivato."""
+    with private_tmp.workspace() as tmp:
+        return _run_in_workspace(cmd, timeout, stop, tmp)
+
+
+def _run_in_workspace(cmd, timeout, stop, tmp):
     kwargs: dict = {}
-    env = dict(os.environ, OMP_THREAD_LIMIT="1")  # Tesseract: un solo thread
-    kwargs["env"] = env
+    kwargs["env"] = private_tmp.child_environment(tmp)
     if sys.platform.startswith("win"):
         kwargs["creationflags"] = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
                                    | getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
@@ -61,12 +67,13 @@ def _run_subprocess(cmd: list[str], timeout: float,
     if stop is None:
         r = subprocess.run(cmd, capture_output=True, timeout=timeout, **kwargs)
         return r.returncode, r.stdout, r.stderr
-    with tempfile.TemporaryFile() as out_f, tempfile.TemporaryFile() as err_f:
+    with tempfile.TemporaryFile(dir=tmp) as out_f, tempfile.TemporaryFile(dir=tmp) as err_f:
         proc = subprocess.Popen(cmd, stdout=out_f, stderr=err_f, **kwargs)
+        cancelled = getattr(stop, "cancelled", stop.is_set)  # la pausa si applica tra pagine OCR
         deadline = time.monotonic() + timeout
         try:
             while proc.poll() is None:
-                if stop.is_set():
+                if cancelled():
                     proc.terminate()
                     try:
                         proc.wait(timeout=2)
@@ -99,69 +106,65 @@ def _tesseract(image: str, lang: str, stop: threading.Event | None = None) -> st
     return out.decode("utf-8", "replace")
 
 
+@contextmanager
+def _render_pages(path, tmp, stop):
+    image = str(tmp / "pagina.png")
+    if importlib.util.find_spec("pypdfium2"):
+        from ..pdf_render import open_for_ocr, page_to_png
+        with open_for_ocr(path) as doc:
+            def render(n):
+                page_to_png(doc, n-1, image)
+                return image
+            yield render
+    elif pdftoppm := which("pdftoppm"):
+        def render(n):
+            rc, _, err = _run_subprocess(
+                [pdftoppm, "-r", "200", "-f", str(n), "-l", str(n), "-singlefile", "-png", path, str(tmp / "pagina")],
+                timeout=120, stop=stop)
+            if rc:
+                raise RuntimeError(err.decode("utf-8", "replace").strip()[:200] or "pdftoppm fallito")
+            return image
+        yield render
+    else:
+        try:
+            import fitz
+        except ImportError:
+            raise RuntimeError("OCR dei PDF: serve pypdfium2, pdftoppm (Poppler) oppure PyMuPDF")
+        with fitz.open(path) as doc:
+            def render(n):
+                if n <= len(doc):
+                    doc[n-1].get_pixmap(dpi=200).save(image)
+                    return image
+            yield render
+
+
 def ocr_pdf_pages(path: str, pages: list[int], cfg: dict,
-                  stop: threading.Event | None = None, on_page=None) -> dict[int, str]:
-    """Esegue l'OCR solo sulle pagine richieste (numerate da 1), interrompibile.
-    `on_page(pagina, testo)` viene chiamata appena una pagina è pronta (per salvarla subito)."""
+                  stop: threading.Event | None = None, on_page=None, on_error=None) -> dict[int, str]:
+    """Disegna e riconosce una pagina alla volta. I problemi locali a una pagina sono segnalati al chiamante."""
+    results = {}
     if not pages:
-        return {}
-    tmp = tempfile.mkdtemp(prefix="cercadoc_")
-    results: dict[int, str] = {}
-    try:
-        if importlib.util.find_spec("pypdfium2"):
-            from ..pdf_render import open_for_ocr, page_to_png
-            img = os.path.join(tmp, "pagina.png")
-            with open_for_ocr(path) as doc:
-                for p in pages:
-                    if stop is not None and stop.is_set():
-                        raise Stopped()
-                    page_to_png(doc, p-1, img)
-                    results[p] = _tesseract(img, cfg["ocr_lang"], stop=stop)
-                    if on_page:
-                        on_page(p, results[p])
-                    os.remove(img)
-        elif pdftoppm := which("pdftoppm"):
-            for p in pages:
-                if stop is not None and stop.is_set():
-                    raise Stopped()
-                prefix = os.path.join(tmp, f"p{p:04d}")
-                rc, _, err = _run_subprocess(
-                    [pdftoppm, "-r", "200", "-f", str(p), "-l", str(p), "-png", path, prefix],
-                    timeout=120, stop=stop)
-                if rc != 0:
-                    raise RuntimeError(err.decode("utf-8", "replace").strip()[:200] or "pdftoppm fallito")
-                imgs = sorted(glob(prefix + "*.png"))
-                if imgs:
-                    results[p] = _tesseract(imgs[0], cfg["ocr_lang"], stop=stop)
-                    if on_page:
-                        on_page(p, results[p])
-                    try:
-                        os.remove(imgs[0])
-                    except OSError:
-                        pass
-        else:
-            try:
-                import fitz  # PyMuPDF
-            except ImportError:
-                raise RuntimeError("OCR dei PDF: serve pypdfium2, pdftoppm (Poppler) oppure PyMuPDF")
-            with fitz.open(path) as doc:
-                for p in pages:
-                    if stop is not None and stop.is_set():
-                        raise Stopped()
-                    if p - 1 >= len(doc):
-                        continue
-                    img = os.path.join(tmp, f"p{p:04d}.png")
-                    doc[p - 1].get_pixmap(dpi=200).save(img)
-                    results[p] = _tesseract(img, cfg["ocr_lang"], stop=stop)
-                    if on_page:
-                        on_page(p, results[p])
-                    try:
-                        os.remove(img)
-                    except OSError:
-                        pass
         return results
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
+    with private_tmp.workspace() as tmp, _render_pages(path, tmp, stop) as render:
+        for p in pages:
+            if stop is not None and stop.is_set():
+                raise Stopped()
+            try:
+                image = render(p)
+                if image is None:
+                    continue
+                results[p] = _tesseract(image, cfg["ocr_lang"], stop=stop)
+            except Stopped:
+                raise
+            except Exception as exc:
+                if on_error is None:
+                    raise
+                on_error(p, exc)
+                continue
+            finally:
+                (tmp / "pagina.png").unlink(missing_ok=True)
+            if on_page:
+                on_page(p, results[p])
+    return results
 
 
 def ocr_pdf(path: str, cfg: dict, stop: threading.Event | None = None) -> str:
@@ -175,7 +178,8 @@ class _OcrCache:
     """Pagine già passate all'OCR di un PDF, salvate nel database man mano: se l'app viene
     chiusa a metà di un PDF lungo, alla riapertura si riparte dalla pagina dopo l'ultima fatta."""
 
-    def __init__(self, con: sqlite3.Connection, fp: str, lang: str):
+    def __init__(self, con: sqlite3.Connection, fp: str, lang: str, path: str):
+        self.path = path
         self.con, self.key = con, f"{fp}|{lang}"
 
     def get(self) -> dict[int, str]:
@@ -183,9 +187,11 @@ class _OcrCache:
             "SELECT page, text FROM ocr_cache WHERE key=?", (self.key,))}
 
     def put(self, page: int, text: str) -> None:
+        self.con.execute("INSERT OR IGNORE INTO origini_cache_ocr VALUES(?,?)", (self.path, self.key))
         self.con.execute("INSERT OR REPLACE INTO ocr_cache(key,page,text) VALUES(?,?,?)",
                          (self.key, page, text))
         self.con.commit()
 
     def clear(self) -> None:
         self.con.execute("DELETE FROM ocr_cache WHERE key=?", (self.key,))
+        self.con.execute("DELETE FROM origini_cache_ocr WHERE key=?", (self.key,))

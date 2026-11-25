@@ -18,13 +18,11 @@ import json
 import sys
 from pathlib import Path
 
-from . import background
 from .about import version_text
 from .config import load_config, save_config
 from .db import connect
 from .duplicates import find_duplicates
 from .export import export_csv
-from .indexer import index_all
 from .offline import self_test_offline
 from .search import HIT_END, HIT_START, add_pages, plain_text_and_filters, search, suggest
 
@@ -87,6 +85,14 @@ def main() -> None:
     ap.add_argument("--listen-shortcut", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--tray-search", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--session-stdin", action="store_true", help=argparse.SUPPRESS)
+    ap.add_argument("--window-action", choices=("open", "settings", "about", "pause", "resume"), help=argparse.SUPPRESS)
+    ap.add_argument("--run-id", help=argparse.SUPPRESS)
+    ap.add_argument("--quit-token", type=int, help=argparse.SUPPRESS)
+    ap.add_argument("--target", help=argparse.SUPPRESS)
+    ap.add_argument("--forget", choices=("file", "folder"), help=argparse.SUPPRESS)
+    ap.add_argument("--target-stdin", action="store_true", help=argparse.SUPPRESS)
+    for flag in ("--retry-errors", "--force-ocr", "--rebuild", "--verify-firewall", "--parent-stdin"):
+        ap.add_argument(flag, action="store_true", help=argparse.SUPPRESS)
     args = ap.parse_args()
 
     if args.version:
@@ -97,13 +103,19 @@ def main() -> None:
     from .config import DB_PATH
     if args.listen_shortcut or args.tray_search:
         sys.exit(hotkey.listen(args.tray_search))
+    from . import private_tmp
+    private_tmp.cleanup()
     if args.show_search:
         hotkey.show()
         return
-    if args.configure_protection:
+    if args.configure_protection or args.window_action:
         from . import gui
-        gui.run(configure=True)
+        gui.run(configure=args.configure_protection, action=args.window_action or "open", quit_token=args.quit_token)
         return
+    if args.worker and args.target_stdin:
+        args.target = json.loads(sys.stdin.buffer.readline())
+        if not isinstance(args.target, str) or not args.target:
+            sys.exit("Percorso del documento non valido.")
     if args.worker or args.embed or args.search or args.index or args.duplicates:
         spec = protection.settings(DB_PATH)
         if spec["mode"] == "vault":
@@ -136,7 +148,21 @@ def main() -> None:
 
     if args.agent or args.worker or args.embed:
         from . import agent
-        sys.exit(agent.run_agent() if args.agent else agent.run_worker() if args.worker else agent.run_embed())
+        if args.agent:
+            sys.exit(agent.run_agent())
+        parent_closed = None
+        if args.parent_stdin:
+            import os
+            import threading
+            parent_closed = threading.Event()
+            def watch_parent():
+                os.read(sys.stdin.fileno(), 1)
+                parent_closed.set()
+            threading.Thread(target=watch_parent, daemon=True).start()
+        sys.exit(agent.run_worker(args.run_id, target=args.target, retry_errors=args.retry_errors,
+                                  force_ocr=args.force_ocr, rebuild=args.rebuild, mode="embed" if args.embed else "worker",
+                                  verify_firewall=args.verify_firewall, quit_token=args.quit_token,
+                                  parent_closed=parent_closed, forget=args.forget))
 
     if args.self_test_offline:
         ok = self_test_offline()
@@ -170,10 +196,20 @@ def main() -> None:
     if args.list:
         print(json.dumps(cfg, indent=2, ensure_ascii=False))
     if args.index:
-        background.lower_thread_priority()
-        st = index_all(cfg, lambda s: print(f"\r{s['current'] or s['scanned']}   ", end="", file=sys.stderr))
-        print(file=sys.stderr)
-        print({k: v for k, v in st.items() if k not in ("current", "phase")})
+        from . import agent
+        def report(st):
+            if st["phase"] == "error":
+                print(st["error"], file=sys.stderr)
+            elif st["phase"] == "done":
+                print(file=sys.stderr)
+                print({k: v for k, v in st.items() if k not in ("current", "phase")})
+            else:
+                print(f"\r{st.get('current') or st.get('scanned', 0)}   ", end="", file=sys.stderr)
+        code = agent.run_worker(mode="index", report=report)
+        if code == agent.BUSY:
+            sys.exit("Indicizzazione già in corso.")
+        if code:
+            sys.exit(code)
     if args.duplicates:
         from .system import human_size
         groups = find_duplicates(connect())
@@ -192,7 +228,7 @@ def main() -> None:
         add_pages(con, found)
         for r in found:
             snip = r["snippet"].replace(HIT_START, "[").replace(HIT_END, "]").replace("\n", " ")
-            print(f"{r['path']}" + (f"  (pag. {r['page']})" if r.get("page") else "") + f"\n    {snip}")
+            print(f"{r['path']}" + (f"  ({r['location']})" if r.get("location") else "") + f"\n    {snip}")
         if not found:
             hint = suggest(con, args.search)
             print(f"Nessun risultato." + (f" Intendevi «{hint}»?" if hint else ""))

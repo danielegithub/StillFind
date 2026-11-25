@@ -8,11 +8,16 @@ import re
 from datetime import date, timedelta
 
 from . import facts, versions
+from .stemmer import stem_text
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS passaggi(
     id INTEGER PRIMARY KEY, doc_id INTEGER NOT NULL REFERENCES docs ON DELETE CASCADE,
     start INTEGER NOT NULL, end INTEGER NOT NULL, pagina INTEGER, UNIQUE(doc_id,start));
+CREATE VIRTUAL TABLE IF NOT EXISTS brani_fts USING fts5(content, stem, tokenize="unicode61 remove_diacritics 2");
+CREATE TRIGGER IF NOT EXISTS cancella_brano AFTER DELETE ON passaggi BEGIN
+    DELETE FROM brani_fts WHERE rowid=old.id;
+END;
 CREATE TABLE IF NOT EXISTS entita(
     id INTEGER PRIMARY KEY, tipo TEXT NOT NULL, valore_normalizzato TEXT NOT NULL, etichetta TEXT NOT NULL,
     UNIQUE(tipo,valore_normalizzato));
@@ -84,7 +89,7 @@ def passage_spans(text, pages):
         bounds.insert(0, (0, None))
     for ix, (start, page) in enumerate(bounds):
         end = bounds[ix + 1][0] if ix + 1 < len(bounds) else len(text)
-        for match in re.finditer(r"\n[ \t\r]*\n", text[start:end]):
+        for match in re.finditer(r"\n[ \t\r]*\n|\r[ \t]*\r", text[start:end]):
             # finditer lavora sul segmento originale: il riferimento della pagina resta fisso
             stop = bounds[ix][0] + match.start()
             if stop > start and text[start:stop].strip():
@@ -137,6 +142,7 @@ def index_document(con, doc_id, text, pages, ext, info, policy, body_start=0):
         pid = con.execute("INSERT INTO passaggi(doc_id,start,end,pagina) VALUES(?,?,?,?)",
                           (doc_id, start, end, page)).lastrowid
         part = text[start:end]
+        con.execute("INSERT INTO brani_fts(rowid,content,stem) VALUES(?,?,?)", (pid, part, stem_text(part)))
         _store_mentions(con, pid, start, facts.entities(part, enabled, protocols, invoice=invoice,
                                                       mail=mail and body_start <= start < header_end))
         con.executemany("INSERT INTO importi VALUES(?,?,?,?,?)",

@@ -2,6 +2,7 @@
 # Copyright (C) 2026 Daniele Sisto
 """Una combinazione registrata con il sistema, senza intercettare la digitazione."""
 import ctypes as C
+import json
 import os
 import re
 import subprocess
@@ -19,18 +20,63 @@ def command(*args):
     return [sys.executable, *([] if getattr(sys, "frozen", False) else ["-m", "cercadoc"]), *args]
 
 
+WINDOW_ACTIONS = ("open", "settings", "about", "pause", "resume")
+TRAY_ACTIONS = (*WINDOW_ACTIONS, "quit")
+
+
+def _signal_path(action):
+    return SIGNAL if action == "open" else APP_DIR / ("comando-" + action)
+
+
+def signal(action):
+    _signal_path(action).touch(mode=0o600)
+
+
+def consume(action):
+    try:
+        _signal_path(action).unlink()
+        return True
+    except FileNotFoundError:
+        return False
+
+
+def quit_token():
+    try:
+        return _signal_path("quit").stat().st_mtime_ns
+    except FileNotFoundError:
+        return 0
+
+
+def quit_all():
+    signal("quit")
+
+
+def allow_window_focus():
+    # Windows consente al processo che ha ricevuto il clic di cedere il primo piano.
+    if sys.platform == "win32":
+        try:
+            pid = int((APP_DIR / "window.pid").read_text("ascii"))
+            C.windll.user32.AllowSetForegroundWindow(pid)
+        except (OSError, ValueError):
+            pass
+
+
 def signal_window():
-    SIGNAL.touch(mode=0o600)
+    allow_window_focus()
+    signal("open")
 
 
-def show():
+def window_owns_tray():
     from .agent import acquire_lock
-    lock = acquire_lock(APP_DIR / "window.lock")
+    lock = acquire_lock(APP_DIR / "window-tray.lock")
     if lock is None:
-        signal_window()
-    else:
-        lock.close()
-        subprocess.Popen(command(), stdin=subprocess.DEVNULL)
+        return True
+    lock.close()
+    return False
+
+
+def show(action="open"):
+    subprocess.Popen(command("--window-action", action, "--quit-token", str(quit_token())), stdin=subprocess.DEVNULL)
 
 
 def _ready():
@@ -192,7 +238,12 @@ def _wayland():
 def listen(tray=False):
     # EOF sulla pipe del genitore libera la registrazione anche dopo un arresto improvviso.
     def parent_closed():
-        os.read(sys.stdin.fileno(), 1)
+        if tray:
+            from . import tray as menu
+            for line in sys.stdin:
+                menu.status = json.loads(line)
+        else:
+            os.read(sys.stdin.fileno(), 1)
         if tray and sys.platform == "win32":
             from .tray import remove_icon
             remove_icon()
@@ -224,6 +275,8 @@ def start(on_open, on_error=lambda text: None, tray=False):
         for line in proc.stdout:
             if line.strip() == "OPEN":
                 on_open()
+            elif tray and line.strip() in TRAY_ACTIONS:
+                on_open(line.strip())
             elif line.startswith("ERROR "):
                 on_error(line[6:].strip())
         proc.stdout.close()
@@ -246,20 +299,36 @@ class Registration:
                 proc = None
                 try:
                     proc = start(on_open, on_error, tray)
-                    while proc.poll() is None and enabled() and not self.stopped.wait(1):
-                        pass
+                    last = ""
+                    while proc.poll() is None and enabled() and not self.stopped.is_set():
+                        if tray:
+                            try:
+                                st = tray()
+                                value = [st["indexed"], st.get("ocr_pending", 0), st["manual_pause"]] if st else None
+                            except Exception:
+                                value = None
+                            line = json.dumps(value)
+                            if last != line:
+                                proc.stdin.write(line + "\n")
+                                proc.stdin.flush()
+                                last = line
+                        self.stopped.wait(1)
                 except OSError as exc:
                     on_error(str(exc))
                 finally:
                     if proc:
-                        proc.stdin.close()
+                        try:
+                            proc.stdin.close()
+                        except OSError:
+                            pass
                         try:
                             proc.wait(timeout=2)
                         except subprocess.TimeoutExpired:
                             proc.kill()
                             proc.wait()
                     lock.close()
-                self.stopped.wait(60 if tray else 10)
+                if enabled():  # se la finestra ha preso il controllo, ritenta appena lo rilascia
+                    self.stopped.wait(60 if tray else 10)
         self.thread = threading.Thread(target=monitor, daemon=True)
         self.thread.start()
 

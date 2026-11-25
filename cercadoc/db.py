@@ -3,15 +3,17 @@
 """Database SQLite (FTS5): creazione dello schema, azzeramento e diagnostica."""
 from __future__ import annotations
 
+import json
 import re
 import sqlite3
+import time
 from pathlib import Path
 
 from .config import APP_DIR, DB_PATH
 from . import relations, protection
 
 
-SCHEMA_VERSION = 12  # ricerche personali e stato di lettura dei contenitori
+SCHEMA_VERSION = 15  # posizioni strutturate e ricerca nei passaggi
 
 
 def vector_files(base):
@@ -31,26 +33,38 @@ def _delete_vector_files() -> None:
             pass
 
 
+def _enable_wal(con):
+    # Due processi possono trovare insieme un archivio appena creato. SQLite
+    # può rifiutare il cambio di journal immediatamente anche con busy_timeout.
+    deadline = time.monotonic() + 30
+    while True:
+        try:
+            if con.execute("PRAGMA journal_mode").fetchone()[0] != "wal":
+                con.execute("PRAGMA journal_mode=WAL").fetchone()
+            return
+        except Exception as exc:
+            if "database is locked" not in str(exc).lower() or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.05)
+
+
 def connect() -> sqlite3.Connection:
     APP_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
     con = protection.connection(DB_PATH)
-    con.execute("PRAGMA foreign_keys=ON")
-    con.execute("PRAGMA journal_mode=WAL")
-    if con.execute("PRAGMA user_version").fetchone()[0] >= SCHEMA_VERSION:
-        return con
-    # Un'altra finestra o il lavoratore possono aprire l'archivio durante il primo avvio.
-    con.execute("BEGIN IMMEDIATE")
     try:
-        version = con.execute("PRAGMA user_version").fetchone()[0]
-        if version < SCHEMA_VERSION:
-            _migrate(con, version)
-            con.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
-        con.commit()
+        con.execute("PRAGMA foreign_keys=ON")
+        _enable_wal(con)
+        if con.execute("PRAGMA user_version").fetchone()[0] < SCHEMA_VERSION:
+            con.execute("BEGIN IMMEDIATE")
+            version = con.execute("PRAGMA user_version").fetchone()[0]
+            if version < SCHEMA_VERSION:
+                _migrate(con, version)
+                con.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
+            con.commit()
+        return con
     except BaseException:
-        con.rollback()
-        con.close()
+        con.close()  # SQLite annulla anche un'eventuale migrazione in corso
         raise
-    return con
 
 
 def _migrate(con, version):
@@ -69,6 +83,13 @@ def _migrate(con, version):
         con.execute("DROP TABLE fts")
         con.execute("ALTER TABLE fts_nuovo RENAME TO fts")
     schema = """
+        CREATE TABLE IF NOT EXISTS stato(id INTEGER PRIMARY KEY CHECK(id=1), pausa INTEGER NOT NULL DEFAULT 0,
+            lavoro TEXT NOT NULL DEFAULT '', avanzamento TEXT NOT NULL DEFAULT '{"phase":"idle"}',
+            indicizzati INTEGER NOT NULL DEFAULT 0, riprova_vettori REAL NOT NULL DEFAULT 0);
+        CREATE TABLE IF NOT EXISTS sorgenti(path TEXT PRIMARY KEY, mount TEXT NOT NULL, assente_da REAL);
+        CREATE TABLE IF NOT EXISTS esclusioni(path TEXT PRIMARY KEY, cartella INTEGER NOT NULL);
+        CREATE TABLE IF NOT EXISTS vettori_da_togliere(id INTEGER PRIMARY KEY);
+        CREATE TABLE IF NOT EXISTS origini_cache_ocr(path TEXT NOT NULL, key TEXT NOT NULL, PRIMARY KEY(path,key));
         CREATE TABLE IF NOT EXISTS ricerche(id INTEGER PRIMARY KEY, nome TEXT UNIQUE,
             criteri TEXT NOT NULL, usata INTEGER NOT NULL);
         CREATE UNIQUE INDEX IF NOT EXISTS cronologia_criteri ON ricerche(criteri) WHERE nome IS NULL;
@@ -77,6 +98,13 @@ def _migrate(con, version):
             folder TEXT NOT NULL, ext TEXT NOT NULL, size INTEGER, mtime REAL,
             notext INTEGER DEFAULT 0, ocr INTEGER DEFAULT 0, blank_pages INTEGER DEFAULT 0,
             dev INTEGER, ino INTEGER, fp TEXT, error TEXT DEFAULT '');
+        INSERT OR IGNORE INTO stato(id,indicizzati) SELECT 1,count(*) FROM docs;
+        CREATE TRIGGER IF NOT EXISTS stato_file_aggiunto AFTER INSERT ON docs BEGIN
+            UPDATE stato SET indicizzati=indicizzati+1 WHERE id=1;
+        END;
+        CREATE TRIGGER IF NOT EXISTS stato_file_rimosso AFTER DELETE ON docs BEGIN
+            UPDATE stato SET indicizzati=indicizzati-1 WHERE id=1;
+        END;
         CREATE INDEX IF NOT EXISTS docs_ino ON docs(dev, ino);
         CREATE TABLE IF NOT EXISTS container_state(doc_id INTEGER PRIMARY KEY REFERENCES docs ON DELETE CASCADE,
             ocr_checked INTEGER NOT NULL);
@@ -104,11 +132,49 @@ def _migrate(con, version):
             con.execute(statement)
             statement = ""
 
+    if version < 15:
+        con.execute("ALTER TABLE docs ADD COLUMN struttura INTEGER NOT NULL DEFAULT 0")
+        con.execute("ALTER TABLE pages ADD COLUMN tipo TEXT NOT NULL DEFAULT 'page'")
+        con.execute("ALTER TABLE pages ADD COLUMN titolo TEXT NOT NULL DEFAULT ''")
+        con.execute("ALTER TABLE pages ADD COLUMN lettura TEXT NOT NULL DEFAULT ''")
+        con.execute("UPDATE analisi SET regole=''")
+        con.execute("DELETE FROM vec_done WHERE doc_id IN (SELECT doc_id FROM passaggi GROUP BY doc_id HAVING count(*)>1)")
+
+
+def worker_status(con):
+    run, paused, progress, count = con.execute(
+        "SELECT lavoro, pausa, avanzamento, indicizzati FROM stato WHERE id=1").fetchone()
+    return dict(json.loads(progress), run=run, manual_pause=bool(paused), indexed=count)
+
+
+def set_paused(con, paused):
+    with con:
+        con.execute("UPDATE stato SET pausa=? WHERE id=1", (int(paused),))
+
+
+def try_set_paused(con, paused):
+    timeout = con.execute("PRAGMA busy_timeout").fetchone()[0]
+    try:
+        con.execute("PRAGMA busy_timeout=0")
+        set_paused(con, paused)
+    except Exception as exc:
+        if "database is locked" in str(exc).lower():
+            return False
+        raise
+    finally:
+        con.execute(f"PRAGMA busy_timeout={timeout}")
+    return True
+
+
+def publish_progress(con, run, progress):
+    with con:
+        con.execute("UPDATE stato SET lavoro=?, avanzamento=? WHERE id=1", (run, json.dumps(progress)))
+
 
 def reset_index(con: sqlite3.Connection) -> None:
     """Svuota completamente l'indice per una ricostruzione da zero."""
     with con:
-        for table in ("docs", "fts", "dirs", "ocr_cache", "vec_chunks", "vec_done", "pages"):
+        for table in ("docs", "fts", "dirs", "ocr_cache", "vec_chunks", "vec_done", "pages", "sorgenti", "origini_cache_ocr", "vettori_da_togliere"):
             con.execute(f"DELETE FROM {table}")
         if con.execute("SELECT 1 FROM sqlite_master WHERE name='vector_values'").fetchone():
             con.execute("DELETE FROM vector_values")

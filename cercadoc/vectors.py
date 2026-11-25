@@ -9,50 +9,13 @@ anche con centinaia di migliaia di vettori. Con 200.000 passaggi da 384 numeri s
 from __future__ import annotations
 
 import os
-import re
-from uuid import uuid4
-from pathlib import Path
 
 import numpy as np
 
-CHUNK_ROWS = 4096  # righe confrontate per volta: ~1,5 MB di memoria di lavoro con 384 numeri
-DELETED = -1
+from .vector_files import CHUNK_ROWS, DELETED, VectorFiles
 
 
-class VectorStore:
-    def __init__(self, path: str | os.PathLike, dim: int = 384):
-        self.dim = dim
-        self.base = Path(path)
-        self.manifest = Path(str(path) + ".vec.current")
-
-    def _generation(self):
-        try:
-            token = self.manifest.read_text(encoding="ascii").strip()
-        except FileNotFoundError:
-            return ""  # coppia di file degli archivi preesistenti
-        if not re.fullmatch("[0-9a-f]{32}", token):
-            raise ValueError("Generazione dei vettori non valida")
-        return "." + token
-
-    def _paths(self, generation):
-        return (Path(str(self.base) + ".vec" + generation), Path(str(self.base) + ".ids" + generation))
-
-    @property
-    def vec_path(self):
-        return self._paths(self._generation())[0]
-
-    @property
-    def ids_path(self):
-        return self._paths(self._generation())[1]
-
-    # ---- lettura
-    def __len__(self) -> int:
-        """Righe presenti nel file, comprese quelle cancellate e non ancora compattate."""
-        try:
-            return self.ids_path.stat().st_size // 8
-        except FileNotFoundError:
-            return 0
-
+class VectorStore(VectorFiles):
     def _maps(self):
         while True:
             generation = self._generation()
@@ -118,48 +81,6 @@ class VectorStore:
         mm.flush()
         del mm
         return int(hit.sum())
-
-    def compact(self) -> int:
-        """Riscrive i file senza le righe cancellate, a blocchi. Restituisce le righe tolte."""
-        vec, ids = self._maps()
-        if ids is None:
-            return 0
-        n, removed = len(ids), 0
-        token = uuid4().hex
-        tmp_v, tmp_i = self._paths("." + token)
-        with open(tmp_v, "xb") as fv, open(tmp_i, "xb") as fi:
-            for start in range(0, n, CHUNK_ROWS):
-                block_ids = np.asarray(ids[start:start + CHUNK_ROWS])
-                keep = block_ids != DELETED
-                removed += int((~keep).sum())
-                fv.write(np.asarray(vec[start:start + CHUNK_ROWS])[keep].tobytes())
-                fi.write(block_ids[keep].tobytes())
-            for file in (fv, fi):
-                file.flush()
-                os.fsync(file.fileno())
-        del vec, ids, block_ids
-        pending = self.manifest.with_suffix(".next")
-        with pending.open("w", encoding="ascii") as marker:
-            marker.write(token)
-            marker.flush()
-            os.fsync(marker.fileno())
-        os.replace(pending, self.manifest)  # una sola pubblicazione per vettori e identificativi
-        self.clean_retired()
-        return removed
-
-    def clean_retired(self):
-        """Il solo scrittore elimina le vecchie generazioni. Un lettore Windows può trattenerle."""
-        keep = set(self._paths(self._generation()))
-        for suffix in (".vec", ".ids"):
-            base = Path(str(self.base) + suffix)
-            paths = [base, *(p for p in base.parent.glob(base.name + ".*")
-                             if re.fullmatch(r"\.[0-9a-f]{32}", p.suffix))]
-            for path in paths:
-                if path not in keep:
-                    try:
-                        path.unlink(missing_ok=True)
-                    except PermissionError:
-                        pass
 
     # ---- ricerca
     def mean(self, wanted):

@@ -1,10 +1,28 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Icona della sessione utente. Il clic usa lo stesso comando della scorciatoia."""
+"""Menu nativo della sessione. Il genitore invia solo i contatori tramite la pipe locale."""
 import ctypes as C
 import os
 import sys
 
-from .hotkey import _pressed, _ready
+from .hotkey import _ready, allow_window_focus
+
+status = None
+
+
+def entries():
+    snapshot = status
+    counts = (f"{snapshot[0]} file indicizzati · {snapshot[1]} OCR in coda" if snapshot is not None
+              else "Stato archivio non disponibile")
+    paused = snapshot is not None and snapshot[2]
+    return [("open", "Cerca…"), (None, counts), ("resume", "Riprendi") if paused else ("pause", "Pausa"),
+            ("settings", "Impostazioni"), ("about", "Informazioni"), ("quit", "Esci")]
+
+
+def activate(action):
+    if action:
+        if action in ("open", "settings", "about"):
+            allow_window_focus()
+        print(action, flush=True)
 
 
 def remove_icon():
@@ -31,21 +49,42 @@ def mac():
     pool = send(send(cls("NSAutoreleasePool"), "alloc"), "init")
     app = send(cls("NSApplication"), "sharedApplication")
     send(app, "setActivationPolicy:", C.c_bool, [C.c_long], [1])
-    @C.CFUNCTYPE(None, ptr, ptr, ptr)
-    def clicked(_self, _cmd, _sender):
-        _pressed()
-    action = objc.sel_registerName(b"openSearch:")
+    menu = send(send(cls("NSMenu"), "alloc"), "init")
+    send(menu, "setAutoenablesItems:", None, [C.c_bool], [False])
+    items, actions = [], []
+    callback = C.CFUNCTYPE(None, ptr, ptr, ptr)
+
+    @callback
+    def clicked(_self, _cmd, sender):
+        activate(actions[send(sender, "tag", C.c_long)])
+
+    @callback
+    def refresh(_self, _cmd, _menu):
+        for i, (action, title) in enumerate(entries()):
+            actions[i] = action
+            send(items[i], "setTitle:", None, [ptr], [ns(title)])
+
+    action = objc.sel_registerName(b"selectItem:")
     handler = objc.objc_allocateClassPair(cls("NSObject"), b"CercaDocTrayAction", 0)
     objc.class_addMethod(handler, action, clicked, b"v@:@")
+    objc.class_addMethod(handler, objc.sel_registerName(b"menuNeedsUpdate:"), refresh, b"v@:@")
     objc.objc_registerClassPair(handler)
     target = send(send(handler, "alloc"), "init")
+    send(menu, "setDelegate:", None, [ptr], [target])
+    for i, (command, title) in enumerate(entries()):
+        entry = send(menu, "addItemWithTitle:action:keyEquivalent:", ptr, [ptr, ptr, ptr],
+                     [ns(title), action if command else None, ns("")])
+        send(entry, "setTarget:", None, [ptr], [target])
+        send(entry, "setTag:", None, [C.c_long], [i])
+        send(entry, "setEnabled:", None, [C.c_bool], [bool(command)])
+        items.append(entry)
+        actions.append(command)
     bar = send(cls("NSStatusBar"), "systemStatusBar")
     item = send(bar, "statusItemWithLength:", ptr, [C.c_double], [-1.0])
     button = send(item, "button")
     send(button, "setTitle:", None, [ptr], [ns("⌕")])
-    send(button, "setToolTip:", None, [ptr], [ns("CercaDoc · Apri ricerca")])
-    send(button, "setTarget:", None, [ptr], [target])
-    send(button, "setAction:", None, [ptr], [action])
+    send(button, "setToolTip:", None, [ptr], [ns("CercaDoc")])
+    send(item, "setMenu:", None, [ptr], [menu])
     _ready()
     send(app, "run", None)
     send(pool, "drain", None)
@@ -69,10 +108,33 @@ def windows():
     user.DefWindowProcW.argtypes = [W.HWND, W.UINT, W.WPARAM, W.LPARAM]
     user.DefWindowProcW.restype = C.c_ssize_t
     restart = user.RegisterWindowMessageW("TaskbarCreated")
+    user.CreatePopupMenu.restype = W.HMENU
+    user.AppendMenuW.argtypes = [W.HMENU, W.UINT, C.c_size_t, W.LPCWSTR]
+    user.TrackPopupMenu.argtypes = [W.HMENU, W.UINT, C.c_int, C.c_int, C.c_int, W.HWND, C.c_void_p]
+    user.SetForegroundWindow.argtypes = [W.HWND]
+    user.DestroyMenu.argtypes = [W.HMENU]
+    user.PostMessageW.argtypes = [W.HWND, W.UINT, W.WPARAM, W.LPARAM]
+
+    def popup(hwnd):
+        menu = user.CreatePopupMenu()
+        choices = entries()
+        try:
+            for i, (action, title) in enumerate(choices, 1):
+                user.AppendMenuW(menu, 0 if action else 1, i, title)
+            pos = W.POINT()
+            user.GetCursorPos(C.byref(pos))
+            user.SetForegroundWindow(hwnd)
+            selected = user.TrackPopupMenu(menu, 0x102, pos.x, pos.y, 0, hwnd, None)
+            if selected:
+                activate(choices[selected - 1][0])
+            user.PostMessageW(hwnd, 0, 0, 0)
+        finally:
+            user.DestroyMenu(menu)
+
     @callback
     def receive(hwnd, event, wparam, lparam):
-        if event == msg_tray and lparam == 0x202:  # WM_LBUTTONUP
-            _pressed()
+        if event == msg_tray and lparam in (0x202, 0x205):  # rilascio del pulsante sinistro o destro
+            popup(hwnd)
             return 0
         if event == restart:
             shell.Shell_NotifyIconW(0, C.byref(icon))
@@ -91,7 +153,7 @@ def windows():
     if not hwnd:
         raise C.WinError()
     user.LoadIconW.restype = W.HICON
-    icon = Icon(C.sizeof(Icon), hwnd, 1, 7, msg_tray, user.LoadIconW(None, C.c_void_p(32512)), "CercaDoc · Apri ricerca")
+    icon = Icon(C.sizeof(Icon), hwnd, 1, 7, msg_tray, user.LoadIconW(None, C.c_void_p(32512)), "CercaDoc")
     if not shell.Shell_NotifyIconW(0, C.byref(icon)):
         raise C.WinError()
     remove_icon = lambda: shell.Shell_NotifyIconW(2, C.byref(icon))
@@ -125,12 +187,35 @@ def linux():
     instance = ptr(indicator.app_indicator_new(b"cercadoc", b"system-search", 0))
     gtk.gtk_menu_new.restype = gtk.gtk_menu_item_new_with_label.restype = ptr
     menu = ptr(gtk.gtk_menu_new())
-    item = ptr(gtk.gtk_menu_item_new_with_label("Apri ricerca…".encode()))
+    items, actions = [], []
     @C.CFUNCTYPE(None, ptr, ptr)
-    def activate(_item, _data):
-        _pressed()
-    gobject.g_signal_connect_data(item, b"activate", activate, None, None, 0)
-    gtk.gtk_menu_shell_append(menu, item)
+    def clicked(_item, data):
+        activate(actions[data - 1])
+
+    previous = entries()
+    for i, (action, title) in enumerate(previous, 1):
+        item = ptr(gtk.gtk_menu_item_new_with_label(title.encode()))
+        items.append(item)
+        actions.append(action)
+        gtk.gtk_widget_set_sensitive(item, bool(action))
+        if action:
+            gobject.g_signal_connect_data(item, b"activate", clicked, ptr(i), None, 0)
+        gtk.gtk_menu_shell_append(menu, item)
+
+    @C.CFUNCTYPE(C.c_int, ptr)
+    def refresh(_data):
+        nonlocal previous
+        current = entries()
+        for i, (action, title) in enumerate(current):
+            if previous[i] == current[i]:
+                continue
+            actions[i] = action
+            gtk.gtk_menu_item_set_label(items[i], title.encode())
+        previous = current
+        return 1
+
+    glib = C.CDLL("libglib-2.0.so.0")
+    glib.g_timeout_add_seconds(1, refresh, None)
     gtk.gtk_widget_show_all(menu)
     indicator.app_indicator_set_menu(instance, menu)
     indicator.app_indicator_set_status(instance, 1)
