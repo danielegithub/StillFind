@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """PDFium con accesso serializzato tra indicizzazione e anteprima."""
-from contextlib import closing, contextmanager
-from functools import wraps
 import math
 import threading
+from contextlib import closing, contextmanager
+from functools import wraps
 
 _lock = threading.RLock()
 

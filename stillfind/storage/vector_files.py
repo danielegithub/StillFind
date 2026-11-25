@@ -2,10 +2,10 @@
 """Generazioni dei file vettoriali. La manutenzione funziona anche senza modello e NumPy."""
 from __future__ import annotations
 
-from array import array
 import os
-from pathlib import Path
 import re
+from array import array
+from pathlib import Path
 from uuid import uuid4
 
 CHUNK_ROWS = 4096

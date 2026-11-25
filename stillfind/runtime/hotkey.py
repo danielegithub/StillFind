@@ -230,7 +230,6 @@ class ShortcutProcess:
             return 1
         return 0
 
-
     @staticmethod
     def start(on_open, on_error=lambda text: None, tray=False):
         proc = subprocess.Popen(AppSignals.command("--tray-search" if tray else "--listen-shortcut"), stdin=subprocess.PIPE, stdout=subprocess.PIPE,

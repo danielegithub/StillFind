@@ -3,14 +3,15 @@
 """Diagnostica dell'indice."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+from typing import TYPE_CHECKING
+
 import customtkinter as ctk
+
 from stillfind.core import config, errors, system
-from stillfind.ui.theme import PAL, font, ghost_button, primary_button, card
 from stillfind.ui.dialogs.duplicates import DuplicatesDialog
+from stillfind.ui.theme import PAL, font, ghost_button, primary_button, card
 
 if TYPE_CHECKING:
     from stillfind.ui.app import App

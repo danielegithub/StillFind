@@ -3,12 +3,13 @@
 """Mappa dei dati personali."""
 from __future__ import annotations
 
-from contextlib import closing
-from pathlib import Path
 import queue
 import threading
 import tkinter as tk
+from contextlib import closing
+from pathlib import Path
 from tkinter import ttk, filedialog
+
 from stillfind.core import facts
 from stillfind.storage.database import Database
 from stillfind.tools.library import PersonalDataAudit

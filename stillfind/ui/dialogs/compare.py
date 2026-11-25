@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import customtkinter as ctk
+
 from stillfind.indexing.versions import TextVersions
-from stillfind.ui.widgets import read_in_background, make_tree, short_date
+from stillfind.ui.widgets import read_in_background
 
 
 class CompareDialog(ctk.CTkToplevel):

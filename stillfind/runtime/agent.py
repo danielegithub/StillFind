@@ -20,13 +20,13 @@ from contextlib import closing
 from stillfind.core.config import APP_DIR, DB_PATH, Settings
 from stillfind.core.locks import ProcessLock
 from stillfind.indexing.indexer import Indexer
-from stillfind.runtime.signals import AppSignals
-from stillfind.runtime.hotkey import Registration
 from stillfind.runtime.background import PowerMonitor
+from stillfind.runtime.hotkey import Registration
 from stillfind.runtime.netlock import NetworkIsolation
+from stillfind.runtime.signals import AppSignals
 from stillfind.storage.archive import ArchiveEraser
-from stillfind.storage.protection import ArchiveProtection, Locked
 from stillfind.storage.database import Database
+from stillfind.storage.protection import ArchiveProtection
 
 
 class WorkerMonitor:
@@ -193,7 +193,7 @@ class Agent:
         while AppSignals.quit_token() == quit_token:
             try:
                 self.tick()
-            except Exception as ex:  # noqa: BLE001 - un errore non deve fermare l'agente
+            except Exception as ex:  # un errore non deve fermare l'agente
                 self.log(f"errore nel controllo: {ex}")
             secs = int(Settings.load().get("auto_scan_seconds", 60) or 0)
             deadline = time.monotonic() + (max(10, secs) if secs else 600)
@@ -324,7 +324,10 @@ class WorkerRun:
             return WorkerMonitor.BUSY
         with lock, closing(Database.connect()) as con:
             stop = WorkerControl(con, self.run_id, self.quit_token, self.parent_closed)
-            publish = lambda st, final=False: self._publish(con, st, final)  # noqa: E731
+
+            def publish(st, final=False):
+                self._publish(con, st, final)
+
             try:
                 if self.forget:
                     return self._forget(con, stop, publish)

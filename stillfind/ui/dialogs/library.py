@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import ttk, simpledialog, messagebox
+
 from stillfind.tools.library import SavedSearches
 from stillfind.ui.search_criteria import SearchCriteria
 

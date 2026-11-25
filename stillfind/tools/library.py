@@ -28,7 +28,6 @@ class SavedSearches:
             con.execute("DELETE FROM ricerche WHERE id IN (SELECT id FROM ricerche WHERE nome IS NULL "
                         "ORDER BY usata DESC LIMIT -1 OFFSET 60)")
 
-
     def listing(self, saved):
         con = self.con
         rows = con.execute("SELECT id,nome,criteri FROM ricerche WHERE (nome IS NOT NULL)=? "

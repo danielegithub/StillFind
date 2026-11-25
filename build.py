@@ -16,8 +16,8 @@ Lo script si ferma con errore se nel pacchetto finito c'è un modulo di rete
 o se l'auto-verifica dell'eseguibile fallisce. Per distribuire basta consegnare
 la cartella (o l'.app) / uno zip.
 """
-import platform
 import importlib.util
+import platform
 import re
 import shutil
 import subprocess
@@ -26,7 +26,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from stillfind.core.offline import NETWORK_MODULES  # noqa: E402  (stessa lista usata a runtime)
+from stillfind.core.offline import NETWORK_MODULES  # stessa lista usata a runtime
 
 SYSTEM = platform.system()  # Windows | Darwin | Linux
 # moduli da escludere dal pacchetto (oltre a quelli di rete elencati in stillfind/core/offline.py)

@@ -15,7 +15,6 @@ class SearchCriteria:
                     order=app.order_var.get(), date=app.date_var.get(), custom=app._date_custom,
                     folder=app.folder_filter)
 
-
     @staticmethod
     def record(app):
         from stillfind.core.labels import ALL_TYPES, ANY_DATE
@@ -23,7 +22,6 @@ class SearchCriteria:
         if c["query"] or c["folder"] or c["category"] != ALL_TYPES or c["date"] != ANY_DATE:
             if app.cfg.get("search_history", True):
                 SavedSearches(app.con).save(c)
-
 
     @staticmethod
     def restore(app, c):

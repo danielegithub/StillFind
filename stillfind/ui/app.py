@@ -14,47 +14,48 @@ import subprocess
 import sys
 import threading
 import time
-import uuid
 import tkinter as tk
+import uuid
 from tkinter import filedialog, messagebox, ttk
+
 import customtkinter as ctk
+
 from stillfind.core import about, config, errors, system, labels as ui_text
+from stillfind.indexing.relations import RelationGraph
 from stillfind.runtime import agent
-from stillfind.storage.database import Database
-from stillfind.tools.export import CsvExporter
-from stillfind.semantic.search import SemanticIndex, SemanticSearch
-from stillfind.search.preview import DocumentPreview
+from stillfind.runtime.hotkey import Registration
+from stillfind.runtime.signals import AppSignals
 from stillfind.search.engine import HIT_START, SearchEngine
+from stillfind.search.preview import DocumentPreview
 from stillfind.search.query import Query, WHERE_ALL, WHERE_NAME
+from stillfind.semantic.search import SemanticIndex, SemanticSearch
+from stillfind.storage.database import Database
+from stillfind.storage.protection import ArchiveProtection
+from stillfind.tools.export import CsvExporter
 from stillfind.ui import security_ui
-from stillfind.ui.search_criteria import SearchCriteria
+from stillfind.ui.dialogs.about import AboutDialog
 from stillfind.ui.dialogs.audit import AuditDialog
+from stillfind.ui.dialogs.compare import CompareDialog
+from stillfind.ui.dialogs.date_range import DateRangeDialog
+from stillfind.ui.dialogs.diagnostics import DiagnosticsDialog
+from stillfind.ui.dialogs.document_list import DocumentList
+from stillfind.ui.dialogs.duplicates import DuplicatesDialog
+from stillfind.ui.dialogs.forget_folder import ForgetFolderDialog
+from stillfind.ui.dialogs.help import HelpDialog
 from stillfind.ui.dialogs.library import LibraryDialog
 from stillfind.ui.dialogs.redact import RedactDialog
-from stillfind.runtime.signals import AppSignals
-from stillfind.runtime.hotkey import Registration
-from stillfind.storage.protection import ArchiveProtection
-from stillfind.indexing.relations import RelationGraph
-from stillfind.ui.dialogs.compare import CompareDialog
-from stillfind.ui.dialogs.document_list import DocumentList
-from stillfind.ui.views.relations import RelationsPane
-from stillfind.ui.theme import PAL, col, font, ghost_button, card
-from stillfind.ui.widgets import PreviewAction
-from stillfind.ui.dialogs.diagnostics import DiagnosticsDialog
-from stillfind.ui.dialogs.about import AboutDialog
-from stillfind.ui.dialogs.duplicates import DuplicatesDialog
-from stillfind.ui.dialogs.date_range import DateRangeDialog
-from stillfind.ui.dialogs.help import HelpDialog
-from stillfind.ui.dialogs.forget_folder import ForgetFolderDialog
 from stillfind.ui.dialogs.settings import SettingsDialog
-from stillfind.ui.views.welcome import WelcomeView
+from stillfind.ui.search_criteria import SearchCriteria
+from stillfind.ui.theme import PAL, col, font, ghost_button, card
+from stillfind.ui.views.relations import RelationsPane
 from stillfind.ui.views.results import ResultList
+from stillfind.ui.views.welcome import WelcomeView
+from stillfind.ui.widgets import PreviewAction
 
 
 ORDERS = {"Più pertinenti": "rank", "Più recenti": "date", "Data del documento": "document_date",
           "Nome (A-Z)": "name"}
 RECENT_COUNT = 15  # documenti mostrati quando la ricerca è vuota
-
 
 
 class App(ctk.CTk):
@@ -608,7 +609,7 @@ class App(ctk.CTk):
                 try:
                     from stillfind.semantic.embedder import Embedder
                     self._embedder = Embedder()
-                except Exception:  # noqa: BLE001 - modello rifiutato, libreria mancante…: solo parole
+                except Exception:  # modello rifiutato, libreria mancante…: solo parole
                     self._embedder_failed = True
             return self._embedder
 
@@ -822,7 +823,7 @@ class App(ctk.CTk):
             try:
                 parts = (DocumentPreview.anchored_parts(content, *anchor, full=True, layout=layout) if anchor else
                          DocumentPreview.full_text_parts(content, terms, layout=layout))
-            except Exception as ex:  # noqa: BLE001
+            except Exception as ex:
                 parts = [(f"Non riesco a mostrare il testo: {ex}", "err")]
             self.msgs.put(("preview_full", (seq, parts)))
 
@@ -842,7 +843,7 @@ class App(ctk.CTk):
             try:
                 content, layout = DocumentPreview.read_document(doc_id)
                 items, total = DocumentPreview.occurrences(content, terms, layout=layout)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 items, total = [], 0
             self.msgs.put(("occurrences", (seq, doc_id, items, total)))
 
@@ -938,7 +939,7 @@ class App(ctk.CTk):
                 parts = (DocumentPreview.anchored_parts(content, *anchor, layout=layout) if anchor else
                          DocumentPreview.preview_parts(content, terms, max_n=DocumentPreview.OCCURRENCES_SHOWN, layout=layout,
                                                preferred=r.get("passage_start")))
-            except Exception as ex:  # noqa: BLE001
+            except Exception as ex:
                 parts = [(f"Non riesco a mostrare l'anteprima: {ex}", "err")]
             self.msgs.put(("preview", (seq, parts, content, terms, layout)))
 
@@ -987,7 +988,7 @@ class App(ctk.CTk):
         if r:
             try:
                 system.open_file(r["path"])
-            except Exception as ex:  # noqa: BLE001
+            except Exception as ex:
                 messagebox.showerror("StillFind", f"Non riesco ad aprire il file:\n{ex}")
 
     def reveal_selected(self):
@@ -1220,7 +1221,7 @@ class App(ctk.CTk):
                             self._render_preview()
                 elif kind == "shortcut_error":
                     self.status.configure(text=f"Scorciatoia globale non disponibile · {data}")
-        except Exception as ex:  # noqa: BLE001 - un errore qui non deve fermare per sempre l'aggiornamento
+        except Exception as ex:  # un errore qui non deve fermare per sempre l'aggiornamento
             try:
                 self.status.configure(text=f"Errore interno: {ex}")
             except tk.TclError:
@@ -1253,7 +1254,6 @@ class App(ctk.CTk):
         except Exception:
             pass
         self.destroy()
-
 
 
 def run(configure=False, action="open", quit_token=None) -> None:

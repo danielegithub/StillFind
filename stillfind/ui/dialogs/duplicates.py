@@ -6,10 +6,12 @@ from __future__ import annotations
 import queue
 import threading
 from tkinter import ttk
+
 import customtkinter as ctk
+
 from stillfind.core import errors, system
-from stillfind.storage.database import Database
 from stillfind.indexing.duplicates import DuplicateFinder
+from stillfind.storage.database import Database
 from stillfind.ui.theme import PAL, font, ghost_button, card
 
 

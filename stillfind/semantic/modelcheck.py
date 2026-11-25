@@ -187,12 +187,6 @@ def inspect_buffer(buf) -> ModelReport:
 
 
 # ---------------------------------------------------------------- verifica completa
-def sha256_file(path: str | Path) -> str:
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        while chunk := f.read(CHUNK):
-            h.update(chunk)
-    return h.hexdigest()
 
 
 def problems_in(rep: ModelReport, allowed_domains=STANDARD_DOMAINS) -> list[str]:

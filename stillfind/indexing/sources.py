@@ -2,9 +2,9 @@
 """Prima osservazione di un distacco e punti di montaggio delle cartelle indicizzate."""
 import errno
 import os
-from pathlib import Path
 import stat
 import time
+from pathlib import Path
 
 from stillfind.storage.archive import PathKey
 

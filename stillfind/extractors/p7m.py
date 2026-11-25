@@ -58,14 +58,12 @@ class Pkcs7Envelope:
             raise ValueError("elemento oltre la fine dei dati")
         return tag, constructed, pos, pos + length, pos + length
 
-
     @staticmethod
     def _children(data: bytes, start: int, end: int):
         pos = start
         while pos < end:
             tag, constructed, s, e, pos = Pkcs7Envelope._tlv(data, pos, end)
             yield tag, constructed, s, e
-
 
     @staticmethod
     def _octets(data: bytes, start: int, end: int, depth: int = 0) -> bytes:
@@ -77,7 +75,6 @@ class Pkcs7Envelope:
             if tag & 0x1F == 4:
                 out += Pkcs7Envelope._octets(data, s, e, depth + 1) if constructed else data[s:e]
         return bytes(out)
-
 
     @staticmethod
     def unwrap_cms(data: bytes) -> bytes | None:
@@ -102,7 +99,6 @@ class Pkcs7Envelope:
         except (ValueError, StopIteration, IndexError):
             return None
 
-
     @staticmethod
     def _binary(raw: bytes) -> bytes:
         """Il file può essere DER/BER oppure testo base64 (anche con intestazione PEM)."""
@@ -114,7 +110,6 @@ class Pkcs7Envelope:
         except (binascii.Error, ValueError):
             return raw
 
-
     @staticmethod
     def unwrap_all(raw: bytes) -> bytes | None:
         """Toglie tutte le firme annidate. None se il file non contiene un documento."""
@@ -125,7 +120,6 @@ class Pkcs7Envelope:
                 break
             data, found = inner, True
         return data if found else None
-
 
     @staticmethod
     def guess_ext(name: str, data: bytes) -> str:

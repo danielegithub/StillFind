@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import threading
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -21,11 +21,6 @@ class ExtractionRequest:
     stop: threading.Event | None = None
     cache: object | None = None
     info: dict | None = None
-
-    def derive(self, path: str, ext: str) -> "ExtractionRequest":
-        """La stessa richiesta per un file contenuto in questo (allegato, documento firmato…)."""
-        return ExtractionRequest(path, ext, self.cfg, self.stop, None, self.info)
-
 
 class Extractor(ABC):
     """Legge il testo di uno o più tipi di file. Restituisce (testo, ocr_usato)."""

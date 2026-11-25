@@ -3,12 +3,12 @@
 """Contenitori locali con un solo livello, limite cumulativo e percorsi temporanei generati."""
 import posixpath
 import re
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path, PurePosixPath
-import xml.etree.ElementTree as ET
 
-from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.core.errors import Stopped
+from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.extractors.base import ExtractionRequest, Extractor
 from stillfind.extractors.office import OfficePackage
 from stillfind.extractors.text import HtmlExtractor, TextDecoder

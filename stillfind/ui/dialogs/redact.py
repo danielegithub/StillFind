@@ -3,11 +3,12 @@
 """Oscuramento di una copia del documento."""
 from __future__ import annotations
 
-from pathlib import Path
 import queue
 import threading
 import tkinter as tk
+from pathlib import Path
 from tkinter import ttk, filedialog, messagebox
+
 from stillfind.core import facts
 from stillfind.tools.redaction import Redactor
 

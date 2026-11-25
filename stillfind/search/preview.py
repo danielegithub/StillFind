@@ -3,17 +3,15 @@
 """Anteprima di un risultato: brani attorno alle occorrenze, insensibili agli accenti."""
 from __future__ import annotations
 
-import sqlite3
-from stillfind.storage.protection import ArchiveProtection, Locked
+import re
 import unicodedata
 from bisect import bisect_right
 
 from stillfind.core.config import DB_PATH
-from stillfind.search.engine import HIT_END, HIT_START, section_label
-from stillfind.core.stemmer import stem, strip_accents
 from stillfind.core.labels import thousands
-
-import re
+from stillfind.core.stemmer import stem, strip_accents
+from stillfind.search.engine import HIT_END, HIT_START, section_label
+from stillfind.storage.protection import ArchiveProtection
 
 
 FULL_TEXT_LIMIT = 400_000   # caratteri mostrati nel «Testo completo» (la copia comprende sempre tutto il testo)
@@ -44,7 +42,6 @@ class Layout:
             if offset < b:
                 left, right = max(left, a), min(right, b)
         return left, right, label, page
-
 
 
 class DocumentPreview:
@@ -117,11 +114,6 @@ class DocumentPreview:
                 break
             offset += chunk_size - overlap
         return out
-
-    @staticmethod
-    def page_for(starts: list[int], offset: int) -> int | None:
-        """Pagina (da 1) che contiene `offset`, date le posizioni di inizio delle pagine; None se non ce ne sono."""
-        return bisect_right(starts, offset) or None if starts else None
 
     @staticmethod
     def occurrences(content: str, terms: list[str], starts: list[int] | None = None, max_items: int = 12,
@@ -250,12 +242,6 @@ class DocumentPreview:
             yield content[lo:hi], marks, label, lo > left, hi < right
 
     @staticmethod
-    def excerpts(content: str, terms: list[str], width: int = 140, max_n: int = 8):
-        if not terms:
-            return [(content[:600], [])] if content else []
-        return [(piece, marks) for piece, marks, *_ in DocumentPreview._excerpts(content, terms, width, max_n, Layout())]
-
-    @staticmethod
     def snippet_parts(snippet: str) -> list[tuple[str, str]]:
         """Trasforma lo snippet già calcolato da FTS5 in parti (testo, tag) per l'anteprima.
         Vuoto se lo snippet non contiene occorrenze (ad esempio match solo sul nome del file)."""
@@ -313,23 +299,3 @@ class DocumentPreview:
             return (row[0] if row else "") or "", Layout(passages, sections)
         finally:
             con.close()
-
-    @staticmethod
-    def read_page_starts(doc_id: int) -> list[int]:
-        """Posizioni in cui cominciano le pagine del documento (vuoto se non ha pagine), con una connessione propria."""
-        con = ArchiveProtection.connection(DB_PATH)
-        try:
-            return [r[0] for r in con.execute("SELECT start FROM pages WHERE doc_id=? AND tipo='page' ORDER BY n", (doc_id,))]
-        finally:
-            con.close()
-
-    @staticmethod
-    def read_content(doc_id: int) -> str:
-        """Testo indicizzato di un documento, letto con una connessione propria e di breve durata
-        (la connessione della finestra non si può usare da un altro thread)."""
-        con = ArchiveProtection.connection(DB_PATH)
-        try:
-            row = con.execute("SELECT content FROM fts WHERE rowid=?", (doc_id,)).fetchone()
-        finally:
-            con.close()
-        return row[0] if row and row[0] else ""

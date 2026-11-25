@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import sys
 import tkinter as tk
+
 import customtkinter as ctk
+
 from stillfind.core import labels as ui_text
-from stillfind.ui.theme import col, font, card
+from stillfind.ui.theme import col, card
 
 
 class ResultList(ctk.CTkFrame):

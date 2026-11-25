@@ -43,7 +43,6 @@ class EmlExtractor(Extractor):
             out.append(text)
         return "".join(out)
 
-
     @staticmethod
     def _split(raw: bytes) -> tuple[dict[str, str], bytes]:
         """Intestazioni (chiave minuscola -> valore, righe unite) e corpo."""
@@ -57,7 +56,6 @@ class EmlExtractor(Extractor):
                 k, v = line.split(":", 1)
                 headers.setdefault(k.strip().lower(), v.strip())
         return headers, body
-
 
     @staticmethod
     def _param(header: str, name: str) -> str:
@@ -77,7 +75,6 @@ class EmlExtractor(Extractor):
         m = re.search(rf'(?i);\s*{name}\s*=\s*(?:"([^"]*)"|([^;\s]+))', header or "")
         return (m.group(1) or m.group(2)) if m else ""
 
-
     @staticmethod
     def _decode_body(body: bytes, headers: dict[str, str]) -> str:
         enc = headers.get("content-transfer-encoding", "").lower()
@@ -93,7 +90,6 @@ class EmlExtractor(Extractor):
             return body.decode(charset, errors="replace")
         except LookupError:
             return body.decode("utf-8", errors="replace")
-
 
     @classmethod
     def _walk(cls, raw: bytes, bodies: list[str], attachments: list[str], depth: int = 0, members=None) -> None:

@@ -3,23 +3,24 @@
 """Impostazioni."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+from typing import TYPE_CHECKING
+
 import customtkinter as ctk
+
 from stillfind.core import config, system, labels as ui_text
+from stillfind.core import facts
+from stillfind.extractors.ocr import Tesseract
+from stillfind.indexing.relations import RelationGraph
+from stillfind.runtime.signals import AppSignals
 from stillfind.semantic.models import ModelCatalog
 from stillfind.semantic.search import SemanticIndex
-from stillfind.core import facts
 from stillfind.ui import security_ui
-from stillfind.runtime.signals import AppSignals
-from stillfind.indexing.relations import RelationGraph
-from stillfind.extractors.ocr import Tesseract
-from stillfind.ui.theme import PAL, THEMES, font, ghost_button, primary_button, card
-from stillfind.ui.dialogs.diagnostics import DiagnosticsDialog
 from stillfind.ui.dialogs.about import AboutDialog
+from stillfind.ui.dialogs.diagnostics import DiagnosticsDialog
 from stillfind.ui.dialogs.duplicates import DuplicatesDialog
+from stillfind.ui.theme import PAL, THEMES, font, ghost_button, primary_button, card
 
 if TYPE_CHECKING:
     from stillfind.ui.app import App
@@ -320,7 +321,10 @@ class SettingsDialog(ctk.CTkToplevel):
             messagebox.showerror("Impostazioni", "Spunta almeno un tipo di documento da cercare "
                                  "(sotto «Opzioni avanzate»).", parent=self)
             return
-        split = lambda s: [x.strip() for x in s.split(",") if x.strip()]  # noqa: E731
+
+        def split(text):
+            return [x.strip() for x in text.split(",") if x.strip()]
+
         c = self.app.cfg
         c["folders"] = self.folders
         c["extensions"] = exts

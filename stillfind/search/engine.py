@@ -149,12 +149,6 @@ class SearchEngine:
         return [dict(zip(self.DOC_KEYS, r)) for r in self.con.execute(sql, [*fargs, limit])]
 
     # ---- posizioni nel documento
-    def page_at(self, doc_id: int, offset: int) -> int | None:
-        """Numero della pagina del documento che contiene la posizione `offset` del testo; None se il documento
-        non ha pagine (solo i PDF le hanno)."""
-        row = self.con.execute("SELECT n FROM pages WHERE tipo='page' AND doc_id = ? AND start <= ? "
-                               "ORDER BY n DESC LIMIT 1", (doc_id, max(0, offset))).fetchone()
-        return row[0] if row else None
 
     def add_pages(self, rows: list[dict], limit: int | None = None) -> None:
         """Riferimento del primo termine evidenziato o del brano già individuato."""

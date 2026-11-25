@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import sys
+
 import customtkinter as ctk
+
 from stillfind.ui.theme import PAL, font, primary_button, card
 
 

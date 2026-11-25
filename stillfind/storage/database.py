@@ -101,7 +101,7 @@ class Database:
     @staticmethod
     def connect() -> "Database":
         """Apre l'archivio dell'utente (creandolo o migrandolo se serve)."""
-        from stillfind.storage.protection import ArchiveProtection, Locked
+        from stillfind.storage.protection import ArchiveProtection
         APP_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
         con = ArchiveProtection.connection(DB_PATH)
         try:

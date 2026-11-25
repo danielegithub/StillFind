@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import customtkinter as ctk
+
 from stillfind.core import facts
 from stillfind.indexing.relations import RelationGraph
 from stillfind.semantic.search import SemanticSearch
@@ -54,7 +55,8 @@ class RelationsPane(ctk.CTkFrame):
                     message = "Nessun documento simile tra quelli già elaborati."
                 except (ValueError, OSError, RuntimeError):
                     message = "I vettori del significato non sono disponibili."
-            return ((graph := RelationGraph(con)).document_entities(doc_id), graph.related_documents(doc_id),
+            graph = RelationGraph(con)
+            return (graph.document_entities(doc_id), graph.related_documents(doc_id),
                     graph.document_versions(doc_id), similar, message)
 
         read_in_background(self, work, self._display)

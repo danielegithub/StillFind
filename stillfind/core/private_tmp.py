@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Spazi temporanei per il contenuto dei documenti, con pulizia dopo un arresto improvviso."""
-from contextlib import contextmanager
-from functools import lru_cache
 import os
 import re
 import shutil
 import stat
+from contextlib import contextmanager
+from functools import lru_cache
 from uuid import uuid4
 
 from stillfind.core import config

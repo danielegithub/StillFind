@@ -9,10 +9,10 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 
 from stillfind.core import config
-from stillfind.storage.protection import ArchiveProtection, Locked
-from stillfind.storage.database import Database
-from stillfind.runtime.signals import AppSignals
 from stillfind.runtime.hotkey import Registration
+from stillfind.runtime.signals import AppSignals
+from stillfind.storage.database import Database
+from stillfind.storage.protection import ArchiveProtection, Locked
 
 MODES = {"plain": "In chiaro", "auto": "Portachiavi dell’account", "vault": "Cassaforte con passphrase"}
 

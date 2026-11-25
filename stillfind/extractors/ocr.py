@@ -15,8 +15,8 @@ import time
 from contextlib import contextmanager
 from glob import glob
 
-from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.core.errors import Stopped
+from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.extractors.base import ExtractionRequest, Extractor
 
 

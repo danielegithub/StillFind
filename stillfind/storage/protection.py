@@ -3,8 +3,8 @@
 """Apertura centralizzata e migrazione atomica dell'archivio locale."""
 from __future__ import annotations
 
-import hashlib
 import ctypes
+import hashlib
 import json
 import os
 import re
@@ -15,8 +15,8 @@ import threading
 import weakref
 from pathlib import Path
 
-from stillfind.storage.database import Database
 from stillfind.storage.credentials import LEGACY_SERVICE, SERVICE, CredentialStore
+from stillfind.storage.database import Database
 
 CLEAR = b"SQLite format 3\0"
 

@@ -8,8 +8,8 @@ import re
 from datetime import date, timedelta
 
 from stillfind.core import facts
-from stillfind.indexing.versions import TextVersions
 from stillfind.core.stemmer import stem_text
+from stillfind.indexing.versions import TextVersions
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS passaggi(

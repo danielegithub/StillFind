@@ -6,7 +6,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from tkinter import filedialog, messagebox
+
 import customtkinter as ctk
+
 from stillfind.ui import security_ui
 from stillfind.ui.theme import PAL, font, ghost_button, primary_button, card
 

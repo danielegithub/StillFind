@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 from datetime import date, timedelta
+
 import customtkinter as ctk
+
 from stillfind.indexing.relations import RelationGraph
 from stillfind.ui.widgets import read_in_background, make_tree, short_date
 

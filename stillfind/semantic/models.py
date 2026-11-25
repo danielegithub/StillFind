@@ -9,7 +9,7 @@ import hashlib
 import sys
 from pathlib import Path
 
-from stillfind.semantic.modelcheck import ModelRejected, read_verified, verify_model
+from stillfind.semantic.modelcheck import ModelRejected, verify_model
 
 MODELS = {
     # Ricerca per significato. Verificato il 24/11/2026: 1.511 nodi, 22 operazioni, tutte del dominio standard
@@ -68,13 +68,6 @@ class ModelCatalog:
         if name not in MODELS:
             raise ModelRejected([f"modello sconosciuto: «{name}»"])
         return verify_model(cls.model_path(name, models_dir), MODELS[name]["sha256"])
-
-    @classmethod
-    def load_model(cls, name: str, models_dir: str | Path) -> bytes:
-        """Byte del modello già controllati: passare **questi** al motore, non il percorso del file."""
-        if name not in MODELS:
-            raise ModelRejected([f"modello sconosciuto: «{name}»"])
-        return read_verified(cls.model_path(name, models_dir), MODELS[name]["sha256"])
 
     @classmethod
     def load_tokenizer(cls, name: str, models_dir: str | Path) -> bytes:

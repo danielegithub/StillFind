@@ -51,6 +51,3 @@ for _extractor in (DocxExtractor(), PptxExtractor(), XlsxExtractor(), OdfExtract
                    ArchiveExtractor(), ImageExtractor()):
     registry.register(_extractor)
 del _extractor
-
-IMAGE_EXTS = registry.image_extensions
-extract = registry.extract

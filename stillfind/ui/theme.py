@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import customtkinter as ctk
+
 from stillfind.core import system
 
 

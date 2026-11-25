@@ -11,14 +11,14 @@ import time
 from contextlib import closing
 from pathlib import Path
 
-from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.core.errors import Stopped
+from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.core.stemmer import stem_text
 from stillfind.core.system import human_size, short_path
 from stillfind.extractors import registry
 from stillfind.extractors.ocr import ExternalTool, OcrCache, Tesseract
-from stillfind.indexing.relations import RelationGraph
 from stillfind.indexing.duplicates import FileHasher
+from stillfind.indexing.relations import RelationGraph
 from stillfind.indexing.sources import Sources
 from stillfind.runtime.background import PowerMonitor
 from stillfind.storage.archive import ArchiveEraser, PathKey
@@ -65,7 +65,7 @@ class DependencyProbe:
         found = ExternalTool.which("pdftoppm") is not None or importlib.util.find_spec("pypdfium2") is not None
         if not found:
             try:
-                import fitz  # noqa: F401
+                import fitz
                 found = True
             except ImportError:
                 pass

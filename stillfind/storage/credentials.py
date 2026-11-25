@@ -15,7 +15,6 @@ class _Blob(C.Structure):
     _fields_ = [("size", C.c_uint32), ("ptr", C.c_void_p)]
 
 
-
 class CredentialStore:
     """Chiavi dell'archivio nel portachiavi del sistema (Keychain, DPAPI, Secret Service)."""
 

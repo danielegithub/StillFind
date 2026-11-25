@@ -2,17 +2,17 @@
 # Copyright (C) 2026 Daniele Sisto
 """Oscuramento sul contenuto originale: le sole immagini approvate entrano nel nuovo PDF."""
 import csv
-from contextlib import closing
 import io
 import os
 import re
 import subprocess
+from contextlib import closing
 from pathlib import Path
 
 from stillfind.core import facts
 from stillfind.core.private_tmp import PrivateWorkspace
-from stillfind.extractors.pdf_render import scale_for, serialized
 from stillfind.extractors.ocr import ExternalTool
+from stillfind.extractors.pdf_render import scale_for, serialized
 from stillfind.extractors.text import TextDecoder
 
 
@@ -92,7 +92,6 @@ class PdfReview:
     def close(self):
         self.output.close()
         self.source.close()
-
 
 
 class Redactor:
