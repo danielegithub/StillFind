@@ -57,7 +57,10 @@ def main() -> int:
         raise RuntimeError("Build completa: dipendenze mancanti: " + ", ".join(missing)
                            + ". Installa requirements-build.txt.")
     bundle_arguments = arguments()
+    icons = runpy.run_path(str(HERE / "packaging/make_icons.py"))["make"](HERE / "build" / "icons")
+    icon = {"Darwin": "stillfind.icns", "Windows": "stillfind.ico"}.get(SYSTEM)
     cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean", "--onedir", "--windowed",
+           *(["--icon", str(icons / icon)] if icon else []),
            "--name", "StillFind", "--hidden-import", "pypdf", "--hidden-import", "stillfind.ui.app",
            "--paths", str(HERE),
            "--collect-data", "customtkinter", "--collect-all", "pypdfium2_raw", "--collect-data", "pypdfium2",
