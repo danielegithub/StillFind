@@ -6,5 +6,5 @@ StillFind è in **alpha test**: può contenere errori, essere instabile o cambia
 
 ### File
 - **Windows:** `StillFind-windows-setup.exe` (installatore, non firmato: SmartScreen può avvisare) oppure `StillFind-windows.zip` (portatile).
-- **macOS:** `StillFind-macos.dmg` oppure `StillFind-macos.zip` (non firmato né notarizzato: al primo avvio apri con clic destro → Apri).
+- **macOS:** `StillFind-macos.dmg` oppure `StillFind-macos.zip` (non firmato né notarizzato: macOS lo blocca: *Impostazioni di Sistema → Privacy e sicurezza → Apri comunque*, oppure `xattr -dr com.apple.quarantine /Applications/StillFind.app`).
 - **Linux:** `stillfind_*_amd64.deb` (`sudo apt install ./stillfind_*.deb`) oppure `StillFind-linux.tar.gz`.

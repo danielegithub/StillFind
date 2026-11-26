@@ -24,7 +24,7 @@ Dalla pagina **Releases** di GitHub (le versioni sono marcate come *pre-release*
 | Sistema | File | Come si installa |
 | --- | --- | --- |
 | Windows | `StillFind-windows-setup.exe` | Esegui l'installatore (per l'utente corrente, senza amministratore). SmartScreen: *Ulteriori informazioni* → *Esegui comunque*. In alternativa `StillFind-windows.zip`, portatile. |
-| macOS | `StillFind-macos.dmg` | Trascina StillFind in *Applicazioni*. Al primo avvio: tasto destro → *Apri*. In alternativa `StillFind-macos.zip`. |
+| macOS | `StillFind-macos.dmg` | Trascina StillFind in *Applicazioni*. App non firmata: macOS la blocca ("spostare nel Cestino?"). Premi *Fine*, poi *Impostazioni di Sistema → Privacy e sicurezza → Apri comunque*; oppure da Terminale `xattr -dr com.apple.quarantine /Applications/StillFind.app`. In alternativa `StillFind-macos.zip`. |
 | Linux | `stillfind_<versione>_amd64.deb` | `sudo apt install ./stillfind_<versione>_amd64.deb`. In alternativa `StillFind-linux.tar.gz`. |
 
 Per toglierlo: disinstalla da *Impostazioni → App* (Windows), trascina l'app nel Cestino (macOS) o `sudo apt remove stillfind` (Linux). I dati (indice e configurazione) restano in `~/.stillfind/` e vanno cancellati a mano se non servono più.
@@ -202,7 +202,7 @@ python3 -m venv .venv-build
 - **Download solo in preparazione**: `packaging/prepare_assets.py` scarica le risorse mancanti e verifica gli SHA-256 fissati in `packaging/assets.json`. Le risorse grandi restano fuori da Git. `build.py` verifica i file locali senza scaricarli; si può compilare offline dopo aver preparato dipendenze e risorse.
 - **Verifica automatica**: oltre ai controlli sui moduli di rete, prova una copia ricollocata dell'app con PATH ridotto e cartella dati temporanea. Controlla gli hash, SQLCipher, Tcl/Tk, OCR delle sei lingue su immagini e PDF e inferenza ONNX. Su macOS il test nega anche la rete e l'accesso a Homebrew e ai sorgenti. Il rapporto è in `dist/bundle-report.json`.
 - **Tutte e tre le piattaforme via CI**: il workflow [`.github/workflows/build.yml`](.github/workflows/build.yml) compila e verifica Windows, macOS e Linux su GitHub Actions. Oltre agli archivi crea gli installatori (Windows `.exe` con Inno Setup, macOS `.dmg`, Linux `.deb`, script in `packaging/`) e, con un tag `v*`, una pre-release. Gli installatori sono alpha e non firmati.
-- **App non firmate**: su macOS al primo avvio usa tasto destro → *Apri*; su Windows *Ulteriori informazioni* → *Esegui comunque*.
+- **App non firmate**: su macOS apri *Impostazioni di Sistema → Privacy e sicurezza → Apri comunque* (o `xattr -dr com.apple.quarantine`); su Windows *Ulteriori informazioni* → *Esegui comunque*.
 
 ---
 
@@ -230,7 +230,7 @@ Desktop app to **search inside your documents**, **100% offline**, on **Windows,
 | | | |
 | --- | --- | --- |
 | Windows | `StillFind-windows-setup.exe` | Run the installer (current user, no administrator). SmartScreen: *More info* → *Run anyway*. Or the portable `StillFind-windows.zip`. |
-| macOS | `StillFind-macos.dmg` | Drag StillFind to *Applications*. First launch: right-click → *Open*. Or `StillFind-macos.zip`. |
+| macOS | `StillFind-macos.dmg` | Drag StillFind to *Applications*. The app is unsigned, so macOS blocks it ("move to Trash?"). Click *Done*, then *System Settings → Privacy & Security → Open Anyway*; or in Terminal `xattr -dr com.apple.quarantine /Applications/StillFind.app`. Or `StillFind-macos.zip`. |
 | Linux | `stillfind_<version>_amd64.deb` | `sudo apt install ./stillfind_<version>_amd64.deb`. Or `StillFind-linux.tar.gz`. |
 
 Download the file for your system from the GitHub **Releases** page (versions are marked *pre-release*). The installers are **alpha and unsigned**, so your system may show a security warning. Your data (index and settings) lives in `~/.stillfind/` and stays there after uninstalling.
@@ -280,7 +280,7 @@ Application de bureau pour **rechercher dans vos documents**, **100 % hors ligne
 | | | |
 | --- | --- | --- |
 | Windows | `StillFind-windows-setup.exe` | Lancez l'installateur (utilisateur courant, sans administrateur). SmartScreen : *Informations complémentaires* → *Exécuter quand même*. Ou `StillFind-windows.zip` (portable). |
-| macOS | `StillFind-macos.dmg` | Glissez StillFind dans *Applications*. Premier lancement : clic droit → *Ouvrir*. Ou `StillFind-macos.zip`. |
+| macOS | `StillFind-macos.dmg` | Glissez StillFind dans *Applications*. L'app n'est pas signée : macOS la bloque (« placer dans la corbeille ? »). Cliquez sur *OK*, puis *Réglages Système → Confidentialité et sécurité → Ouvrir quand même* ; ou dans le Terminal `xattr -dr com.apple.quarantine /Applications/StillFind.app`. Ou `StillFind-macos.zip`. |
 | Linux | `stillfind_<version>_amd64.deb` | `sudo apt install ./stillfind_<version>_amd64.deb`. Ou `StillFind-linux.tar.gz`. |
 
 Téléchargez le fichier de votre système depuis la page **Releases** de GitHub (versions marquées *pre-release*). Les installateurs sont **alpha et non signés** : le système peut afficher un avertissement de sécurité. Vos données (index et réglages) restent dans `~/.stillfind/`, même après la désinstallation.
@@ -317,7 +317,7 @@ Aplicación de escritorio para **buscar dentro de tus documentos**, **100 % sin 
 | | | |
 | --- | --- | --- |
 | Windows | `StillFind-windows-setup.exe` | Ejecuta el instalador (usuario actual, sin administrador). SmartScreen: *Más información* → *Ejecutar de todas formas*. O `StillFind-windows.zip` (portátil). |
-| macOS | `StillFind-macos.dmg` | Arrastra StillFind a *Aplicaciones*. Primer inicio: clic derecho → *Abrir*. O `StillFind-macos.zip`. |
+| macOS | `StillFind-macos.dmg` | Arrastra StillFind a *Aplicaciones*. La app no está firmada y macOS la bloquea («¿mover a la papelera?»). Pulsa *Aceptar*, luego *Ajustes del Sistema → Privacidad y seguridad → Abrir de todos modos*; o en Terminal `xattr -dr com.apple.quarantine /Applications/StillFind.app`. O `StillFind-macos.zip`. |
 | Linux | `stillfind_<versión>_amd64.deb` | `sudo apt install ./stillfind_<versión>_amd64.deb`. O `StillFind-linux.tar.gz`. |
 
 Descarga el archivo de tu sistema desde la página **Releases** de GitHub (versiones marcadas como *pre-release*). Los instaladores son **alpha y no están firmados**, así que el sistema puede mostrar un aviso de seguridad. Tus datos (índice y ajustes) están en `~/.stillfind/` y siguen ahí tras desinstalar.
@@ -354,7 +354,7 @@ Desktop-App zum **Durchsuchen Ihrer Dokumente**, **100 % offline**, für **Windo
 | | | |
 | --- | --- | --- |
 | Windows | `StillFind-windows-setup.exe` | Installer ausführen (aktueller Benutzer, ohne Administrator). SmartScreen: *Weitere Informationen* → *Trotzdem ausführen*. Oder `StillFind-windows.zip` (portabel). |
-| macOS | `StillFind-macos.dmg` | StillFind in *Programme* ziehen. Erster Start: Rechtsklick → *Öffnen*. Oder `StillFind-macos.zip`. |
+| macOS | `StillFind-macos.dmg` | StillFind in *Programme* ziehen. Die App ist nicht signiert, macOS blockiert sie („In den Papierkorb legen?“). *Fertig* klicken, dann *Systemeinstellungen → Datenschutz & Sicherheit → Trotzdem öffnen*; oder im Terminal `xattr -dr com.apple.quarantine /Applications/StillFind.app`. Oder `StillFind-macos.zip`. |
 | Linux | `stillfind_<Version>_amd64.deb` | `sudo apt install ./stillfind_<Version>_amd64.deb`. Oder `StillFind-linux.tar.gz`. |
 
 Laden Sie die Datei für Ihr System von der GitHub-Seite **Releases** herunter (Versionen sind als *Pre-release* markiert). Die Installer sind **Alpha und nicht signiert**; das System kann daher eine Sicherheitswarnung anzeigen. Ihre Daten (Index und Einstellungen) liegen in `~/.stillfind/` und bleiben auch nach der Deinstallation erhalten.
@@ -391,7 +391,7 @@ Aplicativo de desktop para **pesquisar dentro dos seus documentos**, **100% offl
 | | | |
 | --- | --- | --- |
 | Windows | `StillFind-windows-setup.exe` | Execute o instalador (usuário atual, sem administrador). SmartScreen: *Mais informações* → *Executar assim mesmo*. Ou `StillFind-windows.zip` (portátil). |
-| macOS | `StillFind-macos.dmg` | Arraste o StillFind para *Aplicativos*. Primeira abertura: botão direito → *Abrir*. Ou `StillFind-macos.zip`. |
+| macOS | `StillFind-macos.dmg` | Arraste o StillFind para *Aplicativos*. O app não é assinado e o macOS o bloqueia (“mover para o Lixo?”). Clique em *Concluído*, depois *Ajustes do Sistema → Privacidade e Segurança → Abrir Mesmo Assim*; ou no Terminal `xattr -dr com.apple.quarantine /Applications/StillFind.app`. Ou `StillFind-macos.zip`. |
 | Linux | `stillfind_<versão>_amd64.deb` | `sudo apt install ./stillfind_<versão>_amd64.deb`. Ou `StillFind-linux.tar.gz`. |
 
 Baixe o arquivo do seu sistema na página **Releases** do GitHub (versões marcadas como *pre-release*). Os instaladores são **alpha e não assinados**, então o sistema pode mostrar um aviso de segurança. Seus dados (índice e configurações) ficam em `~/.stillfind/` e permanecem após desinstalar.
