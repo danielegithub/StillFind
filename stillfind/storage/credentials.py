@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from stillfind.core.i18n import tr
+
 SERVICE = "StillFind"
 LEGACY_SERVICE = "CercaDoc"
 
@@ -43,7 +45,7 @@ class CredentialStore:
                     sec.SecKeychainItemFreeContent(None, data)
                     cf.CFRelease(item)
         if rc and not (action == "delete" and rc == -25300):
-            raise RuntimeError(f"Accesso al portachiavi macOS fallito ({rc}).")
+            raise RuntimeError(tr("Accesso al portachiavi macOS fallito ({code}).", code=rc))
 
     @staticmethod
     def _windows(action, account, key, directory):
@@ -77,14 +79,14 @@ class CredentialStore:
             return CredentialStore._windows(action, account, key, Path(directory))
         address = os.environ.get("DBUS_SESSION_BUS_ADDRESS", "")
         if address and any(not a.startswith("unix:") for a in address.split(";") if a):
-            raise RuntimeError("Secret Service richiede un bus di sessione locale.")
+            raise RuntimeError(tr("Secret Service richiede un bus di sessione locale."))
         op = {"put": ["store", "--label=StillFind"], "get": ["lookup"], "delete": ["clear"]}[action]
         try:
             result = subprocess.run(["secret-tool", *op, "application", service, "archive", account],
                                     input=bytes(key) if key is not None else b"", capture_output=True, timeout=60)
         except FileNotFoundError as ex:
-            raise RuntimeError("Per il portachiavi Linux occorre secret-tool (libsecret).") from ex
+            raise RuntimeError(tr("Per il portachiavi Linux occorre secret-tool (libsecret).")) from ex
         if result.returncode:
-            raise RuntimeError("Il portachiavi Secret Service non è disponibile o è bloccato.")
+            raise RuntimeError(tr("Il portachiavi Secret Service non è disponibile o è bloccato."))
         if action == "get":
             return bytearray(result.stdout.rstrip(b"\n"))

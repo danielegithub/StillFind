@@ -1,0 +1,534 @@
+{
+ "Salva": {
+  "en": "Save",
+  "fr": "Enregistrer",
+  "es": "Guardar",
+  "de": "Speichern",
+  "pt": "Salvar"
+ },
+ "Cartelle indicizzate": {
+  "en": "Indexed folders",
+  "fr": "Dossiers indexés",
+  "es": "Carpetas indexadas",
+  "de": "Indizierte Ordner",
+  "pt": "Pastas indexadas"
+ },
+ "Scegli dove cercare e se includere anche le sottocartelle.": {
+  "en": "Choose where to search and whether to include subfolders.",
+  "fr": "Choisissez où rechercher et s’il faut inclure les sous-dossiers.",
+  "es": "Elige dónde buscar y si incluir también las subcarpetas.",
+  "de": "Legen Sie fest, wo gesucht wird und ob Unterordner einbezogen werden.",
+  "pt": "Escolha onde pesquisar e se deve incluir as subpastas."
+ },
+ "Cartelle da escludere": {
+  "en": "Folders to exclude",
+  "fr": "Dossiers à exclure",
+  "es": "Carpetas que excluir",
+  "de": "Auszuschließende Ordner",
+  "pt": "Pastas a excluir"
+ },
+ "Tipi di documento da cercare": {
+  "en": "Document types to search",
+  "fr": "Types de documents à rechercher",
+  "es": "Tipos de documento que buscar",
+  "de": "Zu durchsuchende Dokumenttypen",
+  "pt": "Tipos de documento a pesquisar"
+ },
+ "Immagini e foto vengono incluse quando attivi l’OCR nella scheda Lettura e OCR.": {
+  "en": "Images and photos are included when you turn on OCR in the Reading and OCR tab.",
+  "fr": "Les images et photos sont incluses lorsque vous activez l’OCR dans l’onglet Lecture et OCR.",
+  "es": "Las imágenes y fotos se incluyen cuando activas el OCR en la pestaña Lectura y OCR.",
+  "de": "Bilder und Fotos werden einbezogen, wenn Sie OCR im Reiter „Lesen und OCR“ aktivieren.",
+  "pt": "Imagens e fotos são incluídas quando você ativa o OCR na aba Leitura e OCR."
+ },
+ "Dimensione massima file (MB)": {
+  "en": "Maximum file size (MB)",
+  "fr": "Taille maximale des fichiers (Mo)",
+  "es": "Tamaño máximo de archivo (MB)",
+  "de": "Maximale Dateigröße (MB)",
+  "pt": "Tamanho máximo do arquivo (MB)"
+ },
+ "Conservazione dischi scollegati (giorni)": {
+  "en": "Keep disconnected drives (days)",
+  "fr": "Conservation des disques déconnectés (jours)",
+  "es": "Conservación de discos desconectados (días)",
+  "de": "Aufbewahrung getrennter Laufwerke (Tage)",
+  "pt": "Retenção de discos desconectados (dias)"
+ },
+ "Con 0 giorni i documenti dei dischi scollegati restano nell’indice senza scadenza.": {
+  "en": "With 0 days, documents from disconnected drives stay in the index with no expiry.",
+  "fr": "Avec 0 jour, les documents des disques déconnectés restent dans l’index sans limite de durée.",
+  "es": "Con 0 días, los documentos de los discos desconectados permanecen en el índice sin caducidad.",
+  "de": "Bei 0 Tagen bleiben die Dokumente getrennter Laufwerke ohne Ablauf im Index.",
+  "pt": "Com 0 dias, os documentos dos discos desconectados permanecem no índice sem prazo."
+ },
+ "Percorsi dimenticati": {
+  "en": "Forgotten paths",
+  "fr": "Chemins oubliés",
+  "es": "Rutas olvidadas",
+  "de": "Vergessene Pfade",
+  "pt": "Caminhos esquecidos"
+ },
+ "Il ripristino viene applicato al salvataggio delle impostazioni.": {
+  "en": "Restoring is applied when you save the settings.",
+  "fr": "La restauration est appliquée à l’enregistrement des réglages.",
+  "es": "La restauración se aplica al guardar los ajustes.",
+  "de": "Die Wiederherstellung wird beim Speichern der Einstellungen angewendet.",
+  "pt": "A restauração é aplicada ao salvar as configurações."
+ },
+ "Includi di nuovo": {
+  "en": "Include again",
+  "fr": "Inclure à nouveau",
+  "es": "Incluir de nuevo",
+  "de": "Wieder einbeziehen",
+  "pt": "Incluir novamente"
+ },
+ "Lettura di scansioni e immagini": {
+  "en": "Reading scans and images",
+  "fr": "Lecture des numérisations et des images",
+  "es": "Lectura de escaneos e imágenes",
+  "de": "Scans und Bilder lesen",
+  "pt": "Leitura de digitalizações e imagens"
+ },
+ "Leggi il testo dai PDF scansionati e dalle immagini": {
+  "en": "Read text from scanned PDFs and images",
+  "fr": "Lire le texte des PDF numérisés et des images",
+  "es": "Leer el texto de PDF escaneados e imágenes",
+  "de": "Text aus gescannten PDFs und Bildern lesen",
+  "pt": "Ler o texto de PDFs digitalizados e imagens"
+ },
+ "Lingue dei documenti": {
+  "en": "Document languages",
+  "fr": "Langues des documents",
+  "es": "Idiomas de los documentos",
+  "de": "Sprachen der Dokumente",
+  "pt": "Idiomas dos documentos"
+ },
+ "Spunta le lingue in cui sono scritte le scansioni. Sono tutte incluse nell’app e funzionano senza internet: sceglierne poche rende la lettura più rapida e precisa.": {
+  "en": "Tick the languages the scans are written in. They are all included in the app and work without internet: choosing only a few makes reading faster and more accurate.",
+  "fr": "Cochez les langues dans lesquelles sont écrites les numérisations. Elles sont toutes incluses dans l’application et fonctionnent sans internet : en choisir peu rend la lecture plus rapide et plus précise.",
+  "es": "Marca los idiomas en los que están escritos los escaneos. Todos están incluidos en la aplicación y funcionan sin internet: elegir pocos hace la lectura más rápida y precisa.",
+  "de": "Wählen Sie die Sprachen, in denen die Scans geschrieben sind. Alle sind in der App enthalten und funktionieren ohne Internet: Wenige Sprachen machen das Lesen schneller und genauer.",
+  "pt": "Marque os idiomas em que as digitalizações estão escritas. Todos estão incluídos no aplicativo e funcionam sem internet: escolher poucos torna a leitura mais rápida e precisa."
+ },
+ "Pagine massime OCR per PDF": {
+  "en": "Maximum OCR pages per PDF",
+  "fr": "Pages OCR maximum par PDF",
+  "es": "Páginas máximas de OCR por PDF",
+  "de": "Maximale OCR-Seiten pro PDF",
+  "pt": "Páginas máximas de OCR por PDF"
+ },
+ "Scansione automatica": {
+  "en": "Automatic scan",
+  "fr": "Analyse automatique",
+  "es": "Escaneo automático",
+  "de": "Automatische Prüfung",
+  "pt": "Verificação automática"
+ },
+ "Controlla periodicamente se nelle cartelle ci sono documenti nuovi o modificati.": {
+  "en": "Periodically checks whether the folders contain new or changed documents.",
+  "fr": "Vérifie périodiquement si les dossiers contiennent des documents nouveaux ou modifiés.",
+  "es": "Comprueba periódicamente si las carpetas tienen documentos nuevos o modificados.",
+  "de": "Prüft regelmäßig, ob die Ordner neue oder geänderte Dokumente enthalten.",
+  "pt": "Verifica periodicamente se as pastas têm documentos novos ou modificados."
+ },
+ "Intervallo in secondi (0 = disattivata)": {
+  "en": "Interval in seconds (0 = off)",
+  "fr": "Intervalle en secondes (0 = désactivé)",
+  "es": "Intervalo en segundos (0 = desactivado)",
+  "de": "Intervall in Sekunden (0 = aus)",
+  "pt": "Intervalo em segundos (0 = desativado)"
+ },
+ "Metti in pausa la lettura quando il computer va a batteria": {
+  "en": "Pause reading when the computer runs on battery",
+  "fr": "Mettre la lecture en pause lorsque l’ordinateur passe sur batterie",
+  "es": "Pausar la lectura cuando el ordenador funciona con batería",
+  "de": "Lesen pausieren, wenn der Computer im Akkubetrieb läuft",
+  "pt": "Pausar a leitura quando o computador estiver na bateria"
+ },
+ "Ricerca per significato": {
+  "en": "Search by meaning",
+  "fr": "Recherche par sens",
+  "es": "Búsqueda por significado",
+  "de": "Bedeutungssuche",
+  "pt": "Pesquisa por significado"
+ },
+ "Trova passaggi affini anche quando usano parole diverse. Tutto viene calcolato sul computer.": {
+  "en": "Finds related passages even when they use different words. Everything is computed on your computer.",
+  "fr": "Trouve des passages proches même s’ils emploient d’autres mots. Tout est calculé sur l’ordinateur.",
+  "es": "Encuentra pasajes afines aunque usen otras palabras. Todo se calcula en el ordenador.",
+  "de": "Findet verwandte Abschnitte auch bei anderen Wörtern. Alles wird auf dem Computer berechnet.",
+  "pt": "Encontra trechos afins mesmo com palavras diferentes. Tudo é calculado no computador."
+ },
+ "Cerca anche per significato": {
+  "en": "Also search by meaning",
+  "fr": "Rechercher aussi par sens",
+  "es": "Buscar también por significado",
+  "de": "Auch nach Bedeutung suchen",
+  "pt": "Pesquisar também por significado"
+ },
+ "Entità da riconoscere e collegare": {
+  "en": "Entities to recognise and link",
+  "fr": "Entités à reconnaître et à relier",
+  "es": "Entidades que reconocer y vincular",
+  "de": "Zu erkennende und zu verknüpfende Entitäten",
+  "pt": "Entidades a reconhecer e vincular"
+ },
+ "Sigle dei protocolli e delle pratiche": {
+  "en": "Protocol and case prefixes",
+  "fr": "Sigles des protocoles et des dossiers",
+  "es": "Siglas de registros y expedientes",
+  "de": "Kürzel für Aktenzeichen und Vorgänge",
+  "pt": "Siglas de protocolos e processos"
+ },
+ "Separa le sigle con una virgola, per esempio PR, PROT.": {
+  "en": "Separate the prefixes with a comma, for example PR, PROT.",
+  "fr": "Séparez les sigles par une virgule, par exemple PR, PROT.",
+  "es": "Separa las siglas con una coma, por ejemplo PR, PROT.",
+  "de": "Trennen Sie die Kürzel durch ein Komma, zum Beispiel PR, PROT.",
+  "pt": "Separe as siglas com vírgula, por exemplo PR, PROT."
+ },
+ "Avvisa delle scadenze nei prossimi 30 giorni": {
+  "en": "Warn about deadlines in the next 30 days",
+  "fr": "Avertir des échéances dans les 30 prochains jours",
+  "es": "Avisar de los vencimientos de los próximos 30 días",
+  "de": "Auf Fristen in den nächsten 30 Tagen hinweisen",
+  "pt": "Avisar dos prazos dos próximos 30 dias"
+ },
+ "Protezione dell’archivio": {
+  "en": "Archive protection",
+  "fr": "Protection de l’archive",
+  "es": "Protección del archivo",
+  "de": "Archivschutz",
+  "pt": "Proteção do arquivo"
+ },
+ "Stato attuale: {mode}": {
+  "en": "Current status: {mode}",
+  "fr": "État actuel : {mode}",
+  "es": "Estado actual: {mode}",
+  "de": "Aktueller Status: {mode}",
+  "pt": "Estado atual: {mode}"
+ },
+ "Archivio: {path}": {
+  "en": "Archive: {path}",
+  "fr": "Archive : {path}",
+  "es": "Archivo: {path}",
+  "de": "Archiv: {path}",
+  "pt": "Arquivo: {path}"
+ },
+ "In chiaro: archivio leggibile sul disco.\nPortachiavi: chiave custodita dall’account del computer.\nCassaforte: passphrase richiesta all’apertura e blocco per inattività.": {
+  "en": "Unencrypted: archive readable on the disk.\nKeychain: key kept by the computer account.\nVault: passphrase required on opening and lock after inactivity.",
+  "fr": "En clair : archive lisible sur le disque.\nTrousseau : clé conservée par le compte de l’ordinateur.\nCoffre-fort : phrase secrète demandée à l’ouverture et verrouillage après inactivité.",
+  "es": "Sin cifrar: archivo legible en el disco.\nLlavero: clave custodiada por la cuenta del ordenador.\nCaja fuerte: frase de contraseña al abrir y bloqueo por inactividad.",
+  "de": "Unverschlüsselt: Archiv auf der Festplatte lesbar.\nSchlüsselbund: Schlüssel wird vom Computerkonto verwahrt.\nTresor: Passphrase beim Öffnen und Sperre bei Inaktivität.",
+  "pt": "Sem cifra: arquivo legível no disco.\nChaveiro: chave guardada pela conta do computador.\nCofre: frase secreta ao abrir e bloqueio por inatividade."
+ },
+ "La configurazione della cifratura salva le modifiche e riavvia StillFind.": {
+  "en": "Setting up encryption saves your changes and restarts StillFind.",
+  "fr": "La configuration du chiffrement enregistre les modifications et redémarre StillFind.",
+  "es": "Configurar el cifrado guarda los cambios y reinicia StillFind.",
+  "de": "Das Einrichten der Verschlüsselung speichert die Änderungen und startet StillFind neu.",
+  "pt": "Configurar a cifragem salva as alterações e reinicia o StillFind."
+ },
+ "Aspetto": {
+  "en": "Appearance",
+  "fr": "Apparence",
+  "es": "Apariencia",
+  "de": "Darstellung",
+  "pt": "Aparência"
+ },
+ "Il tema viene mostrato in anteprima. Annulla ripristina quello precedente.": {
+  "en": "The theme is previewed. Cancel restores the previous one.",
+  "fr": "Le thème est affiché en aperçu. Annuler rétablit le précédent.",
+  "es": "El tema se muestra en vista previa. Cancelar restaura el anterior.",
+  "de": "Das Design wird als Vorschau angezeigt. Abbrechen stellt das vorherige wieder her.",
+  "pt": "O tema é mostrado em pré-visualização. Cancelar restaura o anterior."
+ },
+ "Scorciatoia globale": {
+  "en": "Global shortcut",
+  "fr": "Raccourci global",
+  "es": "Atajo global",
+  "de": "Globale Tastenkombination",
+  "pt": "Atalho global"
+ },
+ "Apri la ricerca da qualsiasi finestra con {keys}": {
+  "en": "Open search from any window with {keys}",
+  "fr": "Ouvrir la recherche depuis n’importe quelle fenêtre avec {keys}",
+  "es": "Abrir la búsqueda desde cualquier ventana con {keys}",
+  "de": "Suche aus jedem Fenster mit {keys} öffnen",
+  "pt": "Abrir a pesquisa de qualquer janela com {keys}"
+ },
+ "Lingua": {
+  "en": "Language",
+  "fr": "Langue",
+  "es": "Idioma",
+  "de": "Sprache",
+  "pt": "Idioma"
+ },
+ "Lingua di menu, pulsanti e messaggi. Non cambia le lingue di lettura dei documenti (OCR). La nuova lingua si applica alla prossima apertura di StillFind: chiudi e riapri l’app.": {
+  "en": "Language of menus, buttons and messages. It does not change the languages used to read documents (OCR). The new language applies the next time StillFind is opened: close and reopen the app.",
+  "fr": "Langue des menus, boutons et messages. Elle ne change pas les langues de lecture des documents (OCR). La nouvelle langue s’applique à la prochaine ouverture de StillFind : fermez et rouvrez l’application.",
+  "es": "Idioma de menús, botones y mensajes. No cambia los idiomas de lectura de los documentos (OCR). El nuevo idioma se aplica la próxima vez que abras StillFind: cierra y vuelve a abrir la aplicación.",
+  "de": "Sprache von Menüs, Schaltflächen und Meldungen. Sie ändert nicht die Sprachen zum Lesen der Dokumente (OCR). Die neue Sprache gilt beim nächsten Start von StillFind: Schließen Sie die App und öffnen Sie sie erneut.",
+  "pt": "Idioma de menus, botões e mensagens. Não muda os idiomas de leitura dos documentos (OCR). O novo idioma vale na próxima abertura do StillFind: feche e abra o aplicativo novamente."
+ },
+ "Pagine massime lette per ogni PDF scansionato": {
+  "en": "Maximum pages read for each scanned PDF",
+  "fr": "Pages maximum lues pour chaque PDF numérisé",
+  "es": "Páginas máximas leídas por cada PDF escaneado",
+  "de": "Maximal gelesene Seiten pro gescanntem PDF",
+  "pt": "Páginas máximas lidas por PDF digitalizado"
+ },
+ "Dimensione massima dei file (MB)": {
+  "en": "Maximum file size (MB)",
+  "fr": "Taille maximale des fichiers (Mo)",
+  "es": "Tamaño máximo de los archivos (MB)",
+  "de": "Maximale Dateigröße (MB)",
+  "pt": "Tamanho máximo dos arquivos (MB)"
+ },
+ "Controllo novità (secondi)": {
+  "en": "Check for new files (seconds)",
+  "fr": "Contrôle des nouveautés (secondes)",
+  "es": "Comprobación de novedades (segundos)",
+  "de": "Prüfung auf Neues (Sekunden)",
+  "pt": "Verificação de novidades (segundos)"
+ },
+ "Giorni di conservazione": {
+  "en": "Days to keep",
+  "fr": "Jours de conservation",
+  "es": "Días de conservación",
+  "de": "Aufbewahrungstage",
+  "pt": "Dias de retenção"
+ },
+ "Cartelle e File": {
+  "en": "Folders and Files",
+  "fr": "Dossiers et fichiers",
+  "es": "Carpetas y archivos",
+  "de": "Ordner und Dateien",
+  "pt": "Pastas e Arquivos"
+ },
+ "Lettura e OCR": {
+  "en": "Reading and OCR",
+  "fr": "Lecture et OCR",
+  "es": "Lectura y OCR",
+  "de": "Lesen und OCR",
+  "pt": "Leitura e OCR"
+ },
+ "Ricerca e Significato": {
+  "en": "Search and Meaning",
+  "fr": "Recherche et sens",
+  "es": "Búsqueda y significado",
+  "de": "Suche und Bedeutung",
+  "pt": "Pesquisa e Significado"
+ },
+ "Sicurezza e Privacy": {
+  "en": "Security and Privacy",
+  "fr": "Sécurité et confidentialité",
+  "es": "Seguridad y privacidad",
+  "de": "Sicherheit und Datenschutz",
+  "pt": "Segurança e Privacidade"
+ },
+ "Aspetto e Sistema": {
+  "en": "Appearance and System",
+  "fr": "Apparence et système",
+  "es": "Apariencia y sistema",
+  "de": "Darstellung und System",
+  "pt": "Aparência e Sistema"
+ },
+ "Sistema": {
+  "en": "System",
+  "fr": "Système",
+  "es": "Sistema",
+  "de": "System",
+  "pt": "Sistema"
+ },
+ "Chiaro": {
+  "en": "Light",
+  "fr": "Clair",
+  "es": "Claro",
+  "de": "Hell",
+  "pt": "Claro"
+ },
+ "Scuro": {
+  "en": "Dark",
+  "fr": "Sombre",
+  "es": "Oscuro",
+  "de": "Dunkel",
+  "pt": "Escuro"
+ },
+ "Tesseract pronto all’uso. OCR e lingue sono già inclusi nell’app distribuita.": {
+  "en": "Tesseract is ready to use. OCR and languages are already included in the distributed app.",
+  "fr": "Tesseract est prêt à l’emploi. L’OCR et les langues sont déjà inclus dans l’application distribuée.",
+  "es": "Tesseract está listo para usar. El OCR y los idiomas ya están incluidos en la aplicación distribuida.",
+  "de": "Tesseract ist einsatzbereit. OCR und Sprachen sind bereits in der ausgelieferten App enthalten.",
+  "pt": "O Tesseract está pronto para uso. O OCR e os idiomas já estão incluídos no aplicativo distribuído."
+ },
+ "Componente OCR non disponibile in questa installazione. Nell’app distribuita Tesseract e le lingue sono già inclusi.": {
+  "en": "OCR component not available in this installation. In the distributed app, Tesseract and the languages are already included.",
+  "fr": "Composant OCR indisponible dans cette installation. Dans l’application distribuée, Tesseract et les langues sont déjà inclus.",
+  "es": "Componente OCR no disponible en esta instalación. En la aplicación distribuida, Tesseract y los idiomas ya están incluidos.",
+  "de": "OCR-Komponente in dieser Installation nicht verfügbar. In der ausgelieferten App sind Tesseract und die Sprachen bereits enthalten.",
+  "pt": "Componente de OCR indisponível nesta instalação. No aplicativo distribuído, o Tesseract e os idiomas já estão incluídos."
+ },
+ "{passages} passaggi indicizzati · {done} documenti elaborati su {docs} · {pending} da elaborare.": {
+  "en": "{passages} passages indexed · {done} documents processed out of {docs} · {pending} to process.",
+  "fr": "{passages} passages indexés · {done} documents traités sur {docs} · {pending} à traiter.",
+  "es": "{passages} pasajes indexados · {done} documentos procesados de {docs} · {pending} por procesar.",
+  "de": "{passages} Abschnitte indiziert · {done} von {docs} Dokumenten verarbeitet · {pending} ausstehend.",
+  "pt": "{passages} trechos indexados · {done} documentos processados de {docs} · {pending} a processar."
+ },
+ "«{label}» deve essere almeno {minimum}.": {
+  "en": "“{label}” must be at least {minimum}.",
+  "fr": "« {label} » doit être au moins {minimum}.",
+  "es": "«{label}» debe ser al menos {minimum}.",
+  "de": "„{label}“ muss mindestens {minimum} sein.",
+  "pt": "“{label}” deve ser pelo menos {minimum}."
+ },
+ "Per leggere scansioni e immagini spunta almeno una lingua nella scheda «Lettura e OCR».": {
+  "en": "To read scans and images, tick at least one language in the “Reading and OCR” tab.",
+  "fr": "Pour lire les numérisations et les images, cochez au moins une langue dans l’onglet « Lecture et OCR ».",
+  "es": "Para leer escaneos e imágenes, marca al menos un idioma en la pestaña «Lectura y OCR».",
+  "de": "Um Scans und Bilder zu lesen, wählen Sie im Reiter „Lesen und OCR“ mindestens eine Sprache.",
+  "pt": "Para ler digitalizações e imagens, marque pelo menos um idioma na aba “Leitura e OCR”."
+ },
+ "Spunta almeno un tipo di documento da cercare nella scheda «Cartelle e File».": {
+  "en": "Tick at least one document type to search in the “Folders and Files” tab.",
+  "fr": "Cochez au moins un type de document à rechercher dans l’onglet « Dossiers et fichiers ».",
+  "es": "Marca al menos un tipo de documento que buscar en la pestaña «Carpetas y archivos».",
+  "de": "Wählen Sie im Reiter „Ordner und Dateien“ mindestens einen zu durchsuchenden Dokumenttyp.",
+  "pt": "Marque pelo menos um tipo de documento a pesquisar na aba “Pastas e Arquivos”."
+ },
+ "Modello locale: {model} · {state}": {
+  "en": "Local model: {model} · {state}",
+  "fr": "Modèle local : {model} · {state}",
+  "es": "Modelo local: {model} · {state}",
+  "de": "Lokales Modell: {model} · {state}",
+  "pt": "Modelo local: {model} · {state}"
+ },
+ "Salva e configura cifratura…": {
+  "en": "Save and set up encryption…",
+  "fr": "Enregistrer et configurer le chiffrement…",
+  "es": "Guardar y configurar el cifrado…",
+  "de": "Speichern und Verschlüsselung einrichten …",
+  "pt": "Salvar e configurar a cifragem…"
+ },
+ "Si applicherà alla prossima apertura dell’app: chiudila e riaprila.": {
+  "en": "It will apply the next time you open the app: close and reopen it.",
+  "fr": "Elle s’appliquera à la prochaine ouverture de l’application : fermez-la et rouvrez-la.",
+  "es": "Se aplicará la próxima vez que abras la aplicación: ciérrala y ábrela de nuevo.",
+  "de": "Sie gilt beim nächsten Start der App: Schließen Sie sie und öffnen Sie sie erneut.",
+  "pt": "Será aplicado na próxima abertura do aplicativo: feche e abra novamente."
+ },
+ "Valore non valido per «{label}»: inserisci un numero intero.": {
+  "en": "Invalid value for “{label}”: enter a whole number.",
+  "fr": "Valeur non valide pour « {label} » : saisissez un nombre entier.",
+  "es": "Valor no válido para «{label}»: introduce un número entero.",
+  "de": "Ungültiger Wert für „{label}“: Geben Sie eine ganze Zahl ein.",
+  "pt": "Valor inválido para “{label}”: digite um número inteiro."
+ },
+ "Le modifiche si applicano con Salva.": {
+  "en": "Changes are applied with Save.",
+  "fr": "Les modifications s’appliquent avec Enregistrer.",
+  "es": "Los cambios se aplican con Guardar.",
+  "de": "Änderungen werden mit Speichern übernommen.",
+  "pt": "As alterações são aplicadas com Salvar."
+ },
+ "Nessuna cartella: aggiungine almeno una.": {
+  "en": "No folder: add at least one.",
+  "fr": "Aucun dossier : ajoutez-en au moins un.",
+  "es": "Ninguna carpeta: añade al menos una.",
+  "de": "Kein Ordner: Fügen Sie mindestens einen hinzu.",
+  "pt": "Nenhuma pasta: adicione pelo menos uma."
+ },
+ "Anche sottocartelle": {
+  "en": "Include subfolders",
+  "fr": "Inclure les sous-dossiers",
+  "es": "Incluir subcarpetas",
+  "de": "Unterordner einbeziehen",
+  "pt": "Incluir subpastas"
+ },
+ "disponibile": {
+  "en": "available",
+  "fr": "disponible",
+  "es": "disponible",
+  "de": "verfügbar",
+  "pt": "disponível"
+ },
+ "componente non disponibile in questa installazione": {
+  "en": "component not available in this installation",
+  "fr": "composant indisponible dans cette installation",
+  "es": "componente no disponible en esta instalación",
+  "de": "Komponente in dieser Installation nicht verfügbar",
+  "pt": "componente indisponível nesta instalação"
+ },
+ "In chiaro": {
+  "en": "Unencrypted",
+  "fr": "En clair",
+  "es": "Sin cifrar",
+  "de": "Unverschlüsselt",
+  "pt": "Sem cifra"
+ },
+ "Portachiavi dell’account": {
+  "en": "Account keychain",
+  "fr": "Trousseau du compte",
+  "es": "Llavero de la cuenta",
+  "de": "Schlüsselbund des Kontos",
+  "pt": "Chaveiro da conta"
+ },
+ "Cassaforte con passphrase": {
+  "en": "Vault with passphrase",
+  "fr": "Coffre-fort avec phrase secrète",
+  "es": "Caja fuerte con frase de contraseña",
+  "de": "Tresor mit Passphrase",
+  "pt": "Cofre com frase secreta"
+ },
+ "Protezione attuale · {mode}": {
+  "en": "Current protection · {mode}",
+  "fr": "Protection actuelle · {mode}",
+  "es": "Protección actual · {mode}",
+  "de": "Aktueller Schutz · {mode}",
+  "pt": "Proteção atual · {mode}"
+ },
+ "Lingue OCR": {
+  "en": "OCR languages",
+  "fr": "Langues OCR",
+  "es": "Idiomas de OCR",
+  "de": "OCR-Sprachen",
+  "pt": "Idiomas de OCR"
+ },
+ "Solo prossime letture": {
+  "en": "Next readings only",
+  "fr": "Prochaines lectures seulement",
+  "es": "Solo próximas lecturas",
+  "de": "Nur künftige Lesevorgänge",
+  "pt": "Somente próximas leituras"
+ },
+ "Rielabora documenti esistenti": {
+  "en": "Reprocess existing documents",
+  "fr": "Retraiter les documents existants",
+  "es": "Reprocesar documentos existentes",
+  "de": "Vorhandene Dokumente neu verarbeiten",
+  "pt": "Reprocessar documentos existentes"
+ },
+ "La nuova scelta si applicherà alle prossime letture. Il testo dei documenti già elaborati rimarrà invariato.": {
+  "en": "The new choice will apply to future readings. The text of documents already processed will stay unchanged.",
+  "fr": "Le nouveau choix s’appliquera aux prochaines lectures. Le texte des documents déjà traités restera inchangé.",
+  "es": "La nueva elección se aplicará a las próximas lecturas. El texto de los documentos ya procesados no cambiará.",
+  "de": "Die neue Auswahl gilt für künftige Lesevorgänge. Der Text bereits verarbeiteter Dokumente bleibt unverändert.",
+  "pt": "A nova escolha será aplicada às próximas leituras. O texto dos documentos já processados permanecerá inalterado."
+ },
+ "Vuoi rielaborare anche i documenti già letti con OCR? L’operazione potrebbe richiedere tempo.": {
+  "en": "Do you also want to reprocess documents already read with OCR? This may take a while.",
+  "fr": "Voulez-vous aussi retraiter les documents déjà lus avec l’OCR ? L’opération peut prendre du temps.",
+  "es": "¿Quieres reprocesar también los documentos ya leídos con OCR? La operación puede tardar.",
+  "de": "Möchten Sie auch bereits per OCR gelesene Dokumente neu verarbeiten? Das kann etwas dauern.",
+  "pt": "Deseja reprocessar também os documentos já lidos com OCR? A operação pode levar tempo."
+ },
+ "Hai cambiato le lingue OCR": {
+  "en": "You changed the OCR languages",
+  "fr": "Vous avez changé les langues OCR",
+  "es": "Has cambiado los idiomas de OCR",
+  "de": "Sie haben die OCR-Sprachen geändert",
+  "pt": "Você mudou os idiomas de OCR"
+ }
+}

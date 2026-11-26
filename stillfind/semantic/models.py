@@ -6,9 +6,9 @@ I modelli si cercano solo nella cartella di installazione (`models/`), mai da al
 from __future__ import annotations
 
 import hashlib
-import sys
 from pathlib import Path
 
+from stillfind.core.resources import resource_root
 from stillfind.semantic.modelcheck import ModelRejected, verify_model
 
 MODELS = {
@@ -43,10 +43,8 @@ class ModelCatalog:
 
     @staticmethod
     def default_dir() -> Path:
-        """Cartella `models/` accanto all'eseguibile installato (o alla radice del progetto in sviluppo)."""
-        if getattr(sys, "frozen", False):
-            return Path(sys.executable).resolve().parent / "models"
-        return Path(__file__).resolve().parents[2] / "models"
+        """Modelli incorporati nel bundle, o alla radice del progetto in sviluppo."""
+        return resource_root() / "models"
 
     @staticmethod
     def model_path(name: str, models_dir: str | Path) -> Path:
@@ -61,6 +59,21 @@ class ModelCatalog:
         """I file del modello ci sono (controllo veloce, senza calcolare le impronte)."""
         d = Path(models_dir) if models_dir else cls.default_dir()
         return name in MODELS and cls.model_path(name, d).is_file() and cls.tokenizer_path(name, d).is_file()
+
+    @classmethod
+    def status(cls, availability: str, *, loaded: bool = False, failed: bool = False,
+               name: str = DEFAULT_MODEL, models_dir: str | Path | None = None) -> dict:
+        """Stato del modello per il piè di pagina, senza leggere i file (nessuna impronta calcolata qui).
+
+        `availability` è il risultato di `SemanticIndex.availability` («on», «off», «no_model», «no_libraries»);
+        `loaded` e `failed` dicono com'è andato il controllo vero, fatto la prima volta che il modello serve.
+        `state`: on / off / no_model / no_libraries / error. `check`: verified / pending / rejected / none."""
+        spec = MODELS[name]
+        state = "error" if failed and availability == "on" else availability
+        check = {"on": "verified" if loaded else "pending", "error": "rejected"}.get(state, "none")
+        return {"state": state, "check": check, "name": name, "dim": spec["dim"],
+                "dir": str(Path(models_dir) if models_dir else cls.default_dir()),
+                "format": "ONNX int8", "sha256": spec["sha256"], "bytes": spec["bytes"]}
 
     @classmethod
     def check(cls, name: str, models_dir: str | Path):

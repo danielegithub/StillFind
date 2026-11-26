@@ -5,6 +5,7 @@ import os
 import sys
 from abc import ABC, abstractmethod
 
+from stillfind.core.i18n import tr
 from stillfind.runtime.hotkey import ShortcutBackend
 from stillfind.runtime.signals import AppSignals
 
@@ -17,11 +18,11 @@ class TrayMenu:
     @classmethod
     def entries(cls):
         snapshot = cls.status
-        counts = (f"{snapshot[0]} file indicizzati · {snapshot[1]} OCR in coda" if snapshot is not None
-                  else "Stato archivio non disponibile")
+        counts = (tr("{files} file indicizzati · {ocr} OCR in coda", files=snapshot[0], ocr=snapshot[1])
+                  if snapshot is not None else tr("Stato archivio non disponibile"))
         paused = snapshot is not None and snapshot[2]
-        return [("open", "Cerca…"), (None, counts), ("resume", "Riprendi") if paused else ("pause", "Pausa"),
-                ("settings", "Impostazioni"), ("about", "Informazioni"), ("quit", "Esci")]
+        return [("open", tr("Cerca…")), (None, counts), ("resume", tr("Riprendi")) if paused else ("pause", tr("Pausa")),
+                ("settings", tr("Impostazioni")), ("about", tr("Informazioni")), ("quit", tr("Esci"))]
 
     @staticmethod
     def activate(action):

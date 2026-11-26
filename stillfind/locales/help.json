@@ -1,0 +1,863 @@
+{
+ "Trova i documenti che contengono tutte le parole, anche nelle forme flesse italiane (contratti, affitti…).": {
+  "en": "Finds documents that contain all the words, also in inflected Italian forms (contratti, affitti…).",
+  "fr": "Trouve les documents qui contiennent tous les mots, y compris dans leurs formes fléchies italiennes (contratti, affitti…).",
+  "es": "Encuentra los documentos que contienen todas las palabras, también en sus formas flexionadas italianas (contratti, affitti…).",
+  "de": "Findet Dokumente, die alle Wörter enthalten, auch in italienischen Beugungsformen (contratti, affitti…).",
+  "pt": "Encontra os documentos que contêm todas as palavras, inclusive em formas flexionadas italianas (contratti, affitti…)."
+ },
+ "Cerca la frase esatta, con le parole vicine e nello stesso ordine.": {
+  "en": "Searches for the exact phrase, with the words next to each other and in the same order.",
+  "fr": "Recherche la phrase exacte, avec les mots côte à côte et dans le même ordre.",
+  "es": "Busca la frase exacta, con las palabras juntas y en el mismo orden.",
+  "de": "Sucht den genauen Satz, mit den Wörtern nebeneinander und in derselben Reihenfolge.",
+  "pt": "Procura a frase exata, com as palavras próximas e na mesma ordem."
+ },
+ "Trova i documenti che contengono almeno una delle due parole.": {
+  "en": "Finds documents that contain at least one of the two words.",
+  "fr": "Trouve les documents qui contiennent au moins l’un des deux mots.",
+  "es": "Encuentra los documentos que contienen al menos una de las dos palabras.",
+  "de": "Findet Dokumente, die mindestens eines der beiden Wörter enthalten.",
+  "pt": "Encontra os documentos que contêm pelo menos uma das duas palavras."
+ },
+ "Esclude tutti i risultati in cui compare la parola indicata dopo NOT.": {
+  "en": "Excludes every result in which the word after NOT appears.",
+  "fr": "Exclut tous les résultats où apparaît le mot indiqué après NOT.",
+  "es": "Excluye todos los resultados en los que aparece la palabra indicada después de NOT.",
+  "de": "Schließt alle Ergebnisse aus, in denen das Wort nach NOT vorkommt.",
+  "pt": "Exclui todos os resultados em que aparece a palavra indicada depois de NOT."
+ },
+ "Trova i documenti in cui i termini compaiono a poche parole di distanza.": {
+  "en": "Finds documents in which the terms appear a few words apart.",
+  "fr": "Trouve les documents où les termes apparaissent à quelques mots de distance.",
+  "es": "Encuentra los documentos en los que los términos aparecen a pocas palabras de distancia.",
+  "de": "Findet Dokumente, in denen die Begriffe wenige Wörter voneinander entfernt vorkommen.",
+  "pt": "Encontra os documentos em que os termos aparecem a poucas palavras de distância."
+ },
+ "Prefisso da almeno 3 lettere: trova contratto, contratti, contrattuale, controparte.": {
+  "en": "Prefix of at least 3 letters: finds contratto, contratti, contrattuale, controparte.",
+  "fr": "Préfixe d’au moins 3 lettres : trouve contratto, contratti, contrattuale, controparte.",
+  "es": "Prefijo de al menos 3 letras: encuentra contratto, contratti, contrattuale, controparte.",
+  "de": "Präfix mit mindestens 3 Buchstaben: findet contratto, contratti, contrattuale, controparte.",
+  "pt": "Prefixo de pelo menos 3 letras: encontra contratto, contratti, contrattuale, controparte."
+ },
+ "Cerca soltanto nel nome del file (usa content:parola per cercare solo nel testo interno).": {
+  "en": "Searches only in the file name (use content:word to search only the inner text).",
+  "fr": "Recherche uniquement dans le nom du fichier (utilisez content:mot pour ne chercher que dans le texte interne).",
+  "es": "Busca solo en el nombre del archivo (usa content:palabra para buscar solo en el texto interno).",
+  "de": "Sucht nur im Dateinamen (mit content:Wort suchen Sie nur im Text im Inneren).",
+  "pt": "Procura só no nome do arquivo (use content:palavra para procurar só no texto interno)."
+ },
+ "Forma rapida per filtrare il formato: equivale a scrivere atto notarile ext:pdf (vale anche tipo:p7m).": {
+  "en": "Quick way to filter by format: same as writing atto notarile ext:pdf (tipo:p7m works too).",
+  "fr": "Moyen rapide de filtrer par format : équivaut à écrire atto notarile ext:pdf (tipo:p7m fonctionne aussi).",
+  "es": "Forma rápida de filtrar por formato: equivale a escribir atto notarile ext:pdf (también vale tipo:p7m).",
+  "de": "Schnelle Form, nach Format zu filtern: entspricht atto notarile ext:pdf (auch tipo:p7m funktioniert).",
+  "pt": "Forma rápida de filtrar por formato: equivale a escrever atto notarile ext:pdf (tipo:p7m também vale)."
+ },
+ "Limita la ricerca a una cartella (e alle sue sottocartelle) con quel nome.": {
+  "en": "Limits the search to a folder (and its subfolders) with that name.",
+  "fr": "Limite la recherche à un dossier (et à ses sous-dossiers) portant ce nom.",
+  "es": "Limita la búsqueda a una carpeta (y sus subcarpetas) con ese nombre.",
+  "de": "Beschränkt die Suche auf einen Ordner (und seine Unterordner) mit diesem Namen.",
+  "pt": "Limita a pesquisa a uma pasta (e suas subpastas) com esse nome."
+ },
+ "Filtra per data di modifica del file: accetta anno (2025), mese (2025-01) o giorno (2025-01-31).": {
+  "en": "Filters by the file’s modification date: accepts a year (2025), a month (2025-01) or a day (2025-01-31).",
+  "fr": "Filtre par date de modification du fichier : accepte une année (2025), un mois (2025-01) ou un jour (2025-01-31).",
+  "es": "Filtra por la fecha de modificación del archivo: admite año (2025), mes (2025-01) o día (2025-01-31).",
+  "de": "Filtert nach Änderungsdatum der Datei: Jahr (2025), Monat (2025-01) oder Tag (2025-01-31).",
+  "pt": "Filtra pela data de modificação do arquivo: aceita ano (2025), mês (2025-01) ou dia (2025-01-31)."
+ },
+ "Trova i documenti che citano quel codice fiscale (esempio fittizio; supporta anche omocodia).": {
+  "en": "Finds documents that mention that tax code (fictitious example; it also supports omocodia variants).",
+  "fr": "Trouve les documents qui citent ce code fiscal (exemple fictif ; prend aussi en charge l’omocodia).",
+  "es": "Encuentra los documentos que citan ese código fiscal (ejemplo ficticio; admite también la omocodia).",
+  "de": "Findet Dokumente, die diese Steuernummer nennen (fiktives Beispiel; unterstützt auch Omocodia).",
+  "pt": "Encontra os documentos que citam esse código fiscal (exemplo fictício; também aceita omocodia)."
+ },
+ "Filtra per Partita IVA, codice IBAN o indirizzo email (es. email:utente@esempio.invalid).": {
+  "en": "Filters by VAT number, IBAN or email address (e.g. email:utente@esempio.invalid).",
+  "fr": "Filtre par numéro de TVA, IBAN ou adresse e-mail (ex. email:utente@esempio.invalid).",
+  "es": "Filtra por número de IVA, IBAN o dirección de correo (p. ej. email:utente@esempio.invalid).",
+  "de": "Filtert nach USt-IdNr., IBAN oder E-Mail-Adresse (z. B. email:utente@esempio.invalid).",
+  "pt": "Filtra por número de IVA, IBAN ou endereço de e-mail (ex.: email:utente@esempio.invalid)."
+ },
+ "Trova tutti i documenti associati a uno specifico numero di protocollo o pratica.": {
+  "en": "Finds all documents associated with a specific protocol or case number.",
+  "fr": "Trouve tous les documents associés à un numéro de protocole ou de dossier précis.",
+  "es": "Encuentra todos los documentos asociados a un número de registro o expediente concreto.",
+  "de": "Findet alle Dokumente, die einem bestimmten Aktenzeichen oder Vorgang zugeordnet sind.",
+  "pt": "Encontra todos os documentos associados a um número de protocolo ou processo específico."
+ },
+ "Trova i passaggi con un importo in euro compreso tra i due estremi indicati.": {
+  "en": "Finds passages with an amount in euros between the two given limits.",
+  "fr": "Trouve les passages dont le montant en euros est compris entre les deux bornes indiquées.",
+  "es": "Encuentra los pasajes con un importe en euros comprendido entre los dos extremos indicados.",
+  "de": "Findet Abschnitte mit einem Eurobetrag zwischen den beiden angegebenen Grenzen.",
+  "pt": "Encontra os trechos com um valor em euros entre os dois extremos indicados."
+ },
+ "Trova una cifra entro il ±5% di 450 euro (da 427,50 € a 472,50 €), utile quando ricordi l'importo circa.": {
+  "en": "Finds an amount within ±5% of 450 euros (from €427.50 to €472.50), handy when you only remember the approximate amount.",
+  "fr": "Trouve un montant à ±5 % de 450 euros (de 427,50 € à 472,50 €), utile quand vous vous souvenez du montant approximatif.",
+  "es": "Encuentra una cifra dentro del ±5 % de 450 euros (de 427,50 € a 472,50 €), útil cuando recuerdas el importe aproximado.",
+  "de": "Findet einen Betrag innerhalb von ±5 % von 450 Euro (von 427,50 € bis 472,50 €), praktisch, wenn Sie sich nur ungefähr an den Betrag erinnern.",
+  "pt": "Encontra um valor dentro de ±5% de 450 euros (de 427,50 € a 472,50 €), útil quando você lembra do valor aproximado."
+ },
+ "Apri questa guida": {
+  "en": "Open this guide",
+  "fr": "Ouvrir ce guide",
+  "es": "Abrir esta guía",
+  "de": "Diese Anleitung öffnen",
+  "pt": "Abrir este guia"
+ },
+ "Vai subito alla barra di ricerca": {
+  "en": "Go straight to the search bar",
+  "fr": "Aller directement à la barre de recherche",
+  "es": "Ir directamente a la barra de búsqueda",
+  "de": "Direkt zur Suchleiste",
+  "pt": "Ir direto para a barra de pesquisa"
+ },
+ "Apri le Impostazioni": {
+  "en": "Open Settings",
+  "fr": "Ouvrir les Réglages",
+  "es": "Abrir Ajustes",
+  "de": "Einstellungen öffnen",
+  "pt": "Abrir as Configurações"
+ },
+ "Occorrenza successiva / precedente": {
+  "en": "Next / previous match",
+  "fr": "Occurrence suivante / précédente",
+  "es": "Siguiente / anterior coincidencia",
+  "de": "Nächster / vorheriger Treffer",
+  "pt": "Próxima / anterior ocorrência"
+ },
+ "Richiama StillFind da ogni app": {
+  "en": "Bring up StillFind from any app",
+  "fr": "Afficher StillFind depuis n’importe quelle application",
+  "es": "Abrir StillFind desde cualquier aplicación",
+  "de": "StillFind aus jeder App aufrufen",
+  "pt": "Chamar o StillFind de qualquer aplicativo"
+ },
+ "Pulisci ricerca / chiudi finestra": {
+  "en": "Clear search / close window",
+  "fr": "Effacer la recherche / fermer la fenêtre",
+  "es": "Borrar la búsqueda / cerrar la ventana",
+  "de": "Suche leeren / Fenster schließen",
+  "pt": "Limpar a pesquisa / fechar a janela"
+ },
+ "1. Mappa dell’interfaccia": {
+  "en": "1. Map of the interface",
+  "fr": "1. Plan de l’interface",
+  "es": "1. Mapa de la interfaz",
+  "de": "1. Übersicht der Oberfläche",
+  "pt": "1. Mapa da interface"
+ },
+ "StillFind organizza tutte le funzioni in una griglia a spigolo vivo divisa in cinque fasce orizzontali: barra dei menu, intestazione con stato cifratura, barra di ricerca con filtri, area centrale divisa tra risultati e anteprima, e piè di pagina con avanzamento e modelli.": {
+  "en": "StillFind arranges all its functions in a sharp-cornered grid divided into five horizontal bands: menu bar, header with encryption status, search bar with filters, central area split between results and preview, and a footer with progress and models.",
+  "fr": "StillFind organise toutes ses fonctions dans une grille à angles vifs répartie en cinq bandes horizontales : barre de menus, en-tête avec l’état du chiffrement, barre de recherche avec filtres, zone centrale partagée entre résultats et aperçu, et pied de page avec progression et modèles.",
+  "es": "StillFind organiza todas sus funciones en una cuadrícula de esquinas rectas dividida en cinco franjas horizontales: barra de menús, cabecera con el estado del cifrado, barra de búsqueda con filtros, zona central dividida entre resultados y vista previa, y pie con progreso y modelos.",
+  "de": "StillFind ordnet alle Funktionen in einem eckigen Raster mit fünf waagrechten Bereichen an: Menüleiste, Kopfzeile mit Verschlüsselungsstatus, Suchleiste mit Filtern, Mittelbereich mit Ergebnissen und Vorschau sowie Fußzeile mit Fortschritt und Modellen.",
+  "pt": "O StillFind organiza todas as funções em uma grade de cantos retos dividida em cinco faixas horizontais: barra de menus, cabeçalho com o estado da cifragem, barra de pesquisa com filtros, área central dividida entre resultados e pré-visualização, e rodapé com progresso e modelos."
+ },
+ "2. Impostazioni e configurazione": {
+  "en": "2. Settings and configuration",
+  "fr": "2. Réglages et configuration",
+  "es": "2. Ajustes y configuración",
+  "de": "2. Einstellungen und Konfiguration",
+  "pt": "2. Configurações e ajustes"
+ },
+ "2. Come configurare StillFind (Impostazioni a schede)": {
+  "en": "2. How to set up StillFind (Settings in tabs)",
+  "fr": "2. Configurer StillFind (Réglages par onglets)",
+  "es": "2. Cómo configurar StillFind (Ajustes por pestañas)",
+  "de": "2. StillFind einrichten (Einstellungen in Reitern)",
+  "pt": "2. Como configurar o StillFind (Configurações em abas)"
+ },
+ "Aprendo File → Impostazioni… ({mod}+,) accedi a cinque schede tematiche indipendenti. Puoi passare da una scheda all’altra con il mouse, con le frecce o con Ctrl+Tab; tutte le modifiche vengono applicate insieme quando premi «Salva» (mentre «Annulla» ripristina anche l’anteprima del tema).": {
+  "en": "Opening File → Settings… ({mod}+,) gives you five independent themed tabs. You can move between them with the mouse, the arrow keys or Ctrl+Tab; all changes are applied together when you press “Save” (while “Cancel” also restores the theme preview).",
+  "fr": "En ouvrant Fichier → Réglages… ({mod}+,) vous accédez à cinq onglets thématiques indépendants. Vous pouvez passer de l’un à l’autre avec la souris, les flèches ou Ctrl+Tab ; toutes les modifications s’appliquent ensemble quand vous appuyez sur « Enregistrer » (« Annuler » rétablit aussi l’aperçu du thème).",
+  "es": "Al abrir Archivo → Ajustes… ({mod}+,) accedes a cinco pestañas temáticas independientes. Puedes pasar de una a otra con el ratón, las flechas o Ctrl+Tab; todos los cambios se aplican juntos al pulsar «Guardar» («Cancelar» restaura también la vista previa del tema).",
+  "de": "Über Datei → Einstellungen … ({mod}+,) erreichen Sie fünf voneinander unabhängige Reiter. Sie wechseln mit der Maus, den Pfeiltasten oder Strg+Tab; alle Änderungen werden gemeinsam übernommen, wenn Sie „Speichern“ wählen („Abbrechen“ stellt auch die Design-Vorschau wieder her).",
+  "pt": "Ao abrir Arquivo → Configurações… ({mod}+,) você acessa cinco abas temáticas independentes. Você pode alternar entre elas com o mouse, as setas ou Ctrl+Tab; todas as alterações são aplicadas juntas ao pressionar “Salvar” (“Cancelar” também restaura a pré-visualização do tema)."
+ },
+ "3. Come cercare e filtri": {
+  "en": "3. Searching and filters",
+  "fr": "3. Rechercher et filtrer",
+  "es": "3. Cómo buscar y filtros",
+  "de": "3. Suchen und Filter",
+  "pt": "3. Como pesquisar e filtros"
+ },
+ "3. Come cercare (dalla ricerca semplice ai filtri avanzati)": {
+  "en": "3. How to search (from simple search to advanced filters)",
+  "fr": "3. Comment rechercher (de la recherche simple aux filtres avancés)",
+  "es": "3. Cómo buscar (de la búsqueda simple a los filtros avanzados)",
+  "de": "3. So suchen Sie (von der einfachen Suche bis zu erweiterten Filtern)",
+  "pt": "3. Como pesquisar (da pesquisa simples aos filtros avançados)"
+ },
+ "Nella maggior parte dei casi basta scrivere due o tre parole: StillFind ignora maiuscole e accenti, riconosce singolari, plurali e radici italiane, dà priorità ai documenti in cui i termini compaiono nello stesso paragrafo o nella stessa pagina e propone «Intendevi…?» in caso di errore di battitura.": {
+  "en": "Most of the time two or three words are enough: StillFind ignores capitals and accents, recognises singular, plural and Italian word stems, gives priority to documents where the terms appear in the same paragraph or page, and suggests “Did you mean…?” when you make a typo.",
+  "fr": "Dans la plupart des cas, deux ou trois mots suffisent : StillFind ignore les majuscules et les accents, reconnaît le singulier, le pluriel et les racines italiennes, donne la priorité aux documents où les termes apparaissent dans le même paragraphe ou la même page, et propose « Vouliez-vous dire… ? » en cas de faute de frappe.",
+  "es": "En la mayoría de los casos basta con escribir dos o tres palabras: StillFind ignora mayúsculas y acentos, reconoce singulares, plurales y raíces italianas, da prioridad a los documentos en los que los términos aparecen en el mismo párrafo o página y propone «¿Querías decir…?» si te equivocas al escribir.",
+  "de": "Meist genügen zwei oder drei Wörter: StillFind ignoriert Groß-/Kleinschreibung und Akzente, erkennt Singular, Plural und italienische Wortstämme, bevorzugt Dokumente, in denen die Begriffe im selben Absatz oder auf derselben Seite stehen, und schlägt bei Tippfehlern „Meinten Sie…?“ vor.",
+  "pt": "Na maioria dos casos bastam duas ou três palavras: o StillFind ignora maiúsculas e acentos, reconhece singular, plural e radicais italianos, dá prioridade aos documentos em que os termos aparecem no mesmo parágrafo ou página e sugere “Você quis dizer…?” em caso de erro de digitação."
+ },
+ "4. Collegamenti, versioni e scadenze": {
+  "en": "4. Links, versions and deadlines",
+  "fr": "4. Liens, versions et échéances",
+  "es": "4. Vínculos, versiones y vencimientos",
+  "de": "4. Verknüpfungen, Versionen und Fristen",
+  "pt": "4. Vínculos, versões e prazos"
+ },
+ "4. Collegamenti, Pratiche, Versioni e Scadenze": {
+  "en": "4. Links, Cases, Versions and Deadlines",
+  "fr": "4. Liens, dossiers, versions et échéances",
+  "es": "4. Vínculos, expedientes, versiones y vencimientos",
+  "de": "4. Verknüpfungen, Vorgänge, Versionen und Fristen",
+  "pt": "4. Vínculos, processos, versões e prazos"
+ },
+ "Oltre a trovare parole singole, StillFind analizza la struttura dei documenti amministrativi, fiscali e legali per ricostruire automaticamente i legami tra file sparsi in cartelle diverse.": {
+  "en": "Besides finding single words, StillFind analyses the structure of administrative, tax and legal documents to rebuild automatically the links between files scattered in different folders.",
+  "fr": "Au-delà de la recherche de mots isolés, StillFind analyse la structure des documents administratifs, fiscaux et juridiques pour reconstituer automatiquement les liens entre des fichiers dispersés dans différents dossiers.",
+  "es": "Además de encontrar palabras sueltas, StillFind analiza la estructura de los documentos administrativos, fiscales y legales para reconstruir automáticamente los vínculos entre archivos dispersos en carpetas distintas.",
+  "de": "Neben einzelnen Wörtern analysiert StillFind den Aufbau von Verwaltungs-, Steuer- und Rechtsdokumenten, um die Verbindungen zwischen auf verschiedene Ordner verteilten Dateien automatisch zu rekonstruieren.",
+  "pt": "Além de encontrar palavras isoladas, o StillFind analisa a estrutura de documentos administrativos, fiscais e jurídicos para reconstruir automaticamente os vínculos entre arquivos espalhados em pastas diferentes."
+ },
+ "5. Sicurezza, cifratura e oscuramento": {
+  "en": "5. Security, encryption and redaction",
+  "fr": "5. Sécurité, chiffrement et caviardage",
+  "es": "5. Seguridad, cifrado y ocultación",
+  "de": "5. Sicherheit, Verschlüsselung und Schwärzen",
+  "pt": "5. Segurança, cifragem e ocultação"
+ },
+ "5. Sicurezza, Cifratura, Audit e Oscuramento": {
+  "en": "5. Security, Encryption, Audit and Redaction",
+  "fr": "5. Sécurité, chiffrement, audit et caviardage",
+  "es": "5. Seguridad, cifrado, auditoría y ocultación",
+  "de": "5. Sicherheit, Verschlüsselung, Audit und Schwärzen",
+  "pt": "5. Segurança, cifragem, auditoria e ocultação"
+ },
+ "StillFind è progettato per trattare fascicoli riservati sul tuo computer senza che alcun dato possa uscire in rete, con cifratura opzionale dell’intero indice e strumenti per verificare e oscurare dati personali.": {
+  "en": "StillFind is designed to handle confidential files on your computer without any data being able to leave over the network, with optional encryption of the whole index and tools to check and redact personal data.",
+  "fr": "StillFind est conçu pour traiter des dossiers confidentiels sur votre ordinateur sans qu’aucune donnée ne puisse sortir sur le réseau, avec un chiffrement facultatif de tout l’index et des outils pour vérifier et caviarder les données personnelles.",
+  "es": "StillFind está diseñado para tratar expedientes reservados en tu ordenador sin que ningún dato pueda salir a la red, con cifrado opcional de todo el índice y herramientas para comprobar y ocultar datos personales.",
+  "de": "StillFind ist dafür gemacht, vertrauliche Akten auf Ihrem Computer zu verarbeiten, ohne dass Daten ins Netz gelangen können – mit optionaler Verschlüsselung des gesamten Index und Werkzeugen zum Prüfen und Schwärzen personenbezogener Daten.",
+  "pt": "O StillFind foi projetado para tratar processos reservados no seu computador sem que nenhum dado possa sair pela rede, com cifragem opcional de todo o índice e ferramentas para verificar e ocultar dados pessoais."
+ },
+ "Guida completa di StillFind": {
+  "en": "Complete StillFind guide",
+  "fr": "Guide complet de StillFind",
+  "es": "Guía completa de StillFind",
+  "de": "Vollständige StillFind-Anleitung",
+  "pt": "Guia completo do StillFind"
+ },
+ "< Capitolo precedente": {
+  "en": "< Previous chapter",
+  "fr": "< Chapitre précédent",
+  "es": "< Capítulo anterior",
+  "de": "< Vorheriges Kapitel",
+  "pt": "< Capítulo anterior"
+ },
+ "Capitolo successivo >": {
+  "en": "Next chapter >",
+  "fr": "Chapitre suivant >",
+  "es": "Capítulo siguiente >",
+  "de": "Nächstes Kapitel >",
+  "pt": "Próximo capítulo >"
+ },
+ "Capitolo {i} di {n}  ·  {title}": {
+  "en": "Chapter {i} of {n}  ·  {title}",
+  "fr": "Chapitre {i} sur {n}  ·  {title}",
+  "es": "Capítulo {i} de {n}  ·  {title}",
+  "de": "Kapitel {i} von {n}  ·  {title}",
+  "pt": "Capítulo {i} de {n}  ·  {title}"
+ },
+ "Figura 1.1 — Vista generale di StillFind: barra menu in alto, lucchetto di cifratura, ricerca e filtri, elenco risultati con badge embedding, anteprima e footer con percentuale e modelli.": {
+  "en": "Figure 1.1 — Overview of StillFind: menu bar at the top, encryption padlock, search and filters, results list with embedding badges, preview, and footer with percentage and models.",
+  "fr": "Figure 1.1 — Vue d’ensemble de StillFind : barre de menus en haut, cadenas de chiffrement, recherche et filtres, liste des résultats avec pastilles d’embedding, aperçu et pied de page avec pourcentage et modèles.",
+  "es": "Figura 1.1 — Vista general de StillFind: barra de menús arriba, candado de cifrado, búsqueda y filtros, lista de resultados con insignias de embedding, vista previa y pie con porcentaje y modelos.",
+  "de": "Abbildung 1.1 — Gesamtansicht von StillFind: Menüleiste oben, Verschlüsselungsschloss, Suche und Filter, Ergebnisliste mit Embedding-Symbolen, Vorschau und Fußzeile mit Prozentanzeige und Modellen.",
+  "pt": "Figura 1.1 — Visão geral do StillFind: barra de menus no topo, cadeado de cifragem, pesquisa e filtros, lista de resultados com selos de embedding, pré-visualização e rodapé com porcentagem e modelos."
+ },
+ "Barra dei menu (File, Strumenti, Aiuto) e Intestazione": {
+  "en": "Menu bar (File, Tools, Help) and Header",
+  "fr": "Barre de menus (Fichier, Outils, Aide) et en-tête",
+  "es": "Barra de menús (Archivo, Herramientas, Ayuda) y cabecera",
+  "de": "Menüleiste (Datei, Werkzeuge, Hilfe) und Kopfzeile",
+  "pt": "Barra de menus (Arquivo, Ferramentas, Ajuda) e cabeçalho"
+ },
+ "In cima alla finestra si trova la barra dei menu classica, utilizzabile con il mouse o da tastiera (Tab, Invio, Spazio e frecce):": {
+  "en": "At the top of the window is the classic menu bar, usable with the mouse or from the keyboard (Tab, Enter, Space and arrows):",
+  "fr": "En haut de la fenêtre se trouve la barre de menus classique, utilisable à la souris ou au clavier (Tab, Entrée, Espace et flèches) :",
+  "es": "En la parte superior de la ventana está la barra de menús clásica, que se puede usar con el ratón o con el teclado (Tab, Intro, Espacio y flechas):",
+  "de": "Oben im Fenster befindet sich die klassische Menüleiste, bedienbar mit der Maus oder per Tastatur (Tab, Eingabetaste, Leertaste und Pfeiltasten):",
+  "pt": "No alto da janela fica a barra de menus clássica, que pode ser usada com o mouse ou pelo teclado (Tab, Enter, Espaço e setas):"
+ },
+ "Fascia di ricerca, Elenco risultati e Badge Embedding": {
+  "en": "Search band, Results list and Embedding badges",
+  "fr": "Bandeau de recherche, liste des résultats et pastilles d’embedding",
+  "es": "Franja de búsqueda, lista de resultados e insignias de embedding",
+  "de": "Suchbereich, Ergebnisliste und Embedding-Symbole",
+  "pt": "Faixa de pesquisa, lista de resultados e selos de embedding"
+ },
+ "La fascia superiore ospita il campo di ricerca istantanea e quattro menu rapidi (Tipo, Data, Cartella, Cerca in) per filtrare senza dover ricordare alcuna sintassi. Sotto, l’area centrale è separata da un divisore verticale trascinabile col mouse.": {
+  "en": "The top band holds the instant search field and four quick menus (Type, Date, Folder, Search in) to filter without having to remember any syntax. Below it, the central area is split by a vertical divider you can drag with the mouse.",
+  "fr": "Le bandeau supérieur contient le champ de recherche instantanée et quatre menus rapides (Type, Date, Dossier, Rechercher dans) pour filtrer sans avoir à retenir de syntaxe. En dessous, la zone centrale est séparée par un diviseur vertical que l’on peut faire glisser à la souris.",
+  "es": "La franja superior contiene el campo de búsqueda instantánea y cuatro menús rápidos (Tipo, Fecha, Carpeta, Buscar en) para filtrar sin recordar ninguna sintaxis. Debajo, la zona central está separada por un divisor vertical que se arrastra con el ratón.",
+  "de": "Der obere Bereich enthält das Sofortsuchfeld und vier Schnellmenüs (Typ, Datum, Ordner, Suchen in), mit denen Sie filtern, ohne sich eine Syntax merken zu müssen. Darunter ist der Mittelbereich durch einen senkrechten Trenner geteilt, den Sie mit der Maus ziehen können.",
+  "pt": "A faixa superior abriga o campo de pesquisa instantânea e quatro menus rápidos (Tipo, Data, Pasta, Pesquisar em) para filtrar sem precisar lembrar nenhuma sintaxe. Abaixo, a área central é separada por um divisor vertical que você pode arrastar com o mouse."
+ },
+ "Figura 1.2 — Elenco dei risultati con icone di stato embedding, occorrenze espanse e pannello Anteprima affiancato con navigazione tra le corrispondenze.": {
+  "en": "Figure 1.2 — Results list with embedding status icons, expanded matches and the Preview panel alongside, with navigation between matches.",
+  "fr": "Figure 1.2 — Liste des résultats avec icônes d’état d’embedding, occurrences développées et panneau Aperçu à côté, avec navigation entre les correspondances.",
+  "es": "Figura 1.2 — Lista de resultados con iconos de estado de embedding, coincidencias desplegadas y panel de vista previa al lado, con navegación entre coincidencias.",
+  "de": "Abbildung 1.2 — Ergebnisliste mit Embedding-Statussymbolen, aufgeklappten Treffern und daneben dem Vorschaufeld mit Navigation zwischen den Treffern.",
+  "pt": "Figura 1.2 — Lista de resultados com ícones de estado de embedding, ocorrências expandidas e painel de pré-visualização ao lado, com navegação entre as ocorrências."
+ },
+ "Pannello Anteprima e Piè di pagina (Percentuale e Modelli)": {
+  "en": "Preview panel and Footer (Percentage and Models)",
+  "fr": "Panneau Aperçu et pied de page (pourcentage et modèles)",
+  "es": "Panel de vista previa y pie (porcentaje y modelos)",
+  "de": "Vorschaufeld und Fußzeile (Prozentanzeige und Modelle)",
+  "pt": "Painel de pré-visualização e rodapé (porcentagem e modelos)"
+ },
+ "Il pannello di destra mostra subito il contenuto del documento selezionato senza dover aprire programmi esterni, mentre il piè di pagina tiene sotto controllo l’avanzamento e i motori locali.": {
+  "en": "The panel on the right immediately shows the content of the selected document without opening external programs, while the footer keeps track of progress and the local engines.",
+  "fr": "Le panneau de droite affiche immédiatement le contenu du document sélectionné sans ouvrir de programmes externes, tandis que le pied de page suit la progression et les moteurs locaux.",
+  "es": "El panel de la derecha muestra enseguida el contenido del documento seleccionado sin abrir programas externos, mientras que el pie vigila el progreso y los motores locales.",
+  "de": "Das Feld rechts zeigt sofort den Inhalt des gewählten Dokuments, ohne externe Programme zu öffnen, während die Fußzeile Fortschritt und lokale Engines im Blick behält.",
+  "pt": "O painel da direita mostra de imediato o conteúdo do documento selecionado sem abrir programas externos, enquanto o rodapé acompanha o progresso e os motores locais."
+ },
+ "Figura 2.1 — Finestra Impostazioni divisa nelle cinque schede tematiche: dettaglio della scheda «Cartelle e File».": {
+  "en": "Figure 2.1 — Settings window split into the five themed tabs: detail of the “Folders and Files” tab.",
+  "fr": "Figure 2.1 — Fenêtre Réglages répartie en cinq onglets thématiques : détail de l’onglet « Dossiers et fichiers ».",
+  "es": "Figura 2.1 — Ventana de Ajustes dividida en cinco pestañas temáticas: detalle de la pestaña «Carpetas y archivos».",
+  "de": "Abbildung 2.1 — Einstellungsfenster mit den fünf Themenreitern: Detail des Reiters „Ordner und Dateien“.",
+  "pt": "Figura 2.1 — Janela de Configurações dividida em cinco abas temáticas: detalhe da aba “Pastas e Arquivos”."
+ },
+ "Scheda 1 · Cartelle e File": {
+  "en": "Tab 1 · Folders and Files",
+  "fr": "Onglet 1 · Dossiers et fichiers",
+  "es": "Pestaña 1 · Carpetas y archivos",
+  "de": "Reiter 1 · Ordner und Dateien",
+  "pt": "Aba 1 · Pastas e Arquivos"
+ },
+ "Definisce quali percorsi del computer o di dischi esterni devono far parte dell’indice locale:": {
+  "en": "Defines which paths on the computer or on external drives are part of the local index:",
+  "fr": "Définit quels chemins de l’ordinateur ou des disques externes font partie de l’index local :",
+  "es": "Define qué rutas del ordenador o de discos externos forman parte del índice local:",
+  "de": "Legt fest, welche Pfade des Computers oder externer Laufwerke zum lokalen Index gehören:",
+  "pt": "Define quais caminhos do computador ou de discos externos fazem parte do índice local:"
+ },
+ "Scheda 2 · Lettura e OCR": {
+  "en": "Tab 2 · Reading and OCR",
+  "fr": "Onglet 2 · Lecture et OCR",
+  "es": "Pestaña 2 · Lectura y OCR",
+  "de": "Reiter 2 · Lesen und OCR",
+  "pt": "Aba 2 · Leitura e OCR"
+ },
+ "Controlla l’estrazione del testo dalle pagine scansionate dei PDF e dai file immagine (PNG, JPG, TIFF, BMP), oltre al comportamento dell’indicizzatore automatico:": {
+  "en": "Controls text extraction from scanned PDF pages and image files (PNG, JPG, TIFF, BMP), as well as the behaviour of the automatic indexer:",
+  "fr": "Contrôle l’extraction du texte des pages numérisées des PDF et des fichiers image (PNG, JPG, TIFF, BMP), ainsi que le comportement de l’indexeur automatique :",
+  "es": "Controla la extracción del texto de las páginas escaneadas de los PDF y de los archivos de imagen (PNG, JPG, TIFF, BMP), además del comportamiento del indexador automático:",
+  "de": "Steuert die Textextraktion aus gescannten PDF-Seiten und Bilddateien (PNG, JPG, TIFF, BMP) sowie das Verhalten des automatischen Indexierers:",
+  "pt": "Controla a extração de texto das páginas digitalizadas dos PDFs e dos arquivos de imagem (PNG, JPG, TIFF, BMP), além do comportamento do indexador automático:"
+ },
+ "Figura 2.2 — Configurazione della scheda «Ricerca e Significato»: attivazione del modello locale multilingual-e5-small, conteggio passaggi, entità e protocolli.": {
+  "en": "Figure 2.2 — Configuration of the “Search and Meaning” tab: turning on the local multilingual-e5-small model, passage count, entities and protocols.",
+  "fr": "Figure 2.2 — Configuration de l’onglet « Recherche et sens » : activation du modèle local multilingual-e5-small, nombre de passages, entités et protocoles.",
+  "es": "Figura 2.2 — Configuración de la pestaña «Búsqueda y significado»: activación del modelo local multilingual-e5-small, recuento de pasajes, entidades y registros.",
+  "de": "Abbildung 2.2 — Konfiguration des Reiters „Suche und Bedeutung“: Aktivierung des lokalen Modells multilingual-e5-small, Abschnittszähler, Entitäten und Aktenzeichen.",
+  "pt": "Figura 2.2 — Configuração da aba “Pesquisa e Significado”: ativação do modelo local multilingual-e5-small, contagem de trechos, entidades e protocolos."
+ },
+ "Scheda 3 · Ricerca e Significato": {
+  "en": "Tab 3 · Search and Meaning",
+  "fr": "Onglet 3 · Recherche et sens",
+  "es": "Pestaña 3 · Búsqueda y significado",
+  "de": "Reiter 3 · Suche und Bedeutung",
+  "pt": "Aba 3 · Pesquisa e Significado"
+ },
+ "Attiva la comprensione per concetto e le regole che costruiscono il grafo delle pratiche:": {
+  "en": "Turns on understanding by concept and the rules that build the case graph:",
+  "fr": "Active la compréhension par concept et les règles qui construisent le graphe des dossiers :",
+  "es": "Activa la comprensión por concepto y las reglas que construyen el grafo de expedientes:",
+  "de": "Aktiviert das Verstehen nach Konzepten und die Regeln, die den Vorgangsgraphen aufbauen:",
+  "pt": "Ativa a compreensão por conceito e as regras que constroem o grafo de processos:"
+ },
+ "Schede 4 e 5 · Sicurezza e Privacy / Aspetto e Sistema": {
+  "en": "Tabs 4 and 5 · Security and Privacy / Appearance and System",
+  "fr": "Onglets 4 et 5 · Sécurité et confidentialité / Apparence et système",
+  "es": "Pestañas 4 y 5 · Seguridad y privacidad / Apariencia y sistema",
+  "de": "Reiter 4 und 5 · Sicherheit und Datenschutz / Darstellung und System",
+  "pt": "Abas 4 e 5 · Segurança e Privacidade / Aparência e Sistema"
+ },
+ "Le ultime due schede governano la protezione crittografica dell’indice e l’integrazione col sistema operativo:": {
+  "en": "The last two tabs govern the cryptographic protection of the index and integration with the operating system:",
+  "fr": "Les deux derniers onglets gèrent la protection cryptographique de l’index et l’intégration au système d’exploitation :",
+  "es": "Las dos últimas pestañas gobiernan la protección criptográfica del índice y la integración con el sistema operativo:",
+  "de": "Die letzten beiden Reiter steuern den kryptografischen Schutz des Index und die Einbindung ins Betriebssystem:",
+  "pt": "As duas últimas abas controlam a proteção criptográfica do índice e a integração com o sistema operacional:"
+ },
+ "Figura 2.3 — Scheda «Sicurezza e Privacy» con stato di protezione SQLCipher e controlli immediati sulla visibilità della password.": {
+  "en": "Figure 2.3 — “Security and Privacy” tab with the SQLCipher protection status and immediate controls over password visibility.",
+  "fr": "Figure 2.3 — Onglet « Sécurité et confidentialité » avec l’état de la protection SQLCipher et les commandes immédiates de visibilité du mot de passe.",
+  "es": "Figura 2.3 — Pestaña «Seguridad y privacidad» con el estado de protección SQLCipher y los controles inmediatos de visibilidad de la contraseña.",
+  "de": "Abbildung 2.3 — Reiter „Sicherheit und Datenschutz“ mit dem SQLCipher-Schutzstatus und den sofortigen Einstellungen zur Sichtbarkeit des Passworts.",
+  "pt": "Figura 2.3 — Aba “Segurança e Privacidade” com o estado da proteção SQLCipher e controles imediatos da visibilidade da senha."
+ },
+ "Tabella rapida della sintassi di ricerca": {
+  "en": "Quick table of search syntax",
+  "fr": "Tableau rapide de la syntaxe de recherche",
+  "es": "Tabla rápida de la sintaxis de búsqueda",
+  "de": "Kurztabelle der Suchsyntax",
+  "pt": "Tabela rápida da sintaxe de pesquisa"
+ },
+ "Combinare menu a discesa e filtri scritti": {
+  "en": "Combining drop-down menus and typed filters",
+  "fr": "Combiner menus déroulants et filtres saisis",
+  "es": "Combinar menús desplegables y filtros escritos",
+  "de": "Dropdown-Menüs und eingetippte Filter kombinieren",
+  "pt": "Combinar menus suspensos e filtros digitados"
+ },
+ "I quattro menu sotto la barra di ricerca (Tipo, Data, Cartella, Cerca in) possono essere usati da soli — anche con casella di ricerca vuota per sfogliare tutti i PDF dell’ultimo mese — oppure combinati liberamente con gli operatori della tabella qui sopra.": {
+  "en": "The four menus under the search bar (Type, Date, Folder, Search in) can be used on their own — even with an empty search box to browse all the PDFs of the last month — or freely combined with the operators in the table above.",
+  "fr": "Les quatre menus sous la barre de recherche (Type, Date, Dossier, Rechercher dans) peuvent s’utiliser seuls — même avec un champ de recherche vide pour parcourir tous les PDF du dernier mois — ou se combiner librement avec les opérateurs du tableau ci-dessus.",
+  "es": "Los cuatro menús bajo la barra de búsqueda (Tipo, Fecha, Carpeta, Buscar en) se pueden usar solos —incluso con el cuadro de búsqueda vacío para ver todos los PDF del último mes— o combinarlos libremente con los operadores de la tabla anterior.",
+  "de": "Die vier Menüs unter der Suchleiste (Typ, Datum, Ordner, Suchen in) lassen sich allein verwenden – auch bei leerem Suchfeld, um alle PDFs des letzten Monats zu durchstöbern – oder frei mit den Operatoren der obigen Tabelle kombinieren.",
+  "pt": "Os quatro menus abaixo da barra de pesquisa (Tipo, Data, Pasta, Pesquisar em) podem ser usados sozinhos — até com o campo de pesquisa vazio para ver todos os PDFs do último mês — ou combinados livremente com os operadores da tabela acima."
+ },
+ "Come lavora la ricerca ibrida (Parole + Significato)": {
+  "en": "How hybrid search works (Words + Meaning)",
+  "fr": "Comment fonctionne la recherche hybride (mots + sens)",
+  "es": "Cómo funciona la búsqueda híbrida (palabras + significado)",
+  "de": "So funktioniert die Hybridsuche (Wörter + Bedeutung)",
+  "pt": "Como funciona a pesquisa híbrida (palavras + significado)"
+ },
+ "Quando «Cerca anche per significato» è attivo e cerchi parole normali ordinate per «Più pertinenti», StillFind esegue sia la ricerca lessicale esatta sia quella vettoriale e unisce le classifiche tramite Reciprocal Rank Fusion (RRF) dando peso doppio alle parole esatte: i documenti che contengono davvero i termini cercati restano sempre in cima, seguiti dai passaggi affini per concetto contrassegnati dal simbolo «≈». Se invece usi virgolette, operatori booleani (AND, OR, NOT) o cerchi solo nel nome, viene usata rigorosamente la corrispondenza testuale.": {
+  "en": "When “Also search by meaning” is on and you search normal words sorted by “Most relevant”, StillFind runs both the exact lexical search and the vector search and merges the rankings with Reciprocal Rank Fusion (RRF), giving double weight to exact words: documents that really contain the searched terms always stay on top, followed by passages related by concept, marked with the “≈” symbol. If you instead use quotes, Boolean operators (AND, OR, NOT) or search only the name, strict text matching is used.",
+  "fr": "Lorsque « Rechercher aussi par sens » est activé et que vous cherchez des mots simples triés par « Plus pertinents », StillFind effectue à la fois la recherche lexicale exacte et la recherche vectorielle, et fusionne les classements par Reciprocal Rank Fusion (RRF) en donnant un poids double aux mots exacts : les documents qui contiennent vraiment les termes recherchés restent toujours en tête, suivis des passages proches par concept signalés par le symbole « ≈ ». Si vous utilisez des guillemets, des opérateurs booléens (AND, OR, NOT) ou ne cherchez que dans le nom, la correspondance textuelle stricte est utilisée.",
+  "es": "Cuando «Buscar también por significado» está activado y buscas palabras normales ordenadas por «Más relevantes», StillFind ejecuta tanto la búsqueda léxica exacta como la vectorial y une las clasificaciones mediante Reciprocal Rank Fusion (RRF), dando doble peso a las palabras exactas: los documentos que realmente contienen los términos buscados quedan siempre arriba, seguidos de los pasajes afines por concepto marcados con el símbolo «≈». Si usas comillas, operadores booleanos (AND, OR, NOT) o buscas solo en el nombre, se usa estrictamente la coincidencia textual.",
+  "de": "Wenn „Auch nach Bedeutung suchen“ aktiv ist und Sie normale Wörter nach „Relevanteste zuerst“ sortiert suchen, führt StillFind sowohl die exakte lexikalische als auch die Vektorsuche aus und führt die Rangfolgen per Reciprocal Rank Fusion (RRF) zusammen, wobei exakte Wörter doppelt gewichtet werden: Dokumente, die die gesuchten Begriffe wirklich enthalten, bleiben immer oben, gefolgt von inhaltlich verwandten Abschnitten, die mit dem Symbol „≈“ markiert sind. Bei Anführungszeichen, booleschen Operatoren (AND, OR, NOT) oder reiner Namenssuche wird ausschließlich der Textabgleich verwendet.",
+  "pt": "Quando “Pesquisar também por significado” está ativado e você pesquisa palavras normais ordenadas por “Mais relevantes”, o StillFind executa tanto a pesquisa lexical exata quanto a vetorial e une os rankings com Reciprocal Rank Fusion (RRF), dando peso dobrado às palavras exatas: os documentos que realmente contêm os termos pesquisados ficam sempre no topo, seguidos dos trechos afins por conceito marcados com o símbolo “≈”. Se você usar aspas, operadores booleanos (AND, OR, NOT) ou pesquisar só no nome, é usada estritamente a correspondência textual."
+ },
+ "Cronologia, Ricerche salvate ed Esportazione CSV": {
+  "en": "History, Saved searches and CSV export",
+  "fr": "Historique, recherches enregistrées et export CSV",
+  "es": "Historial, búsquedas guardadas y exportación a CSV",
+  "de": "Verlauf, gespeicherte Suchen und CSV-Export",
+  "pt": "Histórico, pesquisas salvas e exportação para CSV"
+ },
+ "Da Strumenti → Cronologia e ricerche salvate… puoi riaprire con doppio clic una delle ultime 60 ricerche effettuate (testo + filtri scelti), salvare le ricerche ricorrenti dando loro un nome, cancellare la cronologia o disattivare la memorizzazione. Da File → Esporta risultati in CSV… salvi l’elenco attuale in un file leggibile con Excel o LibreOffice Calc.": {
+  "en": "From Tools → History and saved searches… you can reopen with a double click one of the last 60 searches (text + chosen filters), save recurring searches by giving them a name, clear the history or turn memorisation off. From File → Export results to CSV… you save the current list to a file readable with Excel or LibreOffice Calc.",
+  "fr": "Depuis Outils → Historique et recherches enregistrées… vous pouvez rouvrir d’un double-clic l’une des 60 dernières recherches (texte + filtres choisis), enregistrer les recherches récurrentes en leur donnant un nom, effacer l’historique ou désactiver la mémorisation. Depuis Fichier → Exporter les résultats en CSV… vous enregistrez la liste actuelle dans un fichier lisible avec Excel ou LibreOffice Calc.",
+  "es": "Desde Herramientas → Historial y búsquedas guardadas… puedes reabrir con doble clic una de las últimas 60 búsquedas (texto + filtros elegidos), guardar las búsquedas recurrentes dándoles un nombre, borrar el historial o desactivar la memorización. Desde Archivo → Exportar resultados a CSV… guardas la lista actual en un archivo legible con Excel o LibreOffice Calc.",
+  "de": "Unter Werkzeuge → Verlauf und gespeicherte Suchen … öffnen Sie per Doppelklick eine der letzten 60 Suchen (Text + gewählte Filter), speichern wiederkehrende Suchen unter einem Namen, leeren den Verlauf oder schalten das Merken aus. Mit Datei → Ergebnisse als CSV exportieren … speichern Sie die aktuelle Liste in einer Datei, die sich mit Excel oder LibreOffice Calc lesen lässt.",
+  "pt": "Em Ferramentas → Histórico e pesquisas salvas… você reabre com um duplo clique uma das últimas 60 pesquisas (texto + filtros escolhidos), salva as pesquisas recorrentes dando um nome a elas, apaga o histórico ou desativa a memorização. Em Arquivo → Exportar resultados para CSV… você salva a lista atual em um arquivo legível com Excel ou LibreOffice Calc."
+ },
+ "Buste firmate (.p7m), FatturaPA (.xml) ed Email (.eml)": {
+  "en": "Signed envelopes (.p7m), FatturaPA (.xml) and Email (.eml)",
+  "fr": "Enveloppes signées (.p7m), FatturaPA (.xml) et e-mails (.eml)",
+  "es": "Sobres firmados (.p7m), FatturaPA (.xml) y correo (.eml)",
+  "de": "Signierte Container (.p7m), FatturaPA (.xml) und E-Mail (.eml)",
+  "pt": "Envelopes assinados (.p7m), FatturaPA (.xml) e e-mail (.eml)"
+ },
+ "Molti documenti professionali non sono semplici PDF o file Word: StillFind li apre e indicizza nativamente:": {
+  "en": "Many professional documents are not simple PDFs or Word files: StillFind opens and indexes them natively:",
+  "fr": "De nombreux documents professionnels ne sont pas de simples PDF ou fichiers Word : StillFind les ouvre et les indexe nativement :",
+  "es": "Muchos documentos profesionales no son simples PDF o archivos de Word: StillFind los abre e indexa de forma nativa:",
+  "de": "Viele berufliche Dokumente sind keine einfachen PDF- oder Word-Dateien: StillFind öffnet und indiziert sie nativ:",
+  "pt": "Muitos documentos profissionais não são simples PDFs ou arquivos do Word: o StillFind os abre e indexa nativamente:"
+ },
+ "Figura 4.1 — Confronto affiancato tra due versioni di un documento con evidenziazione automatica delle parole e degli importi cambiati.": {
+  "en": "Figure 4.1 — Side-by-side comparison of two versions of a document, with automatic highlighting of changed words and amounts.",
+  "fr": "Figure 4.1 — Comparaison côte à côte de deux versions d’un document, avec mise en évidence automatique des mots et des montants modifiés.",
+  "es": "Figura 4.1 — Comparación lado a lado de dos versiones de un documento, con resaltado automático de las palabras e importes cambiados.",
+  "de": "Abbildung 4.1 — Gegenüberstellung zweier Versionen eines Dokuments mit automatischer Hervorhebung geänderter Wörter und Beträge.",
+  "pt": "Figura 4.1 — Comparação lado a lado de duas versões de um documento, com destaque automático das palavras e valores alterados."
+ },
+ "Vista «Collegati» e Cronologia della pratica": {
+  "en": "“Linked” view and Case timeline",
+  "fr": "Vue « Liés » et chronologie du dossier",
+  "es": "Vista «Vinculados» y cronología del expediente",
+  "de": "Ansicht „Verknüpft“ und Verlauf des Vorgangs",
+  "pt": "Visão “Vinculados” e cronologia do processo"
+ },
+ "Selezionando «Collegati» nel pannello Anteprima visualizzi un albero diviso in quattro gruppi: Entità trovate nel documento, Documenti collegati (stesso CF, P.IVA, IBAN, protocollo, copia firmata/originale o risposta email), Versioni del testo e Documenti simili per significato. Un doppio clic su un’entità apre la scheda cronologica completa della pratica, ordinata per data interna del documento (indicando sempre se la data proviene da FatturaPA, testo, intestazione o modifica file).": {
+  "en": "Selecting “Linked” in the Preview panel shows a tree split into four groups: Entities found in the document, Linked documents (same tax code, VAT number, IBAN, protocol, signed copy/original or email reply), Text versions and Documents similar by meaning. A double click on an entity opens the complete timeline card of the case, ordered by the document’s internal date (always indicating whether the date comes from FatturaPA, the text, the header or the file modification).",
+  "fr": "En sélectionnant « Liés » dans le panneau Aperçu, vous voyez un arbre divisé en quatre groupes : entités trouvées dans le document, documents liés (même code fiscal, TVA, IBAN, protocole, copie signée/originale ou réponse par e-mail), versions du texte et documents similaires par le sens. Un double-clic sur une entité ouvre la fiche chronologique complète du dossier, classée par date interne du document (en indiquant toujours si la date provient de FatturaPA, du texte, de l’en-tête ou de la modification du fichier).",
+  "es": "Al seleccionar «Vinculados» en el panel de vista previa ves un árbol dividido en cuatro grupos: entidades encontradas en el documento, documentos vinculados (mismo código fiscal, IVA, IBAN, registro, copia firmada/original o respuesta de correo), versiones del texto y documentos similares por significado. Un doble clic en una entidad abre la ficha cronológica completa del expediente, ordenada por la fecha interna del documento (indicando siempre si la fecha procede de FatturaPA, del texto, de la cabecera o de la modificación del archivo).",
+  "de": "Wenn Sie im Vorschaufeld „Verknüpft“ wählen, sehen Sie einen Baum mit vier Gruppen: im Dokument gefundene Entitäten, verknüpfte Dokumente (gleiche Steuernummer, USt-IdNr., IBAN, Aktenzeichen, signierte Kopie/Original oder E-Mail-Antwort), Textversionen und bedeutungsähnliche Dokumente. Ein Doppelklick auf eine Entität öffnet die vollständige Verlaufskarte des Vorgangs, geordnet nach dem internen Datum des Dokuments (mit Angabe, ob das Datum aus FatturaPA, dem Text, dem Kopf oder der Dateiänderung stammt).",
+  "pt": "Ao selecionar “Vinculados” no painel de pré-visualização, você vê uma árvore dividida em quatro grupos: entidades encontradas no documento, documentos vinculados (mesmo código fiscal, IVA, IBAN, protocolo, cópia assinada/original ou resposta de e-mail), versões do texto e documentos semelhantes por significado. Um duplo clique em uma entidade abre a ficha cronológica completa do processo, ordenada pela data interna do documento (indicando sempre se a data vem de FatturaPA, do texto, do cabeçalho ou da modificação do arquivo)."
+ },
+ "Confronto versioni tra formati diversi e Scadenzario": {
+  "en": "Version comparison across formats and Deadline list",
+  "fr": "Comparaison de versions entre formats et échéancier",
+  "es": "Comparación de versiones entre formatos y calendario de vencimientos",
+  "de": "Versionsvergleich über Formate hinweg und Fristenübersicht",
+  "pt": "Comparação de versões entre formatos e lista de prazos"
+ },
+ "Anche senza usare sistemi di controllo versione, puoi verificare cosa è cambiato tra una bozza e il documento finale:": {
+  "en": "Even without version-control systems, you can check what changed between a draft and the final document:",
+  "fr": "Même sans système de gestion de versions, vous pouvez vérifier ce qui a changé entre un brouillon et le document final :",
+  "es": "Incluso sin sistemas de control de versiones, puedes comprobar qué cambió entre un borrador y el documento final:",
+  "de": "Auch ohne Versionsverwaltung können Sie prüfen, was sich zwischen einem Entwurf und dem endgültigen Dokument geändert hat:",
+  "pt": "Mesmo sem sistemas de controle de versão, você pode verificar o que mudou entre um rascunho e o documento final:"
+ },
+ "Figura 5.1 — Pannello del Lucchetto nell’intestazione: verifica dello stato di cifratura, consultazione protetta e oscuramento della password.": {
+  "en": "Figure 5.1 — Padlock panel in the header: encryption status check, protected viewing and hiding of the password.",
+  "fr": "Figure 5.1 — Panneau du cadenas dans l’en-tête : vérification de l’état du chiffrement, consultation protégée et masquage du mot de passe.",
+  "es": "Figura 5.1 — Panel del candado en la cabecera: comprobación del estado de cifrado, consulta protegida y ocultación de la contraseña.",
+  "de": "Abbildung 5.1 — Schlossfeld in der Kopfzeile: Prüfung des Verschlüsselungsstatus, geschützte Anzeige und Verbergen des Passworts.",
+  "pt": "Figura 5.1 — Painel do cadeado no cabeçalho: verificação do estado da cifragem, consulta protegida e ocultação da senha."
+ },
+ "Cifratura dell’archivio (SQLCipher) e Lucchetto in Header": {
+  "en": "Archive encryption (SQLCipher) and the Padlock in the Header",
+  "fr": "Chiffrement de l’archive (SQLCipher) et cadenas dans l’en-tête",
+  "es": "Cifrado del archivo (SQLCipher) y candado en la cabecera",
+  "de": "Verschlüsselung des Archivs (SQLCipher) und das Schloss in der Kopfzeile",
+  "pt": "Cifragem do arquivo (SQLCipher) e cadeado no cabeçalho"
+ },
+ "Di default l’indice nasce in chiaro, ma dal pulsante del lucchetto in alto a destra (o da Impostazioni → Sicurezza e Privacy) puoi attivare in qualsiasi momento la cifratura integrale SQLCipher, che cifra testo estratto, entità, ricerche salvate e persino i vettori semantici (i tuoi documenti originali nelle cartelle non vengono mai toccati):": {
+  "en": "By default the index starts unencrypted, but from the padlock button at the top right (or from Settings → Security and Privacy) you can turn on full SQLCipher encryption at any time, which encrypts extracted text, entities, saved searches and even the semantic vectors (your original documents in the folders are never touched):",
+  "fr": "Par défaut, l’index est créé en clair, mais depuis le bouton du cadenas en haut à droite (ou depuis Réglages → Sécurité et confidentialité) vous pouvez activer à tout moment le chiffrement intégral SQLCipher, qui chiffre le texte extrait, les entités, les recherches enregistrées et même les vecteurs sémantiques (vos documents originaux dans les dossiers ne sont jamais touchés) :",
+  "es": "Por defecto el índice nace sin cifrar, pero desde el botón del candado arriba a la derecha (o desde Ajustes → Seguridad y privacidad) puedes activar en cualquier momento el cifrado integral SQLCipher, que cifra el texto extraído, las entidades, las búsquedas guardadas e incluso los vectores semánticos (tus documentos originales en las carpetas nunca se tocan):",
+  "de": "Standardmäßig ist der Index unverschlüsselt, aber über das Schloss oben rechts (oder Einstellungen → Sicherheit und Datenschutz) können Sie jederzeit die vollständige SQLCipher-Verschlüsselung aktivieren, die extrahierten Text, Entitäten, gespeicherte Suchen und sogar die semantischen Vektoren verschlüsselt (Ihre Originaldokumente in den Ordnern werden nie angetastet):",
+  "pt": "Por padrão o índice nasce sem cifra, mas pelo botão do cadeado no canto superior direito (ou em Configurações → Segurança e Privacidade) você pode ativar a qualquer momento a cifragem integral SQLCipher, que cifra o texto extraído, as entidades, as pesquisas salvas e até os vetores semânticos (seus documentos originais nas pastas nunca são tocados):"
+ },
+ "Figura 5.2 — Strumenti per la riservatezza: Mappa dei dati personali (Audit) e preparazione di una copia oscurata pagina per pagina.": {
+  "en": "Figure 5.2 — Privacy tools: Personal data map (Audit) and preparation of a redacted copy page by page.",
+  "fr": "Figure 5.2 — Outils de confidentialité : carte des données personnelles (Audit) et préparation d’une copie caviardée page par page.",
+  "es": "Figura 5.2 — Herramientas de privacidad: mapa de datos personales (Auditoría) y preparación de una copia oculta página por página.",
+  "de": "Abbildung 5.2 — Werkzeuge für Vertraulichkeit: Karte der personenbezogenen Daten (Audit) und Vorbereitung einer geschwärzten Kopie Seite für Seite.",
+  "pt": "Figura 5.2 — Ferramentas de privacidade: mapa de dados pessoais (Auditoria) e preparação de uma cópia ocultada página por página."
+ },
+ "Mappa dei dati personali (Audit), Oscuramento reale e Rimozione selettiva": {
+  "en": "Personal data map (Audit), Real redaction and Selective removal",
+  "fr": "Carte des données personnelles (Audit), caviardage réel et suppression sélective",
+  "es": "Mapa de datos personales (Auditoría), ocultación real y eliminación selectiva",
+  "de": "Karte der personenbezogenen Daten (Audit), echtes Schwärzen und gezieltes Entfernen",
+  "pt": "Mapa de dados pessoais (Auditoria), ocultação real e remoção seletiva"
+ },
+ "Tre strumenti integrati aiutano a gestire la riservatezza dei fascicoli prima di condividerli o conservarli:": {
+  "en": "Three built-in tools help manage the confidentiality of files before sharing or keeping them:",
+  "fr": "Trois outils intégrés aident à gérer la confidentialité des dossiers avant de les partager ou de les conserver :",
+  "es": "Tres herramientas integradas ayudan a gestionar la confidencialidad de los expedientes antes de compartirlos o conservarlos:",
+  "de": "Drei eingebaute Werkzeuge helfen, die Vertraulichkeit von Akten zu wahren, bevor Sie sie weitergeben oder aufbewahren:",
+  "pt": "Três ferramentas integradas ajudam a gerenciar a confidencialidade dos processos antes de compartilhá-los ou guardá-los:"
+ },
+ "Garanzia tecnica 100% Offline verificabile": {
+  "en": "Verifiable 100% Offline technical guarantee",
+  "fr": "Garantie technique 100 % hors ligne vérifiable",
+  "es": "Garantía técnica 100% sin conexión verificable",
+  "de": "Überprüfbare technische Garantie: 100 % offline",
+  "pt": "Garantia técnica 100% offline verificável"
+ },
+ "StillFind blocca i moduli di rete di Python all’avvio, li escludere fisicamente dal pacchetto compilato (verificandolo in build.py), avvia il processo lavoratore di indicizzazione/OCR/ONNX dentro un recinto del sistema operativo privo di rete (sandbox-exec su macOS, unshare/bwrap su Linux, verifica firewall su Windows) e controlla l’impronta SHA-256 e la struttura interna del modello ONNX prima di caricarlo. Puoi verificarlo in ogni momento da terminale con: stillfind --self-test-offline.": {
+  "en": "StillFind blocks Python’s network modules at startup, physically excludes them from the compiled package (checking it in build.py), starts the indexing/OCR/ONNX worker process inside an operating-system sandbox with no network (sandbox-exec on macOS, unshare/bwrap on Linux, firewall check on Windows) and verifies the SHA-256 fingerprint and the internal structure of the ONNX model before loading it. You can check it at any time from a terminal with: stillfind --self-test-offline.",
+  "fr": "StillFind bloque les modules réseau de Python au démarrage, les exclut physiquement du paquet compilé (en le vérifiant dans build.py), lance le processus de lecture d’indexation/OCR/ONNX dans une enceinte du système d’exploitation sans réseau (sandbox-exec sur macOS, unshare/bwrap sur Linux, vérification du pare-feu sur Windows) et contrôle l’empreinte SHA-256 et la structure interne du modèle ONNX avant de le charger. Vous pouvez le vérifier à tout moment depuis un terminal avec : stillfind --self-test-offline.",
+  "es": "StillFind bloquea los módulos de red de Python al arrancar, los excluye físicamente del paquete compilado (verificándolo en build.py), lanza el proceso de indexación/OCR/ONNX dentro de un recinto del sistema operativo sin red (sandbox-exec en macOS, unshare/bwrap en Linux, comprobación del cortafuegos en Windows) y comprueba la huella SHA-256 y la estructura interna del modelo ONNX antes de cargarlo. Puedes verificarlo en cualquier momento desde un terminal con: stillfind --self-test-offline.",
+  "de": "StillFind blockiert beim Start die Netzwerkmodule von Python, schließt sie physisch aus dem kompilierten Paket aus (geprüft in build.py), startet den Indexierungs-/OCR-/ONNX-Prozess in einer netzlosen Schutzumgebung des Betriebssystems (sandbox-exec unter macOS, unshare/bwrap unter Linux, Firewall-Prüfung unter Windows) und prüft Fingerabdruck (SHA-256) und innere Struktur des ONNX-Modells, bevor es geladen wird. Sie können das jederzeit im Terminal prüfen mit: stillfind --self-test-offline.",
+  "pt": "O StillFind bloqueia os módulos de rede do Python na inicialização, exclui-os fisicamente do pacote compilado (verificando isso em build.py), inicia o processo de indexação/OCR/ONNX dentro de um recinto do sistema operacional sem rede (sandbox-exec no macOS, unshare/bwrap no Linux, verificação do firewall no Windows) e confere a impressão digital SHA-256 e a estrutura interna do modelo ONNX antes de carregá-lo. Você pode verificar a qualquer momento no terminal com: stillfind --self-test-offline."
+ },
+ "File — avvia subito una scansione delle cartelle, mette in pausa o riprende l’indicizzazione, esporta l’elenco dei risultati in CSV, apre le Impostazioni, blocca la cassaforte (se attiva) o chiude completamente applicazione e agente.": {
+  "en": "File — starts a scan of the folders right away, pauses or resumes indexing, exports the results list to CSV, opens Settings, locks the vault (if active) or fully quits the application and agent.",
+  "fr": "Fichier — lance tout de suite une analyse des dossiers, met l’indexation en pause ou la reprend, exporte la liste des résultats en CSV, ouvre les Réglages, verrouille le coffre-fort (s’il est actif) ou quitte complètement l’application et l’agent.",
+  "es": "Archivo — inicia al instante un escaneo de las carpetas, pausa o reanuda la indexación, exporta la lista de resultados a CSV, abre Ajustes, bloquea la caja fuerte (si está activa) o cierra por completo la aplicación y el agente.",
+  "de": "Datei — startet sofort eine Prüfung der Ordner, pausiert oder setzt die Indizierung fort, exportiert die Ergebnisliste als CSV, öffnet die Einstellungen, sperrt den Tresor (falls aktiv) oder beendet Anwendung und Agent vollständig.",
+  "pt": "Arquivo — inicia na hora uma verificação das pastas, pausa ou retoma a indexação, exporta a lista de resultados para CSV, abre as Configurações, bloqueia o cofre (se ativo) ou encerra por completo o aplicativo e o agente."
+ },
+ "Strumenti — raccoglie le funzioni operative sull’archivio: Cronologia e ricerche salvate, Scadenze documenti, Mappa dei dati personali (Audit), Oscura copia del documento, Confronta due versioni selezionate, Documenti duplicati, Dimentica una cartella e Stato e diagnostica dell’archivio.": {
+  "en": "Tools — gathers the working functions on the archive: History and saved searches, Document deadlines, Personal data map (Audit), Redact a copy of the document, Compare two selected versions, Duplicate documents, Forget a folder and Archive status and diagnostics.",
+  "fr": "Outils — regroupe les fonctions de travail sur l’archive : Historique et recherches enregistrées, Échéances des documents, Carte des données personnelles (Audit), Caviarder une copie du document, Comparer deux versions sélectionnées, Documents en double, Oublier un dossier et État et diagnostic de l’archive.",
+  "es": "Herramientas — reúne las funciones de trabajo sobre el archivo: Historial y búsquedas guardadas, Vencimientos de documentos, Mapa de datos personales (Auditoría), Ocultar una copia del documento, Comparar dos versiones seleccionadas, Documentos duplicados, Olvidar una carpeta y Estado y diagnóstico del archivo.",
+  "de": "Werkzeuge — bündelt die Arbeitsfunktionen für das Archiv: Verlauf und gespeicherte Suchen, Dokumentfristen, Karte der personenbezogenen Daten (Audit), Kopie des Dokuments schwärzen, Zwei ausgewählte Versionen vergleichen, Doppelte Dokumente, Einen Ordner vergessen sowie Status und Diagnose des Archivs.",
+  "pt": "Ferramentas — reúne as funções de trabalho sobre o arquivo: Histórico e pesquisas salvas, Prazos dos documentos, Mapa de dados pessoais (Auditoria), Ocultar uma cópia do documento, Comparar duas versões selecionadas, Documentos duplicados, Esquecer uma pasta e Estado e diagnóstico do arquivo."
+ },
+ "Aiuto — apre questa Guida completa (F1), salta direttamente alla Sintassi rapida di ricerca o mostra le Informazioni e licenze di StillFind.": {
+  "en": "Help — opens this complete Guide (F1), jumps straight to the Quick search syntax or shows StillFind’s Information and licences.",
+  "fr": "Aide — ouvre ce Guide complet (F1), accède directement à la Syntaxe de recherche rapide ou affiche les informations et licences de StillFind.",
+  "es": "Ayuda — abre esta Guía completa (F1), salta directamente a la Sintaxis rápida de búsqueda o muestra la información y licencias de StillFind.",
+  "de": "Hilfe — öffnet diese vollständige Anleitung (F1), springt direkt zur Kurzübersicht der Suchsyntax oder zeigt Informationen und Lizenzen von StillFind.",
+  "pt": "Ajuda — abre este Guia completo (F1), vai direto à Sintaxe rápida de pesquisa ou mostra as informações e licenças do StillFind."
+ },
+ "Intestazione e Lucchetto — sotto la barra menu sono sempre visibili la dicitura OFFLINE e il pulsante del lucchetto (NON CIFRATO oppure CIFRATO): un clic mostra lo stato dell’archivio, permette di attivare la cifratura oppure di consultare e nascondere la password.": {
+  "en": "Header and Padlock — below the menu bar you always see the OFFLINE label and the padlock button (NOT ENCRYPTED or ENCRYPTED): a click shows the archive status and lets you turn encryption on or view and hide the password.",
+  "fr": "En-tête et cadenas — sous la barre de menus sont toujours visibles la mention HORS LIGNE et le bouton du cadenas (NON CHIFFRÉ ou CHIFFRÉ) : un clic affiche l’état de l’archive, permet d’activer le chiffrement ou de consulter et masquer le mot de passe.",
+  "es": "Cabecera y candado — bajo la barra de menús siempre se ven la indicación SIN CONEXIÓN y el botón del candado (SIN CIFRAR o CIFRADO): un clic muestra el estado del archivo, permite activar el cifrado o consultar y ocultar la contraseña.",
+  "de": "Kopfzeile und Schloss — unter der Menüleiste sind stets der Hinweis OFFLINE und die Schloss-Schaltfläche (NICHT VERSCHLÜSSELT oder VERSCHLÜSSELT) sichtbar: Ein Klick zeigt den Archivstatus, erlaubt das Aktivieren der Verschlüsselung oder das Anzeigen und Verbergen des Passworts.",
+  "pt": "Cabeçalho e cadeado — abaixo da barra de menus ficam sempre visíveis o rótulo OFFLINE e o botão do cadeado (SEM CIFRA ou CIFRADO): um clique mostra o estado do arquivo, permite ativar a cifragem ou consultar e ocultar a senha."
+ },
+ "Icona dello stato di Embedding — all’inizio di ogni risultato (e accanto al titolo nell’anteprima) compare un pittogramma a quattro nodi con suggerimento a comparsa: verde pieno = vettori del significato pronti e allineati al file; ambra = documento in coda o modificato da ricalcolare; rosso = file privo di testo leggibile; grigio = ricerca per significato disattivata.": {
+  "en": "Embedding status icon — at the start of every result (and next to the title in the preview) a four-node pictogram appears with a pop-up hint: solid green = meaning vectors ready and aligned with the file; amber = document queued or changed and to be recomputed; red = file with no readable text; grey = search by meaning turned off.",
+  "fr": "Icône d’état d’embedding — au début de chaque résultat (et à côté du titre dans l’aperçu) apparaît un pictogramme à quatre nœuds avec une info-bulle : vert plein = vecteurs de sens prêts et alignés sur le fichier ; ambre = document en attente ou modifié à recalculer ; rouge = fichier sans texte lisible ; gris = recherche par sens désactivée.",
+  "es": "Icono del estado de embedding — al comienzo de cada resultado (y junto al título en la vista previa) aparece un pictograma de cuatro nodos con una ayuda emergente: verde pleno = vectores de significado listos y alineados con el archivo; ámbar = documento en cola o modificado por recalcular; rojo = archivo sin texto legible; gris = búsqueda por significado desactivada.",
+  "de": "Embedding-Statussymbol — am Anfang jedes Ergebnisses (und neben dem Titel in der Vorschau) erscheint ein Piktogramm mit vier Knoten und einem Hinweis: volles Grün = Bedeutungsvektoren bereit und mit der Datei abgeglichen; Bernstein = Dokument in der Warteschlange oder geändert und neu zu berechnen; Rot = Datei ohne lesbaren Text; Grau = Bedeutungssuche ausgeschaltet.",
+  "pt": "Ícone do estado de embedding — no início de cada resultado (e ao lado do título na pré-visualização) aparece um pictograma de quatro nós com uma dica: verde cheio = vetores de significado prontos e alinhados ao arquivo; âmbar = documento na fila ou modificado e a recalcular; vermelho = arquivo sem texto legível; cinza = pesquisa por significado desativada."
+ },
+ "Ordinamento e occorrenze multiple — in testa ai risultati puoi ordinare per pertinenza, data di modifica, data interna del documento o nome (A-Z). Sui documenti trovati per parole puoi cliccare «+ Altre occorrenze» per espandere tutti i punti e saltare direttamente alla riga desiderata.": {
+  "en": "Sorting and multiple matches — at the top of the results you can sort by relevance, modification date, the document’s internal date or name (A-Z). On documents found by words you can click “+ More matches” to expand all the spots and jump straight to the line you want.",
+  "fr": "Tri et occurrences multiples — en tête des résultats, vous pouvez trier par pertinence, date de modification, date interne du document ou nom (A-Z). Sur les documents trouvés par mots, vous pouvez cliquer sur « + Autres occurrences » pour développer tous les passages et aller directement à la ligne voulue.",
+  "es": "Orden y coincidencias múltiples — en la parte superior de los resultados puedes ordenar por relevancia, fecha de modificación, fecha interna del documento o nombre (A-Z). En los documentos encontrados por palabras puedes hacer clic en «+ Más coincidencias» para desplegar todos los puntos y saltar directamente a la línea deseada.",
+  "de": "Sortierung und mehrere Treffer — oberhalb der Ergebnisse können Sie nach Relevanz, Änderungsdatum, internem Datum des Dokuments oder Name (A–Z) sortieren. Bei per Wort gefundenen Dokumenten klicken Sie auf „+ Weitere Treffer“, um alle Fundstellen aufzuklappen und direkt zur gewünschten Zeile zu springen.",
+  "pt": "Ordenação e várias ocorrências — no topo dos resultados você pode ordenar por relevância, data de modificação, data interna do documento ou nome (A-Z). Nos documentos encontrados por palavras, você pode clicar em “+ Mais ocorrências” para expandir todos os pontos e ir direto à linha desejada."
+ },
+ "Selezione multipla — usa clic per un singolo documento, Maiusc+clic per un intervallo o {mod}+clic per selezionare due file e confrontarne le versioni dal menu contestuale (tasto destro) o da Strumenti.": {
+  "en": "Multiple selection — click for a single document, Shift+click for a range or {mod}+click to select two files and compare their versions from the context menu (right click) or from Tools.",
+  "fr": "Sélection multiple — cliquez pour un seul document, Maj+clic pour une plage ou {mod}+clic pour sélectionner deux fichiers et comparer leurs versions depuis le menu contextuel (clic droit) ou depuis Outils.",
+  "es": "Selección múltiple — haz clic para un solo documento, Mayús+clic para un intervalo o {mod}+clic para seleccionar dos archivos y comparar sus versiones desde el menú contextual (botón derecho) o desde Herramientas.",
+  "de": "Mehrfachauswahl — Klick für ein einzelnes Dokument, Umschalt+Klick für einen Bereich oder {mod}+Klick, um zwei Dateien auszuwählen und ihre Versionen über das Kontextmenü (Rechtsklick) oder unter Werkzeuge zu vergleichen.",
+  "pt": "Seleção múltipla — clique para um único documento, Shift+clique para um intervalo ou {mod}+clique para selecionar dois arquivos e comparar suas versões pelo menu de contexto (botão direito) ou em Ferramentas."
+ },
+ "Azioni rapide dell’anteprima — quattro pulsanti icona in alto consentono di aprire il file col programma predefinito, mostrarlo nella cartella del sistema, copiare il testo selezionato (o l’intero documento) e creare una copia oscurata.": {
+  "en": "Quick preview actions — four icon buttons at the top let you open the file with the default program, show it in the system folder, copy the selected text (or the whole document) and create a redacted copy.",
+  "fr": "Actions rapides de l’aperçu — quatre boutons icônes en haut permettent d’ouvrir le fichier avec le programme par défaut, de l’afficher dans le dossier du système, de copier le texte sélectionné (ou tout le document) et de créer une copie caviardée.",
+  "es": "Acciones rápidas de la vista previa — cuatro botones con icono en la parte superior permiten abrir el archivo con el programa predeterminado, mostrarlo en la carpeta del sistema, copiar el texto seleccionado (o todo el documento) y crear una copia oculta.",
+  "de": "Schnellaktionen der Vorschau — vier Symbolschaltflächen oben erlauben, die Datei mit dem Standardprogramm zu öffnen, sie im Systemordner anzuzeigen, den markierten Text (oder das ganze Dokument) zu kopieren und eine geschwärzte Kopie zu erstellen.",
+  "pt": "Ações rápidas da pré-visualização — quatro botões com ícone no topo permitem abrir o arquivo com o programa padrão, mostrá-lo na pasta do sistema, copiar o texto selecionado (ou o documento inteiro) e criar uma cópia ocultada."
+ },
+ "Tre viste dell’anteprima — «Occorrenze» mostra i brani rilevanti con numero di pagina PDF, foglio Excel o slide PowerPoint; «Testo completo» mostra l’intero documento indicando per ogni pagina se proviene da testo digitale o OCR; «Collegati» elenca entità, pratica cronologica, versioni e documenti simili. Con < e > (o F3 / Shift+F3) scorri tra le parole evidenziate.": {
+  "en": "Three preview views — “Matches” shows the relevant passages with PDF page number, Excel sheet or PowerPoint slide; “Full text” shows the whole document, indicating for each page whether it comes from digital text or OCR; “Linked” lists entities, case timeline, versions and similar documents. With < and > (or F3 / Shift+F3) you move between the highlighted words.",
+  "fr": "Trois vues de l’aperçu — « Occurrences » montre les passages pertinents avec le numéro de page PDF, la feuille Excel ou la diapositive PowerPoint ; « Texte complet » montre le document entier en indiquant pour chaque page si elle provient d’un texte numérique ou de l’OCR ; « Liés » liste les entités, la chronologie du dossier, les versions et les documents similaires. Avec < et > (ou F3 / Maj+F3) vous parcourez les mots surlignés.",
+  "es": "Tres vistas de la vista previa — «Coincidencias» muestra los pasajes relevantes con número de página del PDF, hoja de Excel o diapositiva de PowerPoint; «Texto completo» muestra todo el documento indicando de cada página si procede de texto digital o de OCR; «Vinculados» enumera entidades, cronología del expediente, versiones y documentos similares. Con < y > (o F3 / Mayús+F3) te mueves entre las palabras resaltadas.",
+  "de": "Drei Vorschauansichten — „Treffer“ zeigt die relevanten Abschnitte mit PDF-Seitenzahl, Excel-Blatt oder PowerPoint-Folie; „Volltext“ zeigt das ganze Dokument und gibt für jede Seite an, ob sie aus digitalem Text oder aus OCR stammt; „Verknüpft“ listet Entitäten, Verlauf des Vorgangs, Versionen und ähnliche Dokumente. Mit < und > (oder F3 / Umschalt+F3) springen Sie zwischen den hervorgehobenen Wörtern.",
+  "pt": "Três visões da pré-visualização — “Ocorrências” mostra os trechos relevantes com número de página do PDF, planilha do Excel ou slide do PowerPoint; “Texto completo” mostra o documento inteiro indicando, para cada página, se vem de texto digital ou de OCR; “Vinculados” lista entidades, cronologia do processo, versões e documentos semelhantes. Com < e > (ou F3 / Shift+F3) você percorre as palavras destacadas."
+ },
+ "Percentuale di indicizzazione — nel footer una barra rettangolare con percentuale in grassetto (es. «Indicizzazione: 64%», «Embedding: 42%» o «Indicizzato: 100%») indica in ogni istante a che punto è il lavoro, affiancata dal tasto «■ Ferma» durante l’elaborazione.": {
+  "en": "Indexing percentage — in the footer a rectangular bar with a bold percentage (e.g. “Indexing: 64%”, “Embedding: 42%” or “Indexed: 100%”) shows at every moment how far the work has got, alongside the “■ Stop” button during processing.",
+  "fr": "Pourcentage d’indexation — dans le pied de page, une barre rectangulaire avec un pourcentage en gras (ex. « Indexation : 64 % », « Embedding : 42 % » ou « Indexé : 100 % ») indique à chaque instant l’avancement du travail, accompagnée du bouton « ■ Arrêter » pendant le traitement.",
+  "es": "Porcentaje de indexación — en el pie, una barra rectangular con el porcentaje en negrita (p. ej. «Indexación: 64%», «Embedding: 42%» o «Indexado: 100%») indica en todo momento cómo va el trabajo, junto al botón «■ Detener» durante el procesamiento.",
+  "de": "Indizierungsfortschritt — in der Fußzeile zeigt ein rechteckiger Balken mit fett gedruckter Prozentzahl (z. B. „Indizierung: 64 %“, „Embedding: 42 %“ oder „Indiziert: 100 %“) jederzeit den Stand der Arbeit, daneben die Schaltfläche „■ Stopp“ während der Verarbeitung.",
+  "pt": "Porcentagem de indexação — no rodapé, uma barra retangular com a porcentagem em negrito (ex.: “Indexação: 64%”, “Embedding: 42%” ou “Indexado: 100%”) indica a todo momento o andamento do trabalho, acompanhada do botão “■ Parar” durante o processamento."
+ },
+ "Riquadro Modelli attivi — nell’angolo inferiore destro sono sempre indicati il modello per il significato (es. multilingual-e5-small ONNX int8 o spento) e lo stato dell’OCR (es. Tesseract ita+eng o spento; le lingue sono indicate con i codici Tesseract); fermando il cursore compaiono i dettagli tecnici e di verifica SHA-256.": {
+  "en": "Active models panel — in the bottom-right corner the model for meaning (e.g. multilingual-e5-small ONNX int8 or off) and the OCR status (e.g. Tesseract ita+eng or off; languages are shown with Tesseract codes) are always shown; hovering the cursor reveals the technical details and SHA-256 verification.",
+  "fr": "Panneau des modèles actifs — dans le coin inférieur droit sont toujours indiqués le modèle pour le sens (ex. multilingual-e5-small ONNX int8 ou désactivé) et l’état de l’OCR (ex. Tesseract ita+eng ou désactivé ; les langues sont indiquées par les codes Tesseract) ; en arrêtant le curseur, les détails techniques et la vérification SHA-256 apparaissent.",
+  "es": "Recuadro de modelos activos — en la esquina inferior derecha se indican siempre el modelo para el significado (p. ej. multilingual-e5-small ONNX int8 o desactivado) y el estado del OCR (p. ej. Tesseract ita+eng o desactivado; los idiomas se indican con los códigos de Tesseract); al detener el cursor aparecen los detalles técnicos y la verificación SHA-256.",
+  "de": "Feld „Aktive Modelle“ — in der unteren rechten Ecke stehen immer das Modell für die Bedeutung (z. B. multilingual-e5-small ONNX int8 oder aus) und der OCR-Status (z. B. Tesseract ita+eng oder aus; Sprachen werden mit Tesseract-Codes angezeigt); hält man den Mauszeiger darüber, erscheinen die technischen Details und die SHA-256-Prüfung.",
+  "pt": "Quadro de modelos ativos — no canto inferior direito são sempre indicados o modelo para o significado (ex.: multilingual-e5-small ONNX int8 ou desativado) e o estado do OCR (ex.: Tesseract ita+eng ou desativado; os idiomas são indicados com os códigos do Tesseract); ao parar o cursor aparecem os detalhes técnicos e a verificação SHA-256."
+ },
+ "Cartelle indicizzate — aggiungi una o più cartelle con «Aggiungi cartella…», attiva o togli «Anche sottocartelle» per ciascuna riga o rimuovila con «✕».": {
+  "en": "Indexed folders — add one or more folders with “Add folder…”, turn “Include subfolders” on or off for each row, or remove it with “✕”.",
+  "fr": "Dossiers indexés — ajoutez un ou plusieurs dossiers avec « Ajouter un dossier… », activez ou désactivez « Inclure les sous-dossiers » pour chaque ligne, ou supprimez-la avec « ✕ ».",
+  "es": "Carpetas indexadas — añade una o más carpetas con «Añadir carpeta…», activa o quita «Incluir subcarpetas» en cada fila o elimínala con «✕».",
+  "de": "Indizierte Ordner — fügen Sie mit „Ordner hinzufügen …“ einen oder mehrere Ordner hinzu, schalten Sie „Unterordner einbeziehen“ je Zeile ein oder aus oder entfernen Sie die Zeile mit „✕“.",
+  "pt": "Pastas indexadas — adicione uma ou mais pastas com “Adicionar pasta…”, ative ou desative “Incluir subpastas” em cada linha ou remova-a com “✕”."
+ },
+ "Cartelle da escludere — elenco di nomi separati da virgola (es. node_modules, Temp, Cache) che vengono ignorati ovunque si trovino.": {
+  "en": "Folders to exclude — list of names separated by commas (e.g. node_modules, Temp, Cache) that are ignored wherever they are found.",
+  "fr": "Dossiers à exclure — liste de noms séparés par des virgules (ex. node_modules, Temp, Cache) ignorés où qu’ils se trouvent.",
+  "es": "Carpetas que excluir — lista de nombres separados por comas (p. ej. node_modules, Temp, Cache) que se ignoran estén donde estén.",
+  "de": "Auszuschließende Ordner — Liste von Namen, durch Kommas getrennt (z. B. node_modules, Temp, Cache), die überall ignoriert werden.",
+  "pt": "Pastas a excluir — lista de nomes separados por vírgula (ex.: node_modules, Temp, Cache) que são ignorados onde quer que estejam."
+ },
+ "Tipi di documento — spunta le famiglie di formati da leggere: Documenti di testo (txt, md, rtf, odt, docx, tex, log), PDF, Fogli di calcolo (xlsx, ods, csv), Presentazioni (pptx, odp), Email (.eml inclusi allegati), Archivi e libri (.zip, .epub), Pagine web e dati (html, xml/FatturaPA, json) e File firmati (.p7m).": {
+  "en": "Document types — tick the families of formats to read: Text documents (txt, md, rtf, odt, docx, tex, log), PDF, Spreadsheets (xlsx, ods, csv), Presentations (pptx, odp), Email (.eml including attachments), Archives and books (.zip, .epub), Web pages and data (html, xml/FatturaPA, json) and Signed files (.p7m).",
+  "fr": "Types de documents — cochez les familles de formats à lire : documents texte (txt, md, rtf, odt, docx, tex, log), PDF, feuilles de calcul (xlsx, ods, csv), présentations (pptx, odp), e-mails (.eml pièces jointes comprises), archives et livres (.zip, .epub), pages web et données (html, xml/FatturaPA, json) et fichiers signés (.p7m).",
+  "es": "Tipos de documento — marca las familias de formatos que leer: documentos de texto (txt, md, rtf, odt, docx, tex, log), PDF, hojas de cálculo (xlsx, ods, csv), presentaciones (pptx, odp), correo (.eml con adjuntos), archivos y libros (.zip, .epub), páginas web y datos (html, xml/FatturaPA, json) y archivos firmados (.p7m).",
+  "de": "Dokumenttypen — wählen Sie die zu lesenden Formatfamilien: Textdokumente (txt, md, rtf, odt, docx, tex, log), PDF, Tabellen (xlsx, ods, csv), Präsentationen (pptx, odp), E-Mail (.eml einschließlich Anhängen), Archive und Bücher (.zip, .epub), Webseiten und Daten (html, xml/FatturaPA, json) und signierte Dateien (.p7m).",
+  "pt": "Tipos de documento — marque as famílias de formatos a ler: documentos de texto (txt, md, rtf, odt, docx, tex, log), PDF, planilhas (xlsx, ods, csv), apresentações (pptx, odp), e-mail (.eml incluindo anexos), arquivos e livros (.zip, .epub), páginas web e dados (html, xml/FatturaPA, json) e arquivos assinados (.p7m)."
+ },
+ "Limiti, dischi scollegati e percorsi dimenticati — imposta la dimensione massima per file (MB) e i giorni di conservazione dei dischi scollegati (con 0 i documenti restano cercabili anche a disco staccato). Da «Percorsi dimenticati» puoi riabilitare cartelle o file precedentemente esclusi.": {
+  "en": "Limits, disconnected drives and forgotten paths — set the maximum size per file (MB) and the days to keep disconnected drives (with 0 documents stay searchable even when the drive is unplugged). From “Forgotten paths” you can re-enable folders or files that were excluded earlier.",
+  "fr": "Limites, disques déconnectés et chemins oubliés — définissez la taille maximale par fichier (Mo) et le nombre de jours de conservation des disques déconnectés (avec 0, les documents restent consultables même disque débranché). Depuis « Chemins oubliés », vous pouvez réactiver des dossiers ou fichiers exclus auparavant.",
+  "es": "Límites, discos desconectados y rutas olvidadas — establece el tamaño máximo por archivo (MB) y los días de conservación de los discos desconectados (con 0 los documentos siguen siendo buscables aunque el disco esté desconectado). Desde «Rutas olvidadas» puedes reactivar carpetas o archivos excluidos anteriormente.",
+  "de": "Limits, getrennte Laufwerke und vergessene Pfade — legen Sie die maximale Größe pro Datei (MB) und die Aufbewahrungstage getrennter Laufwerke fest (bei 0 bleiben Dokumente auch bei abgezogenem Laufwerk durchsuchbar). Unter „Vergessene Pfade“ können Sie früher ausgeschlossene Ordner oder Dateien wieder aktivieren.",
+  "pt": "Limites, discos desconectados e caminhos esquecidos — defina o tamanho máximo por arquivo (MB) e os dias de retenção dos discos desconectados (com 0 os documentos continuam pesquisáveis mesmo com o disco desligado). Em “Caminhos esquecidos” você pode reativar pastas ou arquivos excluídos antes."
+ },
+ "OCR pronto all’uso — nel pacchetto distribuito di StillFind il motore Tesseract e i dizionari di italiano, inglese, francese, spagnolo, tedesco e portoghese sono già incorporati: basta attivare l’interruttore «Leggi il testo dai PDF scansionati e dalle immagini» senza installare nulla dall’esterno.": {
+  "en": "Ready-to-use OCR — in the distributed StillFind package the Tesseract engine and the dictionaries for Italian, English, French, Spanish, German and Portuguese are already built in: just turn on the “Read text from scanned PDFs and images” switch without installing anything from outside.",
+  "fr": "OCR prêt à l’emploi — dans le paquet distribué de StillFind, le moteur Tesseract et les dictionnaires d’italien, anglais, français, espagnol, allemand et portugais sont déjà intégrés : il suffit d’activer l’interrupteur « Lire le texte des PDF numérisés et des images » sans rien installer de l’extérieur.",
+  "es": "OCR listo para usar — en el paquete distribuido de StillFind el motor Tesseract y los diccionarios de italiano, inglés, francés, español, alemán y portugués ya están incorporados: basta activar el interruptor «Leer el texto de PDF escaneados e imágenes» sin instalar nada desde fuera.",
+  "de": "Sofort einsatzbereite OCR — im ausgelieferten StillFind-Paket sind die Tesseract-Engine und die Wörterbücher für Italienisch, Englisch, Französisch, Spanisch, Deutsch und Portugiesisch bereits eingebaut: Aktivieren Sie einfach den Schalter „Text aus gescannten PDFs und Bildern lesen“, ohne etwas von außen zu installieren.",
+  "pt": "OCR pronto para usar — no pacote distribuído do StillFind o motor Tesseract e os dicionários de italiano, inglês, francês, espanhol, alemão e português já estão incorporados: basta ativar a chave “Ler o texto de PDFs digitalizados e imagens” sem instalar nada de fora."
+ },
+ "Lingue e limite pagine — in Impostazioni → Lettura e OCR spunti le lingue dei documenti (Italiano, Inglese, Francese, Spagnolo, Tedesco, Portoghese; attivarne meno rende la lettura più rapida) e indichi il numero massimo di pagine scansionate da sottoporre a OCR per singolo PDF, evitando attese eccessive su volumi molto grandi. Il testo OCR viene salvato pagina per pagina nell’indice.": {
+  "en": "Languages and page limit — in Settings → Reading and OCR you tick the languages of your documents (Italian, English, French, Spanish, German, Portuguese; turning on fewer makes reading faster) and set the maximum number of scanned pages to run OCR on for each PDF, avoiding excessive waits on very large volumes. The OCR text is saved page by page in the index.",
+  "fr": "Langues et limite de pages — dans Réglages → Lecture et OCR, vous cochez les langues de vos documents (italien, anglais, français, espagnol, allemand, portugais ; en activer moins rend la lecture plus rapide) et indiquez le nombre maximal de pages numérisées à soumettre à l’OCR pour chaque PDF, afin d’éviter des attentes excessives sur de très gros volumes. Le texte OCR est enregistré page par page dans l’index.",
+  "es": "Idiomas y límite de páginas — en Ajustes → Lectura y OCR marcas los idiomas de tus documentos (italiano, inglés, francés, español, alemán, portugués; activar menos hace la lectura más rápida) e indicas el número máximo de páginas escaneadas a las que aplicar OCR en cada PDF, evitando esperas excesivas en volúmenes muy grandes. El texto del OCR se guarda página por página en el índice.",
+  "de": "Sprachen und Seitenlimit — unter Einstellungen → Lesen und OCR wählen Sie die Sprachen Ihrer Dokumente (Italienisch, Englisch, Französisch, Spanisch, Deutsch, Portugiesisch; weniger Sprachen machen das Lesen schneller) und legen fest, für wie viele gescannte Seiten pro PDF OCR ausgeführt wird, um übermäßige Wartezeiten bei sehr großen Beständen zu vermeiden. Der OCR-Text wird seitenweise im Index gespeichert.",
+  "pt": "Idiomas e limite de páginas — em Configurações → Leitura e OCR você marca os idiomas dos seus documentos (italiano, inglês, francês, espanhol, alemão, português; ativar menos torna a leitura mais rápida) e indica o número máximo de páginas digitalizadas a submeter ao OCR em cada PDF, evitando esperas excessivas em volumes muito grandes. O texto do OCR é salvo página por página no índice."
+ },
+ "Cambio delle lingue OCR — se cambi le lingue e hai già documenti letti con OCR, al salvataggio scegli fra «Solo prossime letture» (il testo già letto resta invariato) e «Rielabora documenti esistenti» (rilegge soltanto immagini e pagine scansionate, anche negli allegati). Durante la rielaborazione i risultati precedenti restano ricercabili e vengono sostituiti documento per documento solo a lettura riuscita; se la interrompi o va in errore non perdi nulla e riprende da sola.": {
+  "en": "Changing the OCR languages — if you change the languages and already have documents read with OCR, when saving you choose between “Next readings only” (the text already read stays unchanged) and “Reprocess existing documents” (it re-reads only images and scanned pages, including in attachments). During reprocessing the previous results stay searchable and are replaced document by document only once the reading succeeds; if you interrupt it or it fails you lose nothing and it resumes by itself.",
+  "fr": "Changement des langues OCR — si vous changez les langues et avez déjà des documents lus avec l’OCR, à l’enregistrement vous choisissez entre « Prochaines lectures seulement » (le texte déjà lu reste inchangé) et « Retraiter les documents existants » (relit uniquement les images et les pages numérisées, y compris dans les pièces jointes). Pendant le retraitement, les résultats précédents restent consultables et ne sont remplacés document par document qu’une fois la lecture réussie ; si vous l’interrompez ou si elle échoue, vous ne perdez rien et elle reprend toute seule.",
+  "es": "Cambio de los idiomas de OCR — si cambias los idiomas y ya tienes documentos leídos con OCR, al guardar eliges entre «Solo próximas lecturas» (el texto ya leído no cambia) y «Reprocesar documentos existentes» (vuelve a leer solo imágenes y páginas escaneadas, también en los adjuntos). Durante el reprocesado los resultados anteriores siguen siendo buscables y se sustituyen documento por documento solo cuando la lectura tiene éxito; si la interrumpes o falla no pierdes nada y se reanuda sola.",
+  "de": "Wechsel der OCR-Sprachen — wenn Sie die Sprachen ändern und bereits per OCR gelesene Dokumente haben, wählen Sie beim Speichern zwischen „Nur künftige Lesevorgänge“ (bereits gelesener Text bleibt unverändert) und „Vorhandene Dokumente neu verarbeiten“ (liest nur Bilder und gescannte Seiten neu, auch in Anhängen). Während der Neuverarbeitung bleiben die bisherigen Ergebnisse durchsuchbar und werden Dokument für Dokument erst nach erfolgreichem Lesen ersetzt; bei Unterbrechung oder Fehler geht nichts verloren, und der Vorgang setzt von selbst fort.",
+  "pt": "Mudança dos idiomas de OCR — se você mudar os idiomas e já tiver documentos lidos com OCR, ao salvar escolhe entre “Somente próximas leituras” (o texto já lido permanece inalterado) e “Reprocessar documentos existentes” (relê apenas imagens e páginas digitalizadas, inclusive em anexos). Durante o reprocessamento os resultados anteriores continuam pesquisáveis e são substituídos documento por documento só quando a leitura é bem-sucedida; se você interromper ou houver erro, você não perde nada e ele retoma sozinho."
+ },
+ "Scansione automatica e batteria — regola ogni quanti secondi controllare file nuovi, modificati o spostati (0 per disattivare il controllo periodico) e scegli se sospendere automaticamente la lettura quando il portatile funziona a batteria.": {
+  "en": "Automatic scan and battery — set how many seconds between checks for new, changed or moved files (0 to turn off periodic checking) and choose whether to pause reading automatically when the laptop runs on battery.",
+  "fr": "Analyse automatique et batterie — réglez toutes les combien de secondes contrôler les fichiers nouveaux, modifiés ou déplacés (0 pour désactiver le contrôle périodique) et choisissez de suspendre automatiquement la lecture lorsque l’ordinateur portable fonctionne sur batterie.",
+  "es": "Escaneo automático y batería — regula cada cuántos segundos comprobar archivos nuevos, modificados o movidos (0 para desactivar la comprobación periódica) y elige si pausar automáticamente la lectura cuando el portátil funciona con batería.",
+  "de": "Automatische Prüfung und Akku — legen Sie fest, in welchen Abständen (Sekunden) auf neue, geänderte oder verschobene Dateien geprüft wird (0 schaltet die regelmäßige Prüfung aus) und ob das Lesen im Akkubetrieb automatisch pausiert.",
+  "pt": "Verificação automática e bateria — defina a cada quantos segundos verificar arquivos novos, modificados ou movidos (0 para desativar a verificação periódica) e escolha se pausa automaticamente a leitura quando o notebook está na bateria."
+ },
+ "Cerca anche per significato — quando attivo, il lavoratore in background calcola i vettori semantici (embeddings a 384 dimensioni) con il modello locale multilingual-e5-small (ONNX quantizzato int8 su CPU). Permette di trovare ad esempio «ripartizione caldaia» cercando «spese riscaldamento», e abilita la sezione «Documenti simili» nella vista Collegati.": {
+  "en": "Also search by meaning — when on, the background worker computes semantic vectors (384-dimension embeddings) with the local multilingual-e5-small model (int8 quantised ONNX on CPU). It lets you find, for example, “boiler cost split” by searching “heating expenses”, and enables the “Similar documents” section in the Linked view.",
+  "fr": "Rechercher aussi par sens — lorsque cette option est active, le processus d’arrière-plan calcule les vecteurs sémantiques (embeddings à 384 dimensions) avec le modèle local multilingual-e5-small (ONNX quantifié int8 sur CPU). Elle permet par exemple de trouver « répartition chaudière » en cherchant « frais de chauffage », et active la section « Documents similaires » dans la vue Liés.",
+  "es": "Buscar también por significado — cuando está activo, el proceso en segundo plano calcula los vectores semánticos (embeddings de 384 dimensiones) con el modelo local multilingual-e5-small (ONNX cuantizado int8 en CPU). Permite encontrar, por ejemplo, «reparto de la caldera» buscando «gastos de calefacción», y habilita la sección «Documentos similares» en la vista Vinculados.",
+  "de": "Auch nach Bedeutung suchen — wenn aktiv, berechnet der Hintergrundprozess semantische Vektoren (Embeddings mit 384 Dimensionen) mit dem lokalen Modell multilingual-e5-small (int8-quantisiertes ONNX auf der CPU). So finden Sie zum Beispiel „Kesselkostenverteilung“, wenn Sie „Heizkosten“ suchen, und der Abschnitt „Ähnliche Dokumente“ in der Ansicht Verknüpft wird aktiviert.",
+  "pt": "Pesquisar também por significado — quando ativo, o processo em segundo plano calcula os vetores semânticos (embeddings de 384 dimensões) com o modelo local multilingual-e5-small (ONNX quantizado int8 na CPU). Permite encontrar, por exemplo, “rateio da caldeira” pesquisando “despesas de aquecimento”, e habilita a seção “Documentos semelhantes” na visão Vinculados."
+ },
+ "Entità da riconoscere e collegare — scegli quali elementi estrarre e validare nel testo: Codici fiscali, Partite IVA, IBAN, Protocolli e pratiche, Email e PEC, Cedenti e cessionari (FatturaPA) e Conversazioni email.": {
+  "en": "Entities to recognise and link — choose which items to extract and validate in the text: Italian tax codes, VAT numbers, IBAN, Protocol and case numbers, Email and certified email, Sellers and buyers (FatturaPA) and Email conversations.",
+  "fr": "Entités à reconnaître et à relier — choisissez les éléments à extraire et à valider dans le texte : codes fiscaux italiens, numéros de TVA, IBAN, numéros de protocole et de dossier, e-mails et e-mails certifiés, cédants et cessionnaires (FatturaPA) et conversations par e-mail.",
+  "es": "Entidades que reconocer y vincular — elige qué elementos extraer y validar en el texto: códigos fiscales italianos, números de IVA, IBAN, números de registro y expediente, correos y correo certificado, cedentes y cesionarios (FatturaPA) y conversaciones de correo.",
+  "de": "Zu erkennende und zu verknüpfende Entitäten — wählen Sie, welche Elemente im Text extrahiert und geprüft werden: italienische Steuernummern, USt-IdNrn., IBAN, Aktenzeichen und Vorgänge, E-Mails und zertifizierte E-Mails, Verkäufer und Käufer (FatturaPA) sowie E-Mail-Unterhaltungen.",
+  "pt": "Entidades a reconhecer e vincular — escolha quais elementos extrair e validar no texto: códigos fiscais italianos, números de IVA, IBAN, números de protocolo e processo, e-mails e e-mail certificado, cedentes e cessionários (FatturaPA) e conversas de e-mail."
+ },
+ "Sigle protocolli e avvisi scadenze — personalizza i prefissi riconosciuti come pratiche (es. PR, PROT, PRATICA, PROTOCOLLO) e scegli se mostrare nel footer il pulsante di avviso per i documenti con scadenze entro 30 giorni.": {
+  "en": "Protocol prefixes and deadline alerts — customise the prefixes recognised as cases (e.g. PR, PROT, PRATICA, PROTOCOLLO) and choose whether to show in the footer the alert button for documents with deadlines within 30 days.",
+  "fr": "Sigles des protocoles et alertes d’échéances — personnalisez les préfixes reconnus comme dossiers (ex. PR, PROT, PRATICA, PROTOCOLLO) et choisissez d’afficher ou non dans le pied de page le bouton d’alerte pour les documents dont l’échéance est dans les 30 jours.",
+  "es": "Siglas de registros y avisos de vencimientos — personaliza los prefijos reconocidos como expedientes (p. ej. PR, PROT, PRATICA, PROTOCOLLO) y elige si mostrar en el pie el botón de aviso para los documentos con vencimientos en 30 días.",
+  "de": "Kürzel für Aktenzeichen und Fristenhinweise — passen Sie die als Vorgänge erkannten Präfixe an (z. B. PR, PROT, PRATICA, PROTOCOLLO) und wählen Sie, ob in der Fußzeile die Hinweis-Schaltfläche für Dokumente mit Fristen innerhalb von 30 Tagen erscheint.",
+  "pt": "Siglas de protocolos e avisos de prazos — personalize os prefixos reconhecidos como processos (ex.: PR, PROT, PRATICA, PROTOCOLLO) e escolha se mostra no rodapé o botão de aviso para documentos com prazos em até 30 dias."
+ },
+ "Sicurezza e Privacy — mostra il percorso dell’archivio (index.db), il pulsante «Salva e configura cifratura…» per passare tra In chiaro, Portachiavi dell’account e Cassaforte con passphrase, e il pannello immediato per nascondere o rivisualizzare la password del lucchetto.": {
+  "en": "Security and Privacy — shows the archive path (index.db), the “Save and set up encryption…” button to switch between Unencrypted, Account keychain and Vault with passphrase, and the immediate panel to hide or show again the padlock password.",
+  "fr": "Sécurité et confidentialité — affiche le chemin de l’archive (index.db), le bouton « Enregistrer et configurer le chiffrement… » pour passer entre En clair, Trousseau du compte et Coffre-fort avec phrase secrète, et le panneau immédiat pour masquer ou réafficher le mot de passe du cadenas.",
+  "es": "Seguridad y privacidad — muestra la ruta del archivo (index.db), el botón «Guardar y configurar el cifrado…» para pasar entre Sin cifrar, Llavero de la cuenta y Caja fuerte con frase de contraseña, y el panel inmediato para ocultar o volver a mostrar la contraseña del candado.",
+  "de": "Sicherheit und Datenschutz — zeigt den Pfad des Archivs (index.db), die Schaltfläche „Speichern und Verschlüsselung einrichten …“ zum Wechseln zwischen Unverschlüsselt, Schlüsselbund des Kontos und Tresor mit Passphrase sowie das sofortige Feld zum Verbergen oder erneuten Anzeigen des Schlosspassworts.",
+  "pt": "Segurança e Privacidade — mostra o caminho do arquivo (index.db), o botão “Salvar e configurar a cifragem…” para alternar entre Sem cifra, Chaveiro da conta e Cofre com frase secreta, e o painel imediato para ocultar ou mostrar de novo a senha do cadeado."
+ },
+ "Aspetto e Sistema — permette di scegliere tra tema di Sistema, Chiaro o Scuro con anteprima in tempo reale e di abilitare la scorciatoia globale ({keys}) per richiamare StillFind sopra qualsiasi applicazione.": {
+  "en": "Appearance and System — lets you choose between System, Light or Dark theme with a live preview and turn on the global shortcut ({keys}) to bring up StillFind over any application.",
+  "fr": "Apparence et système — permet de choisir entre le thème Système, Clair ou Sombre avec aperçu en temps réel et d’activer le raccourci global ({keys}) pour afficher StillFind au-dessus de n’importe quelle application.",
+  "es": "Apariencia y sistema — permite elegir entre el tema Sistema, Claro u Oscuro con vista previa en tiempo real y activar el atajo global ({keys}) para abrir StillFind sobre cualquier aplicación.",
+  "de": "Darstellung und System — erlaubt die Wahl zwischen System-, hellem oder dunklem Design mit Live-Vorschau und aktiviert die globale Tastenkombination ({keys}), um StillFind über jeder Anwendung aufzurufen.",
+  "pt": "Aparência e Sistema — permite escolher entre o tema Sistema, Claro ou Escuro com pré-visualização em tempo real e ativar o atalho global ({keys}) para chamar o StillFind sobre qualquer aplicativo."
+ },
+ "Scegli le date… — nel menu Data puoi impostare un intervallo preciso scrivendo una data completa (31/12/2025), un intero mese (12/2025) oppure un anno intero (2025), anche compilando solo «Dal» o solo «Al».": {
+  "en": "Choose dates… — in the Date menu you can set a precise range by writing a full date (12/31/2025 or 31/12/2025 depending on the language), a whole month (12/2025) or a whole year (2025), even filling in only “From” or only “To”.",
+  "fr": "Choisir les dates… — dans le menu Date, vous pouvez définir un intervalle précis en saisissant une date complète (31/12/2025), un mois entier (12/2025) ou une année entière (2025), même en ne remplissant que « Du » ou que « Au ».",
+  "es": "Elegir fechas… — en el menú Fecha puedes fijar un intervalo preciso escribiendo una fecha completa (31/12/2025), un mes entero (12/2025) o un año entero (2025), incluso rellenando solo «Desde» o solo «Hasta».",
+  "de": "Datum wählen … — im Menü Datum legen Sie einen genauen Zeitraum fest, indem Sie ein vollständiges Datum (31.12.2025), einen ganzen Monat (12.2025) oder ein ganzes Jahr (2025) eingeben, auch wenn Sie nur „Von“ oder nur „Bis“ ausfüllen.",
+  "pt": "Escolher datas… — no menu Data você pode definir um intervalo preciso escrevendo uma data completa (31/12/2025), um mês inteiro (12/2025) ou um ano inteiro (2025), preenchendo até só “De” ou só “Até”."
+ },
+ "Cerca in — scegli «Nome e contenuto» per la ricerca completa, «Solo nel contenuto» per escludere i nomi dei file, oppure «Solo nel nome» per una ricerca istantanea sui titoli dei file.": {
+  "en": "Search in — choose “Name and content” for the full search, “Content only” to leave out file names, or “Name only” for an instant search on file titles.",
+  "fr": "Rechercher dans — choisissez « Nom et contenu » pour la recherche complète, « Contenu uniquement » pour exclure les noms de fichiers, ou « Nom uniquement » pour une recherche instantanée sur les titres des fichiers.",
+  "es": "Buscar en — elige «Nombre y contenido» para la búsqueda completa, «Solo en el contenido» para excluir los nombres de archivo o «Solo en el nombre» para una búsqueda instantánea en los títulos de los archivos.",
+  "de": "Suchen in — wählen Sie „Name und Inhalt“ für die vollständige Suche, „Nur im Inhalt“, um Dateinamen auszuschließen, oder „Nur im Namen“ für eine Sofortsuche in den Dateititeln.",
+  "pt": "Pesquisar em — escolha “Nome e conteúdo” para a pesquisa completa, “Somente no conteúdo” para excluir os nomes de arquivo ou “Somente no nome” para uma pesquisa instantânea nos títulos dos arquivos."
+ },
+ "Numeri e codici composti — codici come PR-00124/2026 o importi come 1.250,00 vengono cercati automaticamente come sequenza ordinata, mentre i numeri puri (es. 123) richiedono corrispondenza esatta salvo aggiunta di asterisco (123*).": {
+  "en": "Numbers and compound codes — codes like PR-00124/2026 or amounts like 1.250,00 are searched automatically as an ordered sequence, while plain numbers (e.g. 123) require an exact match unless you add an asterisk (123*).",
+  "fr": "Nombres et codes composés — les codes comme PR-00124/2026 ou les montants comme 1.250,00 sont recherchés automatiquement comme une séquence ordonnée, tandis que les nombres simples (ex. 123) exigent une correspondance exacte sauf ajout d’un astérisque (123*).",
+  "es": "Números y códigos compuestos — los códigos como PR-00124/2026 o los importes como 1.250,00 se buscan automáticamente como secuencia ordenada, mientras que los números simples (p. ej. 123) exigen coincidencia exacta salvo que añadas un asterisco (123*).",
+  "de": "Zahlen und zusammengesetzte Codes — Codes wie PR-00124/2026 oder Beträge wie 1.250,00 werden automatisch als geordnete Folge gesucht, während reine Zahlen (z. B. 123) einen exakten Treffer verlangen, es sei denn, Sie fügen ein Sternchen an (123*).",
+  "pt": "Números e códigos compostos — códigos como PR-00124/2026 ou valores como 1.250,00 são pesquisados automaticamente como uma sequência ordenada, enquanto números simples (ex.: 123) exigem correspondência exata, a menos que você acrescente um asterisco (123*)."
+ },
+ "File firmati .p7m (CAdES / PKCS#7) — estrae automaticamente il documento contenuto anche in presenza di firme multiple annidate (es. contratto.pdf.p7m.p7m o fattura.xml.p7m), calcolandone l’impronta SHA-256 per collegarlo all’originale non firmato.": {
+  "en": "Signed .p7m files (CAdES / PKCS#7) — automatically extracts the contained document even with multiple nested signatures (e.g. contratto.pdf.p7m.p7m or fattura.xml.p7m), computing its SHA-256 fingerprint to link it to the unsigned original.",
+  "fr": "Fichiers signés .p7m (CAdES / PKCS#7) — extrait automatiquement le document contenu, même en présence de signatures multiples imbriquées (ex. contratto.pdf.p7m.p7m ou fattura.xml.p7m), en calculant son empreinte SHA-256 pour le relier à l’original non signé.",
+  "es": "Archivos firmados .p7m (CAdES / PKCS#7) — extrae automáticamente el documento contenido incluso con varias firmas anidadas (p. ej. contratto.pdf.p7m.p7m o fattura.xml.p7m), calculando su huella SHA-256 para vincularlo al original sin firmar.",
+  "de": "Signierte .p7m-Dateien (CAdES / PKCS#7) — extrahiert automatisch das enthaltene Dokument, auch bei mehreren verschachtelten Signaturen (z. B. contratto.pdf.p7m.p7m oder fattura.xml.p7m), und berechnet dessen SHA-256-Fingerabdruck, um es mit dem unsignierten Original zu verknüpfen.",
+  "pt": "Arquivos assinados .p7m (CAdES / PKCS#7) — extrai automaticamente o documento contido, mesmo com várias assinaturas aninhadas (ex.: contratto.pdf.p7m.p7m ou fattura.xml.p7m), calculando a impressão digital SHA-256 para vinculá-lo ao original sem assinatura."
+ },
+ "FatturaPA elettronica (.xml e .xml.p7m) — trasforma l’XML fiscale in un testo chiaro e leggibile con Cedente, Cessionario, Partite IVA, Codici Fiscali, numero e data documento, dettaglio righe, riepiloghi IVA, importi, scadenze di pagamento e IBAN.": {
+  "en": "Electronic FatturaPA (.xml and .xml.p7m) — turns the tax XML into clear, readable text with Seller, Buyer, VAT numbers, tax codes, document number and date, line details, VAT summaries, amounts, payment due dates and IBAN.",
+  "fr": "FatturaPA électronique (.xml et .xml.p7m) — transforme le XML fiscal en un texte clair et lisible avec cédant, cessionnaire, numéros de TVA, codes fiscaux, numéro et date du document, détail des lignes, récapitulatifs de TVA, montants, échéances de paiement et IBAN.",
+  "es": "FatturaPA electrónica (.xml y .xml.p7m) — convierte el XML fiscal en un texto claro y legible con cedente, cesionario, números de IVA, códigos fiscales, número y fecha del documento, detalle de líneas, resúmenes de IVA, importes, vencimientos de pago e IBAN.",
+  "de": "Elektronische FatturaPA (.xml und .xml.p7m) — wandelt das Steuer-XML in klaren, lesbaren Text um, mit Verkäufer, Käufer, USt-IdNrn., Steuernummern, Belegnummer und -datum, Positionen, Umsatzsteuerübersichten, Beträgen, Zahlungsfristen und IBAN.",
+  "pt": "FatturaPA eletrônica (.xml e .xml.p7m) — transforma o XML fiscal em um texto claro e legível com cedente, cessionário, números de IVA, códigos fiscais, número e data do documento, detalhe das linhas, resumos de IVA, valores, prazos de pagamento e IBAN."
+ },
+ "Messaggi email (.eml) e Archivi (.zip) — legge intestazioni (Da, A, Cc, Oggetto, Data), corpo del messaggio, allegati supportati e i documenti contenuti al primo livello degli archivi .zip.": {
+  "en": "Email messages (.eml) and Archives (.zip) — reads headers (From, To, Cc, Subject, Date), the message body, supported attachments and the documents contained at the first level of .zip archives.",
+  "fr": "Messages e-mail (.eml) et archives (.zip) — lit les en-têtes (De, À, Cc, Objet, Date), le corps du message, les pièces jointes prises en charge et les documents contenus au premier niveau des archives .zip.",
+  "es": "Mensajes de correo (.eml) y archivos (.zip) — lee las cabeceras (De, Para, Cc, Asunto, Fecha), el cuerpo del mensaje, los adjuntos admitidos y los documentos contenidos en el primer nivel de los archivos .zip.",
+  "de": "E-Mail-Nachrichten (.eml) und Archive (.zip) — liest Kopfzeilen (Von, An, Cc, Betreff, Datum), den Nachrichtentext, unterstützte Anhänge und die Dokumente auf der ersten Ebene von .zip-Archiven.",
+  "pt": "Mensagens de e-mail (.eml) e arquivos (.zip) — lê os cabeçalhos (De, Para, Cc, Assunto, Data), o corpo da mensagem, os anexos suportados e os documentos contidos no primeiro nível dos arquivos .zip."
+ },
+ "Confronta versioni — grazie a impronte testuali su gruppi di tre parole, StillFind individua da solo le stesure dello stesso testo anche tra formati diversi (ad esempio bozza .docx ↔ scansione PDF letta con OCR ↔ copia firmata .p7m). Puoi confrontare anche due risultati qualsiasi selezionandoli nell’elenco e scegliendo «Confronta versioni».": {
+  "en": "Compare versions — thanks to text fingerprints on groups of three words, StillFind finds on its own the drafts of the same text even across different formats (for example a .docx draft ↔ a PDF scan read with OCR ↔ a signed .p7m copy). You can also compare any two results by selecting them in the list and choosing “Compare versions”.",
+  "fr": "Comparer les versions — grâce à des empreintes textuelles sur des groupes de trois mots, StillFind repère tout seul les rédactions d’un même texte, même entre formats différents (par exemple brouillon .docx ↔ numérisation PDF lue avec l’OCR ↔ copie signée .p7m). Vous pouvez aussi comparer deux résultats quelconques en les sélectionnant dans la liste et en choisissant « Comparer les versions ».",
+  "es": "Comparar versiones — gracias a huellas textuales sobre grupos de tres palabras, StillFind identifica por sí solo las redacciones del mismo texto incluso entre formatos distintos (por ejemplo borrador .docx ↔ escaneo PDF leído con OCR ↔ copia firmada .p7m). También puedes comparar dos resultados cualesquiera seleccionándolos en la lista y eligiendo «Comparar versiones».",
+  "de": "Versionen vergleichen — dank Text-Fingerabdrücken über Dreiwortgruppen erkennt StillFind selbstständig Fassungen desselben Textes, auch über Formate hinweg (z. B. .docx-Entwurf ↔ per OCR gelesener PDF-Scan ↔ signierte .p7m-Kopie). Sie können auch zwei beliebige Ergebnisse vergleichen, indem Sie sie in der Liste auswählen und „Versionen vergleichen“ wählen.",
+  "pt": "Comparar versões — graças a impressões digitais textuais em grupos de três palavras, o StillFind identifica sozinho as versões do mesmo texto, mesmo entre formatos diferentes (por exemplo, rascunho .docx ↔ digitalização PDF lida com OCR ↔ cópia assinada .p7m). Você também pode comparar quaisquer dois resultados selecionando-os na lista e escolhendo “Comparar versões”."
+ },
+ "Scadenze documenti — le date accompagnate da indicatori di termine («scade il», «entro», «rinnovo», «disdetta», «valido fino» o DataScadenzaPagamento in FatturaPA) vengono raccolte in Strumenti → Scadenze documenti…, filtrabili tra Prossimi 30 giorni, Future e Tutte.": {
+  "en": "Document deadlines — dates accompanied by term indicators (“expires on”, “by”, “renewal”, “cancellation”, “valid until” or DataScadenzaPagamento in FatturaPA) are collected in Tools → Document deadlines…, which can be filtered by Next 30 days, Upcoming and All.",
+  "fr": "Échéances des documents — les dates accompagnées d’indicateurs de terme (« expire le », « avant le », « renouvellement », « résiliation », « valable jusqu’au » ou DataScadenzaPagamento dans FatturaPA) sont rassemblées dans Outils → Échéances des documents…, filtrables entre 30 prochains jours, À venir et Toutes.",
+  "es": "Vencimientos de documentos — las fechas acompañadas de indicadores de plazo («vence el», «antes de», «renovación», «baja», «válido hasta» o DataScadenzaPagamento en FatturaPA) se reúnen en Herramientas → Vencimientos de documentos…, filtrables entre Próximos 30 días, Futuros y Todos.",
+  "de": "Dokumentfristen — Daten mit Fristhinweisen („läuft ab am“, „bis“, „Verlängerung“, „Kündigung“, „gültig bis“ oder DataScadenzaPagamento in FatturaPA) werden unter Werkzeuge → Dokumentfristen … gesammelt und lassen sich nach Nächste 30 Tage, Künftige und Alle filtern.",
+  "pt": "Prazos dos documentos — as datas acompanhadas de indicadores de prazo (“vence em”, “até”, “renovação”, “cancelamento”, “válido até” ou DataScadenzaPagamento em FatturaPA) são reunidas em Ferramentas → Prazos dos documentos…, filtráveis entre Próximos 30 dias, Futuros e Todos."
+ },
+ "Duplicati e Diagnostica — da Strumenti puoi individuare copie identiche al byte (SHA-256) per recuperare spazio senza cancellazioni automatiche, oppure aprire Stato e diagnostica dell’archivio per controllare file illeggibili, PDF privi di testo e forzare la rilettura o l’OCR di un singolo file.": {
+  "en": "Duplicates and Diagnostics — from Tools you can find byte-identical copies (SHA-256) to recover space without automatic deletions, or open Archive status and diagnostics to check unreadable files, PDFs with no text and force re-reading or OCR of a single file.",
+  "fr": "Doublons et diagnostic — depuis Outils, vous pouvez repérer les copies identiques à l’octet près (SHA-256) pour récupérer de l’espace sans suppressions automatiques, ou ouvrir État et diagnostic de l’archive pour contrôler les fichiers illisibles, les PDF sans texte et forcer la relecture ou l’OCR d’un seul fichier.",
+  "es": "Duplicados y diagnóstico — desde Herramientas puedes localizar copias idénticas al byte (SHA-256) para recuperar espacio sin borrados automáticos, o abrir Estado y diagnóstico del archivo para revisar archivos ilegibles, PDF sin texto y forzar la relectura o el OCR de un solo archivo.",
+  "de": "Duplikate und Diagnose — unter Werkzeuge finden Sie byteidentische Kopien (SHA-256), um Platz ohne automatisches Löschen zurückzugewinnen, oder öffnen Status und Diagnose des Archivs, um unlesbare Dateien und PDFs ohne Text zu prüfen und das erneute Lesen oder die OCR einer einzelnen Datei zu erzwingen.",
+  "pt": "Duplicados e diagnóstico — em Ferramentas você pode localizar cópias idênticas byte a byte (SHA-256) para recuperar espaço sem exclusões automáticas, ou abrir Estado e diagnóstico do arquivo para verificar arquivos ilegíveis, PDFs sem texto e forçar a releitura ou o OCR de um único arquivo."
+ },
+ "Portachiavi dell’account — StillFind genera una chiave casuale a 256 bit (64 caratteri esadecimali) e la custodisce nel portachiavi del sistema operativo (Keychain su macOS, DPAPI su Windows, Secret Service su Linux). Non richiede inserimento all’avvio e permette all’agente di continuare a indicizzare in background.": {
+  "en": "Account keychain — StillFind generates a random 256-bit key (64 hexadecimal characters) and keeps it in the operating system’s keychain (Keychain on macOS, DPAPI on Windows, Secret Service on Linux). It needs no entry at startup and lets the agent keep indexing in the background.",
+  "fr": "Trousseau du compte — StillFind génère une clé aléatoire de 256 bits (64 caractères hexadécimaux) et la conserve dans le trousseau du système d’exploitation (Keychain sur macOS, DPAPI sur Windows, Secret Service sur Linux). Aucune saisie n’est nécessaire au démarrage et l’agent peut continuer à indexer en arrière-plan.",
+  "es": "Llavero de la cuenta — StillFind genera una clave aleatoria de 256 bits (64 caracteres hexadecimales) y la custodia en el llavero del sistema operativo (Keychain en macOS, DPAPI en Windows, Secret Service en Linux). No pide nada al arrancar y permite que el agente siga indexando en segundo plano.",
+  "de": "Schlüsselbund des Kontos — StillFind erzeugt einen zufälligen 256-Bit-Schlüssel (64 Hexadezimalzeichen) und verwahrt ihn im Schlüsselbund des Betriebssystems (Keychain unter macOS, DPAPI unter Windows, Secret Service unter Linux). Beim Start ist keine Eingabe nötig, und der Agent kann im Hintergrund weiter indizieren.",
+  "pt": "Chaveiro da conta — o StillFind gera uma chave aleatória de 256 bits (64 caracteres hexadecimais) e a guarda no chaveiro do sistema operacional (Keychain no macOS, DPAPI no Windows, Secret Service no Linux). Não exige nada na inicialização e permite que o agente continue indexando em segundo plano."
+ },
+ "Cassaforte con passphrase — scegli tu una passphrase personale. Nessuna chiave viene salvata su disco: resta solo in RAM durante la sessione e la cassaforte si blocca automaticamente dopo i minuti di inattività impostati (oppure subito con File → Blocca cassaforte).": {
+  "en": "Vault with passphrase — you choose a personal passphrase. No key is saved on disk: it stays only in RAM during the session and the vault locks automatically after the set minutes of inactivity (or immediately with File → Lock vault).",
+  "fr": "Coffre-fort avec phrase secrète — vous choisissez une phrase secrète personnelle. Aucune clé n’est enregistrée sur le disque : elle reste uniquement en mémoire pendant la session et le coffre-fort se verrouille automatiquement après les minutes d’inactivité définies (ou tout de suite avec Fichier → Verrouiller le coffre-fort).",
+  "es": "Caja fuerte con frase de contraseña — eliges tú una frase personal. Ninguna clave se guarda en disco: queda solo en RAM durante la sesión y la caja fuerte se bloquea automáticamente tras los minutos de inactividad indicados (o al instante con Archivo → Bloquear caja fuerte).",
+  "de": "Tresor mit Passphrase — Sie wählen selbst eine persönliche Passphrase. Kein Schlüssel wird auf der Festplatte gespeichert: Er bleibt nur während der Sitzung im Arbeitsspeicher, und der Tresor sperrt sich nach den eingestellten Minuten Inaktivität automatisch (oder sofort mit Datei → Tresor sperren).",
+  "pt": "Cofre com frase secreta — você escolhe uma frase secreta pessoal. Nenhuma chave é salva em disco: ela fica só na RAM durante a sessão e o cofre se bloqueia automaticamente após os minutos de inatividade definidos (ou na hora com Arquivo → Bloquear cofre)."
+ },
+ "Visibilità della password sul lucchetto — quando l’archivio è cifrato, cliccando sul pulsante «CIFRATO» puoi leggere o copiare la passphrase/chiave attiva. Premendo «Rendi invisibile la password…» (con avviso di annotarla prima), il segreto viene rimosso dalla vista e sostituito da pallini: da quel momento, per rivisualizzarlo o riabilitarne la visibilità sarà obbligatorio reinserire la password attuale.": {
+  "en": "Password visibility on the padlock — when the archive is encrypted, clicking the “ENCRYPTED” button lets you read or copy the active passphrase/key. By pressing “Make the password invisible…” (with a warning to note it down first), the secret is removed from view and replaced by dots: from then on, to see it again or restore its visibility you must re-enter the current password.",
+  "fr": "Visibilité du mot de passe sur le cadenas — lorsque l’archive est chiffrée, un clic sur le bouton « CHIFFRÉ » permet de lire ou de copier la phrase secrète/clé active. En appuyant sur « Rendre le mot de passe invisible… » (avec un avertissement pour le noter avant), le secret est retiré de la vue et remplacé par des points : dès lors, pour le revoir ou rétablir sa visibilité, il faudra ressaisir le mot de passe actuel.",
+  "es": "Visibilidad de la contraseña en el candado — cuando el archivo está cifrado, al hacer clic en el botón «CIFRADO» puedes leer o copiar la frase de contraseña/clave activa. Al pulsar «Ocultar la contraseña…» (con un aviso para anotarla antes), el secreto se retira de la vista y se sustituye por puntos: desde ese momento, para volver a verlo o restablecer su visibilidad será obligatorio volver a introducir la contraseña actual.",
+  "de": "Sichtbarkeit des Passworts am Schloss — ist das Archiv verschlüsselt, können Sie mit einem Klick auf die Schaltfläche „VERSCHLÜSSELT“ die aktive Passphrase bzw. den Schlüssel lesen oder kopieren. Mit „Passwort verbergen …“ (mit Hinweis, es vorher zu notieren) wird das Geheimnis aus der Ansicht entfernt und durch Punkte ersetzt: Um es danach wieder zu sehen oder die Sichtbarkeit wiederherzustellen, müssen Sie das aktuelle Passwort erneut eingeben.",
+  "pt": "Visibilidade da senha no cadeado — quando o arquivo está cifrado, ao clicar no botão “CIFRADO” você pode ler ou copiar a frase secreta/chave ativa. Ao pressionar “Tornar a senha invisível…” (com aviso para anotá-la antes), o segredo é removido da vista e substituído por pontos: a partir daí, para vê-lo de novo ou restaurar a visibilidade, será obrigatório digitar novamente a senha atual."
+ },
+ "Mappa dei dati personali (Audit) — da Strumenti → Mappa dei dati personali… individui tutti i documenti che contengono un codice fiscale, P.IVA, IBAN, email o il nome di una persona, oppure controlli in un clic le cartelle più esposte come Desktop e Download.": {
+  "en": "Personal data map (Audit) — from Tools → Personal data map… you find all the documents containing a tax code, VAT number, IBAN, email or a person’s name, or check in one click the most exposed folders such as Desktop and Downloads.",
+  "fr": "Carte des données personnelles (Audit) — depuis Outils → Carte des données personnelles… vous repérez tous les documents contenant un code fiscal, un numéro de TVA, un IBAN, une adresse e-mail ou le nom d’une personne, ou vous contrôlez en un clic les dossiers les plus exposés comme Bureau et Téléchargements.",
+  "es": "Mapa de datos personales (Auditoría) — desde Herramientas → Mapa de datos personales… localizas todos los documentos que contienen un código fiscal, número de IVA, IBAN, correo o el nombre de una persona, o revisas con un clic las carpetas más expuestas como Escritorio y Descargas.",
+  "de": "Karte der personenbezogenen Daten (Audit) — unter Werkzeuge → Karte der personenbezogenen Daten … finden Sie alle Dokumente mit Steuernummer, USt-IdNr., IBAN, E-Mail oder dem Namen einer Person oder prüfen mit einem Klick die am stärksten exponierten Ordner wie Schreibtisch und Downloads.",
+  "pt": "Mapa de dados pessoais (Auditoria) — em Ferramentas → Mapa de dados pessoais… você localiza todos os documentos que contêm código fiscal, número de IVA, IBAN, e-mail ou o nome de uma pessoa, ou verifica com um clique as pastas mais expostas, como Área de trabalho e Downloads."
+ },
+ "Oscura copia… (Redazione irreversibile) — crea un nuovo file oscurato lasciando intatto l’originale. Sui file di testo sostituisce i dati scelti con [OMISSIS]; sui PDF rileva i dati sia nel testo digitale sia nelle immagini (tramite OCR), ti fa controllare e integrare a mano col mouse i riquadri neri su ciascuna pagina e salva un nuovo PDF composto unicamente dalle immagini approvate, eliminando testo copiabile sottostante e metadati.": {
+  "en": "Redact copy… (irreversible redaction) — creates a new redacted file leaving the original intact. On text files it replaces the chosen data with [OMISSIS]; on PDFs it detects data both in digital text and in images (via OCR), lets you check and add by hand with the mouse the black boxes on each page, and saves a new PDF made only of the approved images, removing the copyable text underneath and the metadata.",
+  "fr": "Caviarder une copie… (caviardage irréversible) — crée un nouveau fichier caviardé en laissant l’original intact. Sur les fichiers texte, il remplace les données choisies par [OMISSIS] ; sur les PDF, il détecte les données dans le texte numérique et dans les images (via l’OCR), vous fait contrôler et compléter à la main, à la souris, les cadres noirs de chaque page, puis enregistre un nouveau PDF composé uniquement des images approuvées, en éliminant le texte copiable sous-jacent et les métadonnées.",
+  "es": "Ocultar copia… (ocultación irreversible) — crea un nuevo archivo oculto dejando intacto el original. En los archivos de texto sustituye los datos elegidos por [OMISSIS]; en los PDF detecta los datos tanto en el texto digital como en las imágenes (mediante OCR), te hace revisar y completar a mano con el ratón los recuadros negros de cada página y guarda un nuevo PDF formado únicamente por las imágenes aprobadas, eliminando el texto copiable subyacente y los metadatos.",
+  "de": "Kopie schwärzen … (unumkehrbares Schwärzen) — erstellt eine neue geschwärzte Datei, das Original bleibt unverändert. Bei Textdateien ersetzt es die gewählten Daten durch [OMISSIS]; bei PDFs erkennt es Daten sowohl im digitalen Text als auch in Bildern (per OCR), lässt Sie die schwarzen Kästen auf jeder Seite prüfen und mit der Maus von Hand ergänzen und speichert ein neues PDF, das nur aus den freigegebenen Bildern besteht – ohne darunterliegenden kopierbaren Text und ohne Metadaten.",
+  "pt": "Ocultar cópia… (ocultação irreversível) — cria um novo arquivo ocultado, deixando o original intacto. Em arquivos de texto substitui os dados escolhidos por [OMISSIS]; em PDFs detecta os dados tanto no texto digital quanto nas imagens (via OCR), faz você verificar e completar manualmente com o mouse as caixas pretas de cada página e salva um novo PDF composto apenas pelas imagens aprovadas, eliminando o texto copiável subjacente e os metadados."
+ },
+ "Dimentica file o cartella — clic destro su un risultato (o Strumenti → Dimentica una cartella…, anche su dischi esterni scollegati) per rimuovere dall’indice testo, passaggi, vettori ed entità senza cancellare i file dal disco.": {
+  "en": "Forget file or folder — right-click a result (or Tools → Forget a folder…, also on disconnected external drives) to remove text, passages, vectors and entities from the index without deleting the files from disk.",
+  "fr": "Oublier un fichier ou un dossier — clic droit sur un résultat (ou Outils → Oublier un dossier…, y compris sur des disques externes déconnectés) pour retirer de l’index le texte, les passages, les vecteurs et les entités sans supprimer les fichiers du disque.",
+  "es": "Olvidar archivo o carpeta — clic derecho en un resultado (o Herramientas → Olvidar una carpeta…, también en discos externos desconectados) para quitar del índice texto, pasajes, vectores y entidades sin borrar los archivos del disco.",
+  "de": "Datei oder Ordner vergessen — Rechtsklick auf ein Ergebnis (oder Werkzeuge → Einen Ordner vergessen …, auch bei getrennten externen Laufwerken), um Text, Abschnitte, Vektoren und Entitäten aus dem Index zu entfernen, ohne die Dateien von der Festplatte zu löschen.",
+  "pt": "Esquecer arquivo ou pasta — clique com o botão direito em um resultado (ou Ferramentas → Esquecer uma pasta…, também em discos externos desconectados) para remover do índice texto, trechos, vetores e entidades sem apagar os arquivos do disco."
+ },
+ "Guida di StillFind": {
+  "en": "StillFind guide",
+  "fr": "Guide de StillFind",
+  "es": "Guía de StillFind",
+  "de": "StillFind-Anleitung",
+  "pt": "Guia do StillFind"
+ },
+ "Manuale completo di interfaccia, configurazione, ricerca e sicurezza · 100% locale": {
+  "en": "Complete manual of interface, configuration, search and security · 100% local",
+  "fr": "Manuel complet de l’interface, de la configuration, de la recherche et de la sécurité · 100 % local",
+  "es": "Manual completo de interfaz, configuración, búsqueda y seguridad · 100% local",
+  "de": "Vollständiges Handbuch zu Oberfläche, Konfiguration, Suche und Sicherheit · 100 % lokal",
+  "pt": "Manual completo de interface, configuração, pesquisa e segurança · 100% local"
+ },
+ "CAPITOLI": {
+  "en": "CHAPTERS",
+  "fr": "CHAPITRES",
+  "es": "CAPÍTULOS",
+  "de": "KAPITEL",
+  "pt": "CAPÍTULOS"
+ },
+ "TASTI RAPIDI": {
+  "en": "QUICK KEYS",
+  "fr": "RACCOURCIS",
+  "es": "TECLAS RÁPIDAS",
+  "de": "TASTENKÜRZEL",
+  "pt": "TECLAS RÁPIDAS"
+ }
+}

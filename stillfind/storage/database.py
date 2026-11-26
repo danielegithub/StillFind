@@ -15,7 +15,7 @@ from stillfind.storage.vector_files import VectorFiles
 class Schema:
     """Schema dell'archivio e migrazioni tra una versione e la successiva."""
 
-    VERSION = 15  # posizioni strutturate e ricerca nei passaggi
+    VERSION = 16  # lingue OCR usate per documento e per pagina, rielaborazione OCR in sospeso
 
     @staticmethod
     def migrate(con, version):
@@ -90,6 +90,12 @@ class Schema:
             con.execute("ALTER TABLE pages ADD COLUMN lettura TEXT NOT NULL DEFAULT ''")
             con.execute("UPDATE analisi SET regole=''")
             con.execute("DELETE FROM vec_done WHERE doc_id IN (SELECT doc_id FROM passaggi GROUP BY doc_id HAVING count(*)>1)")
+        if version < 16:
+            # Lingue effettivamente usate dall'OCR. Vuoto = sconosciuta (letture precedenti a questa versione).
+            con.execute("ALTER TABLE docs ADD COLUMN ocr_lang TEXT NOT NULL DEFAULT ''")
+            con.execute("ALTER TABLE pages ADD COLUMN lingua TEXT NOT NULL DEFAULT ''")
+            # Lingua richiesta per una rielaborazione OCR ancora da completare (vuoto = nessuna).
+            con.execute("ALTER TABLE stato ADD COLUMN rielabora_ocr TEXT NOT NULL DEFAULT ''")
 
 
 class Database:

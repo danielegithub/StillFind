@@ -6,6 +6,8 @@ import re
 import time
 from pathlib import Path
 
+from stillfind.core.i18n import tr
+
 
 class SavedSearches:
     """Cronologia delle ricerche e ricerche con nome."""
@@ -18,7 +20,7 @@ class SavedSearches:
         if name is not None:
             name = name.strip()
             if not name:
-                raise ValueError("Dai un nome alla ricerca.")
+                raise ValueError(tr("Dai un nome alla ricerca."))
         encoded = json.dumps(criteria, ensure_ascii=False, sort_keys=True)
         with con:
             if name is None:

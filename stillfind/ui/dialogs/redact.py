@@ -7,73 +7,91 @@ import queue
 import threading
 import tkinter as tk
 from pathlib import Path
-from tkinter import ttk, filedialog, messagebox
+from tkinter import filedialog, messagebox
+
+import customtkinter as ctk
 
 from stillfind.core import facts
+
+from stillfind.core.ocr_languages import OcrLanguages
+from stillfind.core.i18n import tr, trn
 from stillfind.tools.redaction import Redactor
+from stillfind.ui.theme import PAL, col, font, ghost_button, primary_button
+from stillfind.ui.widgets import SquareDialog, SquareCheckBox
 
 
-class RedactDialog(tk.Toplevel):
+class RedactDialog(SquareDialog):
     def __init__(self, app):
         row = app._current()
         if not row:
-            messagebox.showinfo("Copia oscurata","Seleziona un documento.",parent=app)
+            messagebox.showinfo(tr("Copia oscurata"), tr("Seleziona un documento."), parent=app)
             return
         self.path = Path(row["path"])
-        if self.path.suffix.lower() not in {".pdf",".txt",".md",".csv",".log",".tex",".json",".xml"}:
-            messagebox.showinfo("Copia oscurata","Scegli un PDF o un file di testo.",parent=app)
+        if self.path.suffix.lower() not in {".pdf", ".txt", ".md", ".csv", ".log", ".tex", ".json", ".xml"}:
+            messagebox.showinfo(tr("Copia oscurata"), tr("Scegli un PDF o un file di testo."), parent=app)
             return
-        super().__init__(app)
-        self.app, self.pdf = app,None
-        self.geometry("790x730")
-        self.title("Copia oscurata · " + self.path.name)
-        self.transient(app)
-        self.grab_set()
-        self.protocol("WM_DELETE_WINDOW",self.cancel)
-        self.choices = ttk.Frame(self)
-        self.choices.pack(fill="x",padx=10,pady=6)
+        super().__init__(app, tr("Copia oscurata") + " · " + self.path.name, "820x700", minsize=(700, 600), modal=True)
+        self.app, self.pdf = app, None
+        pad = self.MARGIN
+        self.action = primary_button(self, tr("Prepara copia"), self.start, width=160)
+        self.button_bar(self.action, ghost_button(self, tr("Annulla"), self.cancel, width=100))
+        self.choices = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0, border_width=0)
+        self.choices.pack(fill="x", padx=pad, pady=(pad, 6))
         self.flags = {}
-        for kind in ("cf","iban","email","piva"):
+        for kind in ("cf", "iban", "email", "piva"):
             var = tk.BooleanVar()
             self.flags[kind] = var
-            ttk.Checkbutton(self.choices,text=facts.ENTITY_LABELS[kind],variable=var).pack(side="left")
-        self.values = tk.Listbox(self, height=3, selectmode="extended", exportselection=False)
+            SquareCheckBox(self.choices, text=facts.entity_label(kind), variable=var, font=font(13),
+                            checkbox_width=20, checkbox_height=20).pack(side="left", padx=(0, 18))
         entities = app.con.execute("""SELECT DISTINCT e.etichetta FROM entita e JOIN menzioni m ON e.id=m.entita_id
             JOIN passaggi p ON p.id=m.passaggio_id WHERE p.doc_id=? AND e.tipo IN ('cf','piva','email','iban','soggetto')
-            ORDER BY e.etichetta""", (row["id"],))
+            ORDER BY e.etichetta""", (row["id"],)).fetchall()
+        self.values = tk.Listbox(self, height=4, selectmode="extended", exportselection=False, activestyle="none",
+                                 background=col("field"), foreground=col("text"), font=("", 13),
+                                 selectbackground=col("sel"), selectforeground=col("text"), borderwidth=0,
+                                 highlightthickness=1, highlightbackground=col("line"), highlightcolor=col("focus"))
         for (label,) in entities:
-            self.values.insert("end",label)
+            self.values.insert("end", label)
         if self.values.size():
-            ttk.Label(self,text="Singoli valori da oscurare (selezione multipla)").pack(anchor="w",padx=10)
-            self.values.pack(fill="x",padx=10)
-        ttk.Label(self,text="Termini o singoli valori da oscurare, uno per riga").pack(anchor="w",padx=10)
-        self.terms = tk.Text(self,height=3)
-        self.terms.pack(fill="x",padx=10)
+            self._label(tr("Singoli valori da oscurare (selezione multipla)"))
+            self.values.pack(fill="x", padx=pad, pady=(0, 6))
+        self._label(tr("Termini o singoli valori da oscurare, uno per riga"))
+        self.terms = ctk.CTkTextbox(self, height=76, font=font(13), border_width=1, border_color=PAL["line"])
+        self.terms.pack(fill="x", padx=pad)
+        self.terms._textbox.configure(padx=8, pady=6)
         try:
-            self.terms.insert("1.0", app.prev._textbox.get("sel.first","sel.last"))
+            self.terms.insert("1.0", app.prev._textbox.get("sel.first", "sel.last"))
         except tk.TclError:
             pass
         from stillfind.extractors.ocr import Tesseract
         installed = Tesseract.available()
         self.use_ocr = tk.BooleanVar(value=installed)
         if self.path.suffix.lower() == ".pdf":
-            label = "Rileva anche i dati nelle immagini con OCR" if installed else "Tesseract assente · controlla le immagini e oscura le aree a mano"
-            ttk.Checkbutton(self,text=label,variable=self.use_ocr,state="normal" if installed else "disabled").pack(anchor="w",padx=10)
-        self.note = ttk.Label(self,text="Per i PDF puoi aggiungere aree a mano su ogni pagina.")
-        self.note.pack(anchor="w",padx=10,pady=4)
-        self.canvas = tk.Canvas(self,background="#555555",highlightthickness=0)
-        self.canvas.pack(fill="both",expand=True,padx=10)
-        self.canvas.bind("<ButtonPress-1>",self.begin)
-        self.canvas.bind("<B1-Motion>",self.drag)
-        self.canvas.bind("<ButtonRelease-1>",self.end)
-        bar = ttk.Frame(self)
-        bar.pack(fill="x",padx=10,pady=8)
-        ttk.Button(bar,text="Annulla",command=self.cancel).pack(side="right")
-        self.action = ttk.Button(bar,text="Prepara copia",command=self.start)
-        self.action.pack(side="right",padx=8)
+            label = (tr("Rileva anche i dati nelle immagini con OCR") if installed
+                     else tr("Tesseract assente · controlla le immagini e oscura le aree a mano"))
+            SquareCheckBox(self, text=label, variable=self.use_ocr, font=font(13), checkbox_width=20,
+                            checkbox_height=20, state="normal" if installed else "disabled"
+                            ).pack(anchor="w", padx=pad, pady=(10, 0))
+        self.note = ctk.CTkLabel(self, text=tr("Per i PDF puoi aggiungere aree a mano su ogni pagina."), font=font(12),
+                                 text_color=PAL["muted"], anchor="w", justify="left", wraplength=760)
+        self.note.pack(fill="x", padx=pad, pady=(10, 6))
+        stage = ctk.CTkFrame(self, corner_radius=0, fg_color=PAL["card"], border_width=1, border_color=PAL["line"])
+        stage.pack(fill="both", expand=True, padx=pad)
+        self.canvas = tk.Canvas(stage, background="#555555", highlightthickness=0, borderwidth=0)
+        self.canvas.pack(fill="both", expand=True, padx=1, pady=1)
+        self.canvas.bind("<ButtonPress-1>", self.begin)
+        self.canvas.bind("<B1-Motion>", self.drag)
+        self.canvas.bind("<ButtonRelease-1>", self.end)
         self.image = self.origin = None
         self.busy = self.cancelled = False
         self.manual = []
+
+    def _label(self, text):
+        ctk.CTkLabel(self, text=text, font=font(13, True), text_color=PAL["text"], anchor="w"
+                     ).pack(anchor="w", padx=self.MARGIN, pady=(8, 4))
+
+    def close(self):
+        self.cancel()
 
     def cancel(self):
         self.cancelled = True
@@ -94,15 +112,17 @@ class RedactDialog(tk.Toplevel):
                 try:
                     n = Redactor.redact_text(self.path,dest,self.types,self.words)
                 except Exception as exc:
-                    messagebox.showerror("Copia oscurata",str(exc),parent=self)
+                    messagebox.showerror(tr("Copia oscurata"),str(exc),parent=self)
                     return
-                messagebox.showinfo("Copia oscurata",f"{n} occorrenze sostituite con [OMISSIS].",parent=self)
+                messagebox.showinfo(tr("Copia oscurata"),
+                                    trn("{n} occorrenza sostituita con [OMISSIS].", "{n} occorrenze sostituite con [OMISSIS].", n),
+                                    parent=self)
                 self.destroy()
             return
         try:
             self.pdf = Redactor.PdfReview(self.path)
         except Exception as exc:
-            messagebox.showerror("Apertura PDF",str(exc),parent=self)
+            messagebox.showerror(tr("Apertura PDF"),str(exc),parent=self)
             return
         for w in self.choices.winfo_children():
             w.configure(state="disabled")
@@ -114,9 +134,9 @@ class RedactDialog(tk.Toplevel):
         self.manual = []
         self.canvas.delete("all")
         self.action.configure(state="disabled")
-        self.note.configure(text=f"Lettura della pagina {self.pdf.done+1} di {self.pdf.pages}…")
+        self.note.configure(text=tr("Lettura della pagina {page} di {total}…", page=self.pdf.done+1, total=self.pdf.pages))
         q = queue.Queue()
-        lang = self.app.cfg["ocr_lang"] if self.use_ocr.get() else None
+        lang = OcrLanguages.normalize(self.app.cfg.get("ocr_lang")) if self.use_ocr.get() else None
         self.busy = True
         def work():
             try:
@@ -134,7 +154,7 @@ class RedactDialog(tk.Toplevel):
             if self.cancelled:
                 self.cancel()
             elif isinstance(res,str):
-                messagebox.showerror("Oscuramento PDF",res,parent=self)
+                messagebox.showerror(tr("Oscuramento PDF"),res,parent=self)
                 self.cancel()
             else:
                 from PIL import ImageTk
@@ -144,9 +164,9 @@ class RedactDialog(tk.Toplevel):
                 self.photo = ImageTk.PhotoImage(thumb,master=self)
                 self.sx,self.sy = self.image.width/thumb.width,self.image.height/thumb.height
                 self.canvas.create_image(0,0,image=self.photo,anchor="nw")
-                self.note.configure(text=f"Pagina {self.pdf.done+1}/{self.pdf.pages} · controlla i dati "
-                                         "ancora visibili e trascina per coprirli.")
-                self.action.configure(text="Approva pagina",state="normal",command=self.approve)
+                self.note.configure(text=tr("Pagina {page}/{total} · controlla i dati ancora visibili e trascina per coprirli.",
+                                            page=self.pdf.done+1, total=self.pdf.pages))
+                self.action.configure(text=tr("Approva pagina"),state="normal",command=self.approve)
         self.after(30,poll)
 
     def begin(self,e):
@@ -168,19 +188,19 @@ class RedactDialog(tk.Toplevel):
 
     def approve(self):
         if self.pdf.done + 1 == self.pdf.pages and not (self.detected or self.manual or self.pdf.marks):
-            self.note.configure(text="Nessun dato selezionato. Trascina per oscurare una zona o annulla la copia.")
+            self.note.configure(text=tr("Nessun dato selezionato. Trascina per oscurare una zona o annulla la copia."))
             return
         self.pdf.approve(self.image,self.size,self.manual,self.detected)
         self.image = None
         if self.pdf.done < self.pdf.pages:
             self.prepare()
         else:
-            self.action.configure(text="Salva copia oscurata…",command=self.save)
+            self.action.configure(text=tr("Salva copia oscurata…"),command=self.save)
 
     def destination(self):
         ext = self.path.suffix
-        return filedialog.asksaveasfilename(parent=self, title="Salva come nuovo file",
-                    defaultextension=ext,initialfile=self.path.stem+"-oscurato"+ext)
+        return filedialog.asksaveasfilename(parent=self, title=tr("Salva come nuovo file"),
+                    defaultextension=ext,initialfile=self.path.stem+tr("-oscurato")+ext)
 
     def save(self):
         dest = self.destination()
@@ -188,6 +208,6 @@ class RedactDialog(tk.Toplevel):
             try:
                 self.pdf.save(dest)
             except Exception as exc:
-                messagebox.showerror("Copia oscurata",str(exc),parent=self)
+                messagebox.showerror(tr("Copia oscurata"),str(exc),parent=self)
                 return
             self.cancel()

@@ -9,10 +9,12 @@ import sys
 
 NETWORK_MODULES = (
     "socket", "_socket", "ssl", "_ssl", "socketserver", "asyncio",
-    "http", "http.client", "http.server", "urllib", "urllib.request", "urllib.error",
-    "urllib.parse", "ftplib", "smtplib", "imaplib", "poplib", "telnetlib", "nntplib",
+    "http", "http.client", "http.server", "urllib.request", "urllib.error", "urllib.response", "urllib.robotparser",
+    "ftplib", "smtplib", "imaplib", "poplib", "telnetlib", "nntplib",
     "xmlrpc", "xmlrpc.client", "webbrowser",
 )
+# urllib.parse manipola soltanto stringhe: serve anche a pathlib su Python 3.12.
+# Il pacchetto vuoto urllib e questo parser non aprono connessioni.
 
 
 def block_network() -> None:

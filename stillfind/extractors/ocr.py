@@ -15,8 +15,10 @@ import time
 from contextlib import contextmanager
 from glob import glob
 
+from stillfind.core.ocr_languages import OcrLanguages
 from stillfind.core.errors import Stopped
 from stillfind.core.private_tmp import PrivateWorkspace
+from stillfind.core.resources import resource_root
 from stillfind.extractors.base import ExtractionRequest, Extractor
 
 
@@ -26,6 +28,12 @@ class ExternalTool:
     @staticmethod
     def which(name: str) -> str | None:
         """Come shutil.which, ma cerca anche nei percorsi tipici di Homebrew (macOS) e Windows."""
+        if getattr(sys, "frozen", False):
+            # Nessun ripiego sul Tesseract di sistema: il pacchetto deve essere completo.
+            if name == "tesseract":
+                exe = resource_root() / "ocr" / ("tesseract.exe" if sys.platform == "win32" else "tesseract")
+                return str(exe) if exe.is_file() else None
+            return None
         found = shutil.which(name)
         if found:
             return found
@@ -58,6 +66,10 @@ class ExternalTool:
     def _run_in_workspace(cmd, timeout, stop, tmp):
         kwargs: dict = {}
         kwargs["env"] = PrivateWorkspace.child_environment(tmp)
+        if getattr(sys, "frozen", False):
+            kwargs["env"]["TESSDATA_PREFIX"] = str(resource_root() / "ocr" / "tessdata")
+            if sys.platform.startswith("linux"):
+                kwargs["env"]["LD_LIBRARY_PATH"] = str(resource_root())
         if sys.platform.startswith("win"):
             kwargs["creationflags"] = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
                                        | getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
@@ -101,17 +113,28 @@ class Tesseract:
     """Riconoscimento del testo di immagini e di pagine PDF in una lingua."""
 
     def __init__(self, lang: str):
-        self.lang = lang
+        self.lang = OcrLanguages.normalize(lang)
 
     @staticmethod
     def available() -> bool:
         return ExternalTool.which("tesseract") is not None
 
+    @classmethod
+    def status(cls, cfg: dict) -> dict:
+        """Stato dell'OCR per il piè di pagina: off (spento nelle Impostazioni), missing (Tesseract non trovato) o on."""
+        lang = OcrLanguages.normalize(cfg.get("ocr_lang"))
+        exe = ExternalTool.which("tesseract") if cfg.get("ocr") else None
+        state = "off" if not cfg.get("ocr") else "on" if exe else "missing"
+        return {"state": state, "lang": lang, "exe": exe or ""}
+
     def recognize(self, image: str, stop: threading.Event | None = None) -> str:
         exe = ExternalTool.which("tesseract")
         if not exe:
             raise RuntimeError("Tesseract non installato")
-        rc, out, err = ExternalTool.run([exe, image, "stdout", "-l", self.lang], timeout=300, stop=stop)
+        cmd = [exe, image, "stdout", "-l", self.lang]
+        if getattr(sys, "frozen", False):
+            cmd += ["--tessdata-dir", str(resource_root() / "ocr" / "tessdata")]
+        rc, out, err = ExternalTool.run(cmd, timeout=300, stop=stop)
         if rc != 0:
             raise RuntimeError(err.decode("utf-8", "replace").strip()[:200] or f"Tesseract errore ({rc})")
         return out.decode("utf-8", "replace")
@@ -210,5 +233,9 @@ class OcrCache:
         self.con.commit()
 
     def clear(self) -> None:
-        self.con.execute("DELETE FROM ocr_cache WHERE key=?", (self.key,))
-        self.con.execute("DELETE FROM origini_cache_ocr WHERE key=?", (self.key,))
+        """Toglie le pagine temporanee del file, anche quelle lasciate da letture in altre lingue."""
+        keys = [self.key] + [k for k, in self.con.execute(
+            "SELECT key FROM origini_cache_ocr WHERE path=?", (self.path,))]
+        for key in dict.fromkeys(keys):
+            self.con.execute("DELETE FROM ocr_cache WHERE key=?", (key,))
+            self.con.execute("DELETE FROM origini_cache_ocr WHERE key=?", (key,))

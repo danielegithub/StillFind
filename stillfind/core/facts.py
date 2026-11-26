@@ -7,9 +7,16 @@ import re
 from datetime import date
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
-ENTITY_LABELS = {"cf": "Codici fiscali", "piva": "Partite IVA", "iban": "IBAN",
-                 "protocollo": "Protocolli e pratiche", "email": "Email e PEC",
-                 "soggetto": "Cedenti e cessionari", "messaggio": "Conversazioni email"}
+from stillfind.core.i18n import mark, tr
+
+ENTITY_LABELS = {"cf": mark("Codici fiscali"), "piva": mark("Partite IVA"), "iban": mark("IBAN"),
+                 "protocollo": mark("Protocolli e pratiche"), "email": mark("Email e PEC"),
+                 "soggetto": mark("Cedenti e cessionari"), "messaggio": mark("Conversazioni email")}
+
+
+def entity_label(kind: str, default: str = "") -> str:
+    """Nome dell'entità nella lingua corrente; `ENTITY_LABELS` conserva le chiavi interne (cf, piva…)."""
+    return tr(ENTITY_LABELS[kind]) if kind in ENTITY_LABELS else default
 PROTOCOL_PREFIXES = ("PR", "PROT", "PRATICA", "PROTOCOLLO")
 _OMOCODIA = "0-9LMNPQRSTUV"
 _CF = re.compile(rf"(?i)(?<![a-z0-9])[a-z]{{6}}[{_OMOCODIA}]{{2}}[ABCDEHLMPRST][{_OMOCODIA}]{{2}}[a-z][{_OMOCODIA}]{{3}}[a-z](?![a-z0-9])")

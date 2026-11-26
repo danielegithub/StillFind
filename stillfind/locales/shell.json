@@ -1,0 +1,1210 @@
+{
+ "File": {
+  "en": "File",
+  "fr": "Fichier",
+  "es": "Archivo",
+  "de": "Datei",
+  "pt": "Arquivo"
+ },
+ "Strumenti": {
+  "en": "Tools",
+  "fr": "Outils",
+  "es": "Herramientas",
+  "de": "Werkzeuge",
+  "pt": "Ferramentas"
+ },
+ "Aiuto": {
+  "en": "Help",
+  "fr": "Aide",
+  "es": "Ayuda",
+  "de": "Hilfe",
+  "pt": "Ajuda"
+ },
+ "Cerca": {
+  "en": "Search",
+  "fr": "Rechercher",
+  "es": "Buscar",
+  "de": "Suchen",
+  "pt": "Pesquisar"
+ },
+ "Indietro": {
+  "en": "Back",
+  "fr": "Retour",
+  "es": "Atrás",
+  "de": "Zurück",
+  "pt": "Voltar"
+ },
+ "■  Ferma": {
+  "en": "■  Stop",
+  "fr": "■  Arrêter",
+  "es": "■  Detener",
+  "de": "■  Stopp",
+  "pt": "■  Parar"
+ },
+ "Scadenze": {
+  "en": "Deadlines",
+  "fr": "Échéances",
+  "es": "Vencimientos",
+  "de": "Fristen",
+  "pt": "Prazos"
+ },
+ "{n} documento pronto da cercare": {
+  "en": {
+   "one": "{n} document ready to search",
+   "other": "{n} documents ready to search"
+  },
+  "fr": {
+   "one": "{n} document prêt à être recherché",
+   "other": "{n} documents prêts à être recherchés"
+  },
+  "es": {
+   "one": "{n} documento listo para buscar",
+   "other": "{n} documentos listos para buscar"
+  },
+  "de": {
+   "one": "{n} Dokument bereit zur Suche",
+   "other": "{n} Dokumente bereit zur Suche"
+  },
+  "pt": {
+   "one": "{n} documento pronto para pesquisar",
+   "other": "{n} documentos prontos para pesquisar"
+  }
+ },
+ "{n} risultato": {
+  "en": {
+   "one": "{n} result",
+   "other": "{n} results"
+  },
+  "fr": {
+   "one": "{n} résultat",
+   "other": "{n} résultats"
+  },
+  "es": {
+   "one": "{n} resultado",
+   "other": "{n} resultados"
+  },
+  "de": {
+   "one": "{n} Ergebnis",
+   "other": "{n} Ergebnisse"
+  },
+  "pt": {
+   "one": "{n} resultado",
+   "other": "{n} resultados"
+  }
+ },
+ "Documento del {date} ({source})": {
+  "en": "Document dated {date} ({source})",
+  "fr": "Document du {date} ({source})",
+  "es": "Documento del {date} ({source})",
+  "de": "Dokument vom {date} ({source})",
+  "pt": "Documento de {date} ({source})"
+ },
+ "Modifica del file: {date}": {
+  "en": "File modified: {date}",
+  "fr": "Fichier modifié : {date}",
+  "es": "Archivo modificado: {date}",
+  "de": "Datei geändert: {date}",
+  "pt": "Arquivo modificado: {date}"
+ },
+ "Dimentica dall’archivio": {
+  "en": "Forget from the archive",
+  "fr": "Oublier dans l’archive",
+  "es": "Olvidar del archivo",
+  "de": "Aus dem Archiv entfernen",
+  "pt": "Esquecer do arquivo"
+ },
+ "Archivio cifrato · clic per password e visibilità": {
+  "en": "Encrypted archive · click for password and visibility",
+  "fr": "Archive chiffrée · cliquez pour le mot de passe et la visibilité",
+  "es": "Archivo cifrado · clic para contraseña y visibilidad",
+  "de": "Verschlüsseltes Archiv · Klicken für Passwort und Sichtbarkeit",
+  "pt": "Arquivo cifrado · clique para senha e visibilidade"
+ },
+ "Archivio in chiaro · clic per attivare la cifratura": {
+  "en": "Unencrypted archive · click to turn on encryption",
+  "fr": "Archive non chiffrée · cliquez pour activer le chiffrement",
+  "es": "Archivo sin cifrar · clic para activar el cifrado",
+  "de": "Unverschlüsseltes Archiv · Klicken, um die Verschlüsselung zu aktivieren",
+  "pt": "Arquivo sem cifra · clique para ativar a cifragem"
+ },
+ "Cerca parole, nomi o frasi nei documenti…": {
+  "en": "Search words, names or phrases in your documents…",
+  "fr": "Recherchez des mots, des noms ou des phrases dans vos documents…",
+  "es": "Busca palabras, nombres o frases en tus documentos…",
+  "de": "Wörter, Namen oder Sätze in Ihren Dokumenten suchen …",
+  "pt": "Pesquise palavras, nomes ou frases nos seus documentos…"
+ },
+ "Tutti i tipi": {
+  "en": "All types",
+  "fr": "Tous les types",
+  "es": "Todos los tipos",
+  "de": "Alle Typen",
+  "pt": "Todos os tipos"
+ },
+ "Tutte le cartelle": {
+  "en": "All folders",
+  "fr": "Tous les dossiers",
+  "es": "Todas las carpetas",
+  "de": "Alle Ordner",
+  "pt": "Todas as pastas"
+ },
+ "Tipo": {
+  "en": "Type",
+  "fr": "Type",
+  "es": "Tipo",
+  "de": "Typ",
+  "pt": "Tipo"
+ },
+ "Data": {
+  "en": "Date",
+  "fr": "Date",
+  "es": "Fecha",
+  "de": "Datum",
+  "pt": "Data"
+ },
+ "Cartella": {
+  "en": "Folder",
+  "fr": "Dossier",
+  "es": "Carpeta",
+  "de": "Ordner",
+  "pt": "Pasta"
+ },
+ "Cerca in": {
+  "en": "Search in",
+  "fr": "Rechercher dans",
+  "es": "Buscar en",
+  "de": "Suchen in",
+  "pt": "Pesquisar em"
+ },
+ "Documenti": {
+  "en": "Documents",
+  "fr": "Documents",
+  "es": "Documentos",
+  "de": "Dokumente",
+  "pt": "Documentos"
+ },
+ "Anteprima": {
+  "en": "Preview",
+  "fr": "Aperçu",
+  "es": "Vista previa",
+  "de": "Vorschau",
+  "pt": "Pré-visualização"
+ },
+ "Seleziona un risultato per leggerne il contenuto": {
+  "en": "Select a result to read its content",
+  "fr": "Sélectionnez un résultat pour en lire le contenu",
+  "es": "Selecciona un resultado para leer su contenido",
+  "de": "Wählen Sie ein Ergebnis, um seinen Inhalt zu lesen",
+  "pt": "Selecione um resultado para ler o conteúdo"
+ },
+ "Apri il file": {
+  "en": "Open the file",
+  "fr": "Ouvrir le fichier",
+  "es": "Abrir el archivo",
+  "de": "Datei öffnen",
+  "pt": "Abrir o arquivo"
+ },
+ "Mostra nella cartella": {
+  "en": "Show in folder",
+  "fr": "Afficher dans le dossier",
+  "es": "Mostrar en la carpeta",
+  "de": "Im Ordner anzeigen",
+  "pt": "Mostrar na pasta"
+ },
+ "Copia testo": {
+  "en": "Copy text",
+  "fr": "Copier le texte",
+  "es": "Copiar texto",
+  "de": "Text kopieren",
+  "pt": "Copiar texto"
+ },
+ "Oscura il testo in una copia…": {
+  "en": "Redact the text in a copy…",
+  "fr": "Caviarder le texte dans une copie…",
+  "es": "Ocultar el texto en una copia…",
+  "de": "Text in einer Kopie schwärzen …",
+  "pt": "Ocultar o texto em uma cópia…"
+ },
+ "Apri": {
+  "en": "Open",
+  "fr": "Ouvrir",
+  "es": "Abrir",
+  "de": "Öffnen",
+  "pt": "Abrir"
+ },
+ "Copia percorso": {
+  "en": "Copy path",
+  "fr": "Copier le chemin",
+  "es": "Copiar ruta",
+  "de": "Pfad kopieren",
+  "pt": "Copiar caminho"
+ },
+ "Confronta versioni": {
+  "en": "Compare versions",
+  "fr": "Comparer les versions",
+  "es": "Comparar versiones",
+  "de": "Versionen vergleichen",
+  "pt": "Comparar versões"
+ },
+ "Oscura copia…": {
+  "en": "Redact copy…",
+  "fr": "Caviarder une copie…",
+  "es": "Ocultar copia…",
+  "de": "Kopie schwärzen …",
+  "pt": "Ocultar cópia…"
+ },
+ "Dimentica questo file…": {
+  "en": "Forget this file…",
+  "fr": "Oublier ce fichier…",
+  "es": "Olvidar este archivo…",
+  "de": "Diese Datei vergessen …",
+  "pt": "Esquecer este arquivo…"
+ },
+ "Dimentica la cartella che lo contiene…": {
+  "en": "Forget the folder that contains it…",
+  "fr": "Oublier le dossier qui le contient…",
+  "es": "Olvidar la carpeta que lo contiene…",
+  "de": "Den enthaltenden Ordner vergessen …",
+  "pt": "Esquecer a pasta que o contém…"
+ },
+ "Cerca nuovi documenti adesso": {
+  "en": "Look for new documents now",
+  "fr": "Rechercher de nouveaux documents maintenant",
+  "es": "Buscar documentos nuevos ahora",
+  "de": "Jetzt nach neuen Dokumenten suchen",
+  "pt": "Procurar novos documentos agora"
+ },
+ "Metti in pausa l’indicizzazione": {
+  "en": "Pause indexing",
+  "fr": "Mettre l’indexation en pause",
+  "es": "Pausar la indexación",
+  "de": "Indizierung pausieren",
+  "pt": "Pausar a indexação"
+ },
+ "Esporta risultati in CSV…": {
+  "en": "Export results to CSV…",
+  "fr": "Exporter les résultats en CSV…",
+  "es": "Exportar resultados a CSV…",
+  "de": "Ergebnisse als CSV exportieren …",
+  "pt": "Exportar resultados para CSV…"
+ },
+ "Impostazioni…": {
+  "en": "Settings…",
+  "fr": "Réglages…",
+  "es": "Ajustes…",
+  "de": "Einstellungen …",
+  "pt": "Configurações…"
+ },
+ "Blocca cassaforte": {
+  "en": "Lock vault",
+  "fr": "Verrouiller le coffre-fort",
+  "es": "Bloquear caja fuerte",
+  "de": "Tresor sperren",
+  "pt": "Bloquear cofre"
+ },
+ "Cronologia e ricerche salvate…": {
+  "en": "History and saved searches…",
+  "fr": "Historique et recherches enregistrées…",
+  "es": "Historial y búsquedas guardadas…",
+  "de": "Verlauf und gespeicherte Suchen …",
+  "pt": "Histórico e pesquisas salvas…"
+ },
+ "Scadenze documenti…": {
+  "en": "Document deadlines…",
+  "fr": "Échéances des documents…",
+  "es": "Vencimientos de documentos…",
+  "de": "Dokumentfristen …",
+  "pt": "Prazos dos documentos…"
+ },
+ "Mappa dei dati personali (Audit)…": {
+  "en": "Personal data map (Audit)…",
+  "fr": "Carte des données personnelles (Audit)…",
+  "es": "Mapa de datos personales (Auditoría)…",
+  "de": "Karte der personenbezogenen Daten (Audit) …",
+  "pt": "Mapa de dados pessoais (Auditoria)…"
+ },
+ "Oscura copia del documento…": {
+  "en": "Redact a copy of the document…",
+  "fr": "Caviarder une copie du document…",
+  "es": "Ocultar una copia del documento…",
+  "de": "Kopie des Dokuments schwärzen …",
+  "pt": "Ocultar uma cópia do documento…"
+ },
+ "Confronta due versioni selezionate…": {
+  "en": "Compare two selected versions…",
+  "fr": "Comparer deux versions sélectionnées…",
+  "es": "Comparar dos versiones seleccionadas…",
+  "de": "Zwei ausgewählte Versionen vergleichen …",
+  "pt": "Comparar duas versões selecionadas…"
+ },
+ "Documenti duplicati…": {
+  "en": "Duplicate documents…",
+  "fr": "Documents en double…",
+  "es": "Documentos duplicados…",
+  "de": "Doppelte Dokumente …",
+  "pt": "Documentos duplicados…"
+ },
+ "Dimentica una cartella…": {
+  "en": "Forget a folder…",
+  "fr": "Oublier un dossier…",
+  "es": "Olvidar una carpeta…",
+  "de": "Einen Ordner vergessen …",
+  "pt": "Esquecer uma pasta…"
+ },
+ "Stato e diagnostica dell’archivio…": {
+  "en": "Archive status and diagnostics…",
+  "fr": "État et diagnostic de l’archive…",
+  "es": "Estado y diagnóstico del archivo…",
+  "de": "Status und Diagnose des Archivs …",
+  "pt": "Estado e diagnóstico do arquivo…"
+ },
+ "Guida completa di StillFind…": {
+  "en": "Complete StillFind guide…",
+  "fr": "Guide complet de StillFind…",
+  "es": "Guía completa de StillFind…",
+  "de": "Vollständige StillFind-Anleitung …",
+  "pt": "Guia completo do StillFind…"
+ },
+ "Sintassi rapida di ricerca…": {
+  "en": "Quick search syntax…",
+  "fr": "Syntaxe de recherche rapide…",
+  "es": "Sintaxis rápida de búsqueda…",
+  "de": "Kurzübersicht der Suchsyntax …",
+  "pt": "Sintaxe rápida de pesquisa…"
+ },
+ "Informazioni su StillFind…": {
+  "en": "About StillFind…",
+  "fr": "À propos de StillFind…",
+  "es": "Acerca de StillFind…",
+  "de": "Über StillFind …",
+  "pt": "Sobre o StillFind…"
+ },
+ "Scrivi almeno 3 lettere, oppure premi Invio": {
+  "en": "Type at least 3 letters, or press Enter",
+  "fr": "Saisissez au moins 3 lettres, ou appuyez sur Entrée",
+  "es": "Escribe al menos 3 letras, o pulsa Intro",
+  "de": "Geben Sie mindestens 3 Buchstaben ein oder drücken Sie die Eingabetaste",
+  "pt": "Digite pelo menos 3 letras ou pressione Enter"
+ },
+ "Nessun risultato per «{q}» con i filtri scelti.\n\nProva a togliere qualche filtro in alto.": {
+  "en": "No results for “{q}” with the chosen filters.\n\nTry removing a filter above.",
+  "fr": "Aucun résultat pour « {q} » avec les filtres choisis.\n\nEssayez de retirer un filtre en haut.",
+  "es": "Ningún resultado para «{q}» con los filtros elegidos.\n\nPrueba a quitar algún filtro de arriba.",
+  "de": "Keine Ergebnisse für „{q}“ mit den gewählten Filtern.\n\nEntfernen Sie oben einen Filter.",
+  "pt": "Nenhum resultado para “{q}” com os filtros escolhidos.\n\nTente remover algum filtro acima."
+ },
+ "Nessun risultato per «{q}»\n\nProva con meno parole o controlla l'ortografia.": {
+  "en": "No results for “{q}”\n\nTry fewer words or check the spelling.",
+  "fr": "Aucun résultat pour « {q} »\n\nEssayez avec moins de mots ou vérifiez l’orthographe.",
+  "es": "Ningún resultado para «{q}»\n\nPrueba con menos palabras o revisa la ortografía.",
+  "de": "Keine Ergebnisse für „{q}“\n\nVersuchen Sie es mit weniger Wörtern oder prüfen Sie die Schreibweise.",
+  "pt": "Nenhum resultado para “{q}”\n\nTente com menos palavras ou verifique a ortografia."
+ },
+ "Nessun risultato per «{q}»\n\nIntendevi «{hint}»?\n(clicca qui per cercarlo)": {
+  "en": "No results for “{q}”\n\nDid you mean “{hint}”?\n(click here to search for it)",
+  "fr": "Aucun résultat pour « {q} »\n\nVouliez-vous dire « {hint} » ?\n(cliquez ici pour le rechercher)",
+  "es": "Ningún resultado para «{q}»\n\n¿Querías decir «{hint}»?\n(haz clic aquí para buscarlo)",
+  "de": "Keine Ergebnisse für „{q}“\n\nMeinten Sie „{hint}“?\n(hier klicken, um danach zu suchen)",
+  "pt": "Nenhum resultado para “{q}”\n\nVocê quis dizer “{hint}”?\n(clique aqui para pesquisar)"
+ },
+ "Documento del {date}": {
+  "en": "Document dated {date}",
+  "fr": "Document du {date}",
+  "es": "Documento del {date}",
+  "de": "Dokument vom {date}",
+  "pt": "Documento de {date}"
+ },
+ "Salva i risultati": {
+  "en": "Save the results",
+  "fr": "Enregistrer les résultats",
+  "es": "Guardar los resultados",
+  "de": "Ergebnisse speichern",
+  "pt": "Salvar os resultados"
+ },
+ "Non ci sono risultati da salvare.": {
+  "en": "There are no results to save.",
+  "fr": "Il n’y a aucun résultat à enregistrer.",
+  "es": "No hay resultados que guardar.",
+  "de": "Es gibt keine Ergebnisse zu speichern.",
+  "pt": "Não há resultados para salvar."
+ },
+ "risultati.csv": {
+  "en": "results.csv",
+  "fr": "resultats.csv",
+  "es": "resultados.csv",
+  "de": "ergebnisse.csv",
+  "pt": "resultados.csv"
+ },
+ "{i} di {n}": {
+  "en": "{i} of {n}",
+  "fr": "{i} sur {n}",
+  "es": "{i} de {n}",
+  "de": "{i} von {n}",
+  "pt": "{i} de {n}"
+ },
+ "Dimentica una cartella dall’archivio": {
+  "en": "Forget a folder from the archive",
+  "fr": "Oublier un dossier de l’archive",
+  "es": "Olvidar una carpeta del archivo",
+  "de": "Einen Ordner aus dem Archiv entfernen",
+  "pt": "Esquecer uma pasta do arquivo"
+ },
+ "Rimuovere dall’indice questa cartella e tutte le sottocartelle?\n\n{path}\n\nGli originali restano sul disco. Potrai includere di nuovo il percorso dalle opzioni avanzate delle Impostazioni.": {
+  "en": "Remove this folder and all its subfolders from the index?\n\n{path}\n\nThe originals stay on the disk. You can include the path again from the advanced options in Settings.",
+  "fr": "Retirer ce dossier et tous ses sous-dossiers de l’index ?\n\n{path}\n\nLes originaux restent sur le disque. Vous pourrez réinclure ce chemin depuis les options avancées des Réglages.",
+  "es": "¿Quitar esta carpeta y todas sus subcarpetas del índice?\n\n{path}\n\nLos originales permanecen en el disco. Podrás incluir la ruta de nuevo desde las opciones avanzadas de Ajustes.",
+  "de": "Diesen Ordner und alle Unterordner aus dem Index entfernen?\n\n{path}\n\nDie Originale bleiben auf der Festplatte. Sie können den Pfad später in den erweiterten Optionen der Einstellungen wieder aufnehmen.",
+  "pt": "Remover esta pasta e todas as subpastas do índice?\n\n{path}\n\nOs originais permanecem no disco. Você poderá incluir o caminho novamente nas opções avançadas das Configurações."
+ },
+ "Rimuovere dall’indice questo file?\n\n{path}\n\nGli originali restano sul disco. Potrai includere di nuovo il percorso dalle opzioni avanzate delle Impostazioni.": {
+  "en": "Remove this file from the index?\n\n{path}\n\nThe originals stay on the disk. You can include the path again from the advanced options in Settings.",
+  "fr": "Retirer ce fichier de l’index ?\n\n{path}\n\nLes originaux restent sur le disque. Vous pourrez réinclure ce chemin depuis les options avancées des Réglages.",
+  "es": "¿Quitar este archivo del índice?\n\n{path}\n\nLos originales permanecen en el disco. Podrás incluir la ruta de nuevo desde las opciones avanzadas de Ajustes.",
+  "de": "Diese Datei aus dem Index entfernen?\n\n{path}\n\nDie Originale bleiben auf der Festplatte. Sie können den Pfad später in den erweiterten Optionen der Einstellungen wieder aufnehmen.",
+  "pt": "Remover este arquivo do índice?\n\n{path}\n\nOs originais permanecem no disco. Você poderá incluir o caminho novamente nas opções avançadas das Configurações."
+ },
+ "Mi fermo…": {
+  "en": "Stopping…",
+  "fr": "Arrêt en cours…",
+  "es": "Deteniendo…",
+  "de": "Wird angehalten …",
+  "pt": "Parando…"
+ },
+ "CIFRATO": {
+  "en": "ENCRYPTED",
+  "fr": "CHIFFRÉ",
+  "es": "CIFRADO",
+  "de": "VERSCHLÜSSELT",
+  "pt": "CIFRADO"
+ },
+ "NON CIFRATO": {
+  "en": "NOT ENCRYPTED",
+  "fr": "NON CHIFFRÉ",
+  "es": "SIN CIFRAR",
+  "de": "NICHT VERSCHLÜSSELT",
+  "pt": "SEM CIFRA"
+ },
+ "Occorrenze": {
+  "en": "Matches",
+  "fr": "Occurrences",
+  "es": "Coincidencias",
+  "de": "Treffer",
+  "pt": "Ocorrências"
+ },
+ "Testo completo": {
+  "en": "Full text",
+  "fr": "Texte complet",
+  "es": "Texto completo",
+  "de": "Volltext",
+  "pt": "Texto completo"
+ },
+ "Collegati": {
+  "en": "Linked",
+  "fr": "Liés",
+  "es": "Vinculados",
+  "de": "Verknüpft",
+  "pt": "Vinculados"
+ },
+ "Riprendi l’indicizzazione": {
+  "en": "Resume indexing",
+  "fr": "Reprendre l’indexation",
+  "es": "Reanudar la indexación",
+  "de": "Indizierung fortsetzen",
+  "pt": "Retomar a indexação"
+ },
+ "{n} file non letto  ·  perché?": {
+  "en": {
+   "one": "{n} file not read  ·  why?",
+   "other": "{n} files not read  ·  why?"
+  },
+  "fr": {
+   "one": "{n} fichier non lu  ·  pourquoi ?",
+   "other": "{n} fichiers non lus  ·  pourquoi ?"
+  },
+  "es": {
+   "one": "{n} archivo sin leer  ·  ¿por qué?",
+   "other": "{n} archivos sin leer  ·  ¿por qué?"
+  },
+  "de": {
+   "one": "{n} Datei nicht gelesen  ·  warum?",
+   "other": "{n} Dateien nicht gelesen  ·  warum?"
+  },
+  "pt": {
+   "one": "{n} arquivo não lido  ·  por quê?",
+   "other": "{n} arquivos não lidos  ·  por quê?"
+  }
+ },
+ "Scadenze entro 30 giorni · {n} doc.": {
+  "en": "Deadlines within 30 days · {n} docs",
+  "fr": "Échéances sous 30 jours · {n} doc.",
+  "es": "Vencimientos en 30 días · {n} docs",
+  "de": "Fristen innerhalb von 30 Tagen · {n} Dok.",
+  "pt": "Prazos em até 30 dias · {n} docs"
+ },
+ "(i primi 500)": {
+  "en": "(the first 500)",
+  "fr": "(les 500 premiers)",
+  "es": "(los primeros 500)",
+  "de": "(die ersten 500)",
+  "pt": "(os primeiros 500)"
+ },
+ "Nessun documento corrisponde ai filtri scelti.": {
+  "en": "No document matches the chosen filters.",
+  "fr": "Aucun document ne correspond aux filtres choisis.",
+  "es": "Ningún documento coincide con los filtros elegidos.",
+  "de": "Kein Dokument entspricht den gewählten Filtern.",
+  "pt": "Nenhum documento corresponde aos filtros escolhidos."
+ },
+ "{n} occorrenza": {
+  "en": {
+   "one": "{n} match",
+   "other": "{n} matches"
+  },
+  "fr": {
+   "one": "{n} occurrence",
+   "other": "{n} occurrences"
+  },
+  "es": {
+   "one": "{n} coincidencia",
+   "other": "{n} coincidencias"
+  },
+  "de": {
+   "one": "{n} Treffer",
+   "other": "{n} Treffer"
+  },
+  "pt": {
+   "one": "{n} ocorrência",
+   "other": "{n} ocorrências"
+  }
+ },
+ "Testo selezionato copiato ({n} caratteri)": {
+  "en": "Selected text copied ({n} characters)",
+  "fr": "Texte sélectionné copié ({n} caractères)",
+  "es": "Texto seleccionado copiado ({n} caracteres)",
+  "de": "Markierter Text kopiert ({n} Zeichen)",
+  "pt": "Texto selecionado copiado ({n} caracteres)"
+ },
+ "Testo del documento copiato ({n} caratteri)": {
+  "en": "Document text copied ({n} characters)",
+  "fr": "Texte du document copié ({n} caractères)",
+  "es": "Texto del documento copiado ({n} caracteres)",
+  "de": "Dokumenttext kopiert ({n} Zeichen)",
+  "pt": "Texto do documento copiado ({n} caracteres)"
+ },
+ "Il documento non è più nell’archivio.": {
+  "en": "The document is no longer in the archive.",
+  "fr": "Le document n’est plus dans l’archive.",
+  "es": "El documento ya no está en el archivo.",
+  "de": "Das Dokument ist nicht mehr im Archiv.",
+  "pt": "O documento não está mais no arquivo."
+ },
+ "Copia {n} percorsi": {
+  "en": "Copy {n} paths",
+  "fr": "Copier {n} chemins",
+  "es": "Copiar {n} rutas",
+  "de": "{n} Pfade kopieren",
+  "pt": "Copiar {n} caminhos"
+ },
+ "Il lavoratore non è partito nel recinto senza rete.": {
+  "en": "The worker did not start in the network-isolated sandbox.",
+  "fr": "Le processus de lecture n’a pas démarré dans l’enceinte sans réseau.",
+  "es": "El proceso de lectura no se inició en el recinto sin red.",
+  "de": "Der Lesevorgang wurde nicht in der netzlosen Schutzumgebung gestartet.",
+  "pt": "O processo de leitura não iniciou no ambiente sem rede."
+ },
+ "Apertura di StillFind": {
+  "en": "Opening StillFind",
+  "fr": "Ouverture de StillFind",
+  "es": "Apertura de StillFind",
+  "de": "StillFind wird geöffnet",
+  "pt": "Abertura do StillFind"
+ },
+ "Stato dell’archivio non disponibile · {error}": {
+  "en": "Archive status unavailable · {error}",
+  "fr": "État de l’archive indisponible · {error}",
+  "es": "Estado del archivo no disponible · {error}",
+  "de": "Archivstatus nicht verfügbar · {error}",
+  "pt": "Estado do arquivo indisponível · {error}"
+ },
+ "{mod}+K  Cerca     F3  Occorrenza successiva": {
+  "en": "{mod}+K  Search     F3  Next match",
+  "fr": "{mod}+K  Rechercher     F3  Occurrence suivante",
+  "es": "{mod}+K  Buscar     F3  Siguiente coincidencia",
+  "de": "{mod}+K  Suchen     F3  Nächster Treffer",
+  "pt": "{mod}+K  Pesquisar     F3  Próxima ocorrência"
+ },
+ "Cerca dentro i tuoi documenti": {
+  "en": "Search inside your documents",
+  "fr": "Recherchez dans vos documents",
+  "es": "Busca dentro de tus documentos",
+  "de": "Durchsuchen Sie Ihre Dokumente",
+  "pt": "Pesquise dentro dos seus documentos"
+ },
+ "OFFLINE": {
+  "en": "OFFLINE",
+  "fr": "HORS LIGNE",
+  "es": "SIN CONEXIÓN",
+  "de": "OFFLINE",
+  "pt": "OFFLINE"
+ },
+ "ARCHIVIO LOCALE": {
+  "en": "LOCAL ARCHIVE",
+  "fr": "ARCHIVE LOCALE",
+  "es": "ARCHIVO LOCAL",
+  "de": "LOKALES ARCHIV",
+  "pt": "ARQUIVO LOCAL"
+ },
+ "Sto cercando…": {
+  "en": "Searching…",
+  "fr": "Recherche en cours…",
+  "es": "Buscando…",
+  "de": "Suche läuft …",
+  "pt": "Pesquisando…"
+ },
+ "Documenti recenti": {
+  "en": "Recent documents",
+  "fr": "Documents récents",
+  "es": "Documentos recientes",
+  "de": "Zuletzt verwendete Dokumente",
+  "pt": "Documentos recentes"
+ },
+ "Sto leggendo i tuoi documenti…\nTra poco potrai cercarli.": {
+  "en": "Reading your documents…\nYou will be able to search them shortly.",
+  "fr": "Lecture de vos documents…\nVous pourrez bientôt les rechercher.",
+  "es": "Leyendo tus documentos…\nEn breve podrás buscarlos.",
+  "de": "Ihre Dokumente werden gelesen …\nGleich können Sie sie durchsuchen.",
+  "pt": "Lendo seus documentos…\nEm breve você poderá pesquisá-los."
+ },
+ "Non sono riuscito a leggere il contenuto: il file si trova solo per nome.": {
+  "en": "I couldn’t read the content: the file can only be found by name.",
+  "fr": "Je n’ai pas pu lire le contenu : le fichier ne se trouve que par son nom.",
+  "es": "No pude leer el contenido: el archivo solo se encuentra por el nombre.",
+  "de": "Der Inhalt konnte nicht gelesen werden: die Datei ist nur über den Namen auffindbar.",
+  "pt": "Não consegui ler o conteúdo: o arquivo só é encontrado pelo nome."
+ },
+ "CSV (si apre con Excel)": {
+  "en": "CSV (opens in Excel)",
+  "fr": "CSV (s’ouvre avec Excel)",
+  "es": "CSV (se abre con Excel)",
+  "de": "CSV (öffnet sich in Excel)",
+  "pt": "CSV (abre no Excel)"
+ },
+ "{n} risultati salvati in {path}": {
+  "en": "{n} results saved to {path}",
+  "fr": "{n} résultats enregistrés dans {path}",
+  "es": "{n} resultados guardados en {path}",
+  "de": "{n} Ergebnisse gespeichert in {path}",
+  "pt": "{n} resultados salvos em {path}"
+ },
+ "Non riesco a salvare il file: {error}": {
+  "en": "I can’t save the file: {error}",
+  "fr": "Impossible d’enregistrer le fichier : {error}",
+  "es": "No puedo guardar el archivo: {error}",
+  "de": "Die Datei kann nicht gespeichert werden: {error}",
+  "pt": "Não consigo salvar o arquivo: {error}"
+ },
+ "Non c'è testo da copiare: scegli prima un documento.": {
+  "en": "There is no text to copy: choose a document first.",
+  "fr": "Il n’y a pas de texte à copier : choisissez d’abord un document.",
+  "es": "No hay texto que copiar: elige primero un documento.",
+  "de": "Es gibt keinen Text zum Kopieren: Wählen Sie zuerst ein Dokument.",
+  "pt": "Não há texto para copiar: escolha primeiro um documento."
+ },
+ "Carico l'anteprima…": {
+  "en": "Loading the preview…",
+  "fr": "Chargement de l’aperçu…",
+  "es": "Cargando la vista previa…",
+  "de": "Vorschau wird geladen …",
+  "pt": "Carregando a pré-visualização…"
+ },
+ "Non riesco ad aprire il file:\n{error}": {
+  "en": "I can’t open the file:\n{error}",
+  "fr": "Impossible d’ouvrir le fichier :\n{error}",
+  "es": "No puedo abrir el archivo:\n{error}",
+  "de": "Die Datei kann nicht geöffnet werden:\n{error}",
+  "pt": "Não consigo abrir o arquivo:\n{error}"
+ },
+ "Percorso copiato negli appunti": {
+  "en": "Path copied to the clipboard",
+  "fr": "Chemin copié dans le presse-papiers",
+  "es": "Ruta copiada al portapapeles",
+  "de": "Pfad in die Zwischenablage kopiert",
+  "pt": "Caminho copiado para a área de transferência"
+ },
+ "{n} percorsi copiati negli appunti": {
+  "en": "{n} paths copied to the clipboard",
+  "fr": "{n} chemins copiés dans le presse-papiers",
+  "es": "{n} rutas copiadas al portapapeles",
+  "de": "{n} Pfade in die Zwischenablage kopiert",
+  "pt": "{n} caminhos copiados para a área de transferência"
+ },
+ "Scegli le cartelle da Impostazioni.": {
+  "en": "Choose the folders in Settings.",
+  "fr": "Choisissez les dossiers dans les Réglages.",
+  "es": "Elige las carpetas en Ajustes.",
+  "de": "Wählen Sie die Ordner in den Einstellungen.",
+  "pt": "Escolha as pastas nas Configurações."
+ },
+ "Cerco i documenti nelle cartelle…": {
+  "en": "Looking for documents in the folders…",
+  "fr": "Recherche des documents dans les dossiers…",
+  "es": "Buscando documentos en las carpetas…",
+  "de": "Dokumente in den Ordnern werden gesucht …",
+  "pt": "Procurando documentos nas pastas…"
+ },
+ "Non ho trovato documenti nelle cartelle scelte.\nControlla le cartelle da Impostazioni.": {
+  "en": "I found no documents in the chosen folders.\nCheck the folders in Settings.",
+  "fr": "Je n’ai trouvé aucun document dans les dossiers choisis.\nVérifiez les dossiers dans les Réglages.",
+  "es": "No encontré documentos en las carpetas elegidas.\nRevisa las carpetas en Ajustes.",
+  "de": "In den gewählten Ordnern wurden keine Dokumente gefunden.\nPrüfen Sie die Ordner in den Einstellungen.",
+  "pt": "Não encontrei documentos nas pastas escolhidas.\nVerifique as pastas nas Configurações."
+ },
+ "Scrivi qui sopra cosa cerchi.": {
+  "en": "Type what you are looking for above.",
+  "fr": "Saisissez ci-dessus ce que vous cherchez.",
+  "es": "Escribe arriba lo que buscas.",
+  "de": "Geben Sie oben ein, wonach Sie suchen.",
+  "pt": "Digite acima o que você procura."
+ },
+ "Preparo il testo completo…": {
+  "en": "Preparing the full text…",
+  "fr": "Préparation du texte complet…",
+  "es": "Preparando el texto completo…",
+  "de": "Volltext wird vorbereitet …",
+  "pt": "Preparando o texto completo…"
+ },
+ "Non riesco a mostrare il testo: {error}": {
+  "en": "I can’t show the text: {error}",
+  "fr": "Impossible d’afficher le texte : {error}",
+  "es": "No puedo mostrar el texto: {error}",
+  "de": "Der Text kann nicht angezeigt werden: {error}",
+  "pt": "Não consigo mostrar o texto: {error}"
+ },
+ "OCR utilizzato nel documento": {
+  "en": "OCR used in the document",
+  "fr": "OCR utilisé dans le document",
+  "es": "OCR usado en el documento",
+  "de": "OCR im Dokument verwendet",
+  "pt": "OCR usado no documento"
+ },
+ "Non sono riuscito a leggere questo file: {error}": {
+  "en": "I couldn’t read this file: {error}",
+  "fr": "Je n’ai pas pu lire ce fichier : {error}",
+  "es": "No pude leer este archivo: {error}",
+  "de": "Diese Datei konnte nicht gelesen werden: {error}",
+  "pt": "Não consegui ler este arquivo: {error}"
+ },
+ "Il file si trova comunque cercando il suo nome.": {
+  "en": "The file can still be found by searching for its name.",
+  "fr": "Le fichier reste trouvable en recherchant son nom.",
+  "es": "El archivo se puede encontrar igualmente buscando su nombre.",
+  "de": "Die Datei ist trotzdem über ihren Namen auffindbar.",
+  "pt": "O arquivo ainda pode ser encontrado pesquisando o nome."
+ },
+ "Non riesco a mostrare l'anteprima: {error}": {
+  "en": "I can’t show the preview: {error}",
+  "fr": "Impossible d’afficher l’aperçu : {error}",
+  "es": "No puedo mostrar la vista previa: {error}",
+  "de": "Die Vorschau kann nicht angezeigt werden: {error}",
+  "pt": "Não consigo mostrar a pré-visualização: {error}"
+ },
+ "File rimossi dall’archivio · {n}": {
+  "en": "Files removed from the archive · {n}",
+  "fr": "Fichiers retirés de l’archive · {n}",
+  "es": "Archivos quitados del archivo · {n}",
+  "de": "Aus dem Archiv entfernte Dateien · {n}",
+  "pt": "Arquivos removidos do arquivo · {n}"
+ },
+ "Errore interno: {error}": {
+  "en": "Internal error: {error}",
+  "fr": "Erreur interne : {error}",
+  "es": "Error interno: {error}",
+  "de": "Interner Fehler: {error}",
+  "pt": "Erro interno: {error}"
+ },
+ "Carico gli altri punti in cui compare…": {
+  "en": "Loading the other places where it appears…",
+  "fr": "Chargement des autres endroits où il apparaît…",
+  "es": "Cargando los otros lugares donde aparece…",
+  "de": "Weitere Fundstellen werden geladen …",
+  "pt": "Carregando os outros pontos em que aparece…"
+ },
+ "In pausa a batteria. Riprendo quando colleghi l’alimentatore.": {
+  "en": "Paused on battery. I will resume when you plug in the charger.",
+  "fr": "En pause sur batterie. Je reprendrai quand vous brancherez le chargeur.",
+  "es": "En pausa por la batería. Continuaré cuando conectes el cargador.",
+  "de": "Im Akkubetrieb pausiert. Ich mache weiter, sobald das Netzteil angeschlossen ist.",
+  "pt": "Em pausa por estar na bateria. Retomo quando você conectar o carregador."
+ },
+ "Trovato nel nome del file": {
+  "en": "Found in the file name",
+  "fr": "Trouvé dans le nom du fichier",
+  "es": "Encontrado en el nombre del archivo",
+  "de": "Im Dateinamen gefunden",
+  "pt": "Encontrado no nome do arquivo"
+ },
+ "Calcolo del significato · {done} di {total}": {
+  "en": "Computing meaning · {done} of {total}",
+  "fr": "Calcul du sens · {done} sur {total}",
+  "es": "Calculando el significado · {done} de {total}",
+  "de": "Bedeutung wird berechnet · {done} von {total}",
+  "pt": "Calculando o significado · {done} de {total}"
+ },
+ "Lettura interrotta · {error}": {
+  "en": "Reading stopped · {error}",
+  "fr": "Lecture interrompue · {error}",
+  "es": "Lectura detenida · {error}",
+  "de": "Lesen angehalten · {error}",
+  "pt": "Leitura interrompida · {error}"
+ },
+ "Lettura {done} di {total} · {current} · puoi già cercare": {
+  "en": "Reading {done} of {total} · {current} · you can already search",
+  "fr": "Lecture {done} sur {total} · {current} · vous pouvez déjà rechercher",
+  "es": "Leyendo {done} de {total} · {current} · ya puedes buscar",
+  "de": "Lesen {done} von {total} · {current} · Sie können schon suchen",
+  "pt": "Lendo {done} de {total} · {current} · você já pode pesquisar"
+ },
+ "Lettura interrotta": {
+  "en": "Reading stopped",
+  "fr": "Lecture interrompue",
+  "es": "Lectura detenida",
+  "de": "Lesen angehalten",
+  "pt": "Leitura interrompida"
+ },
+ "{n} nuovi": {
+  "en": "{n} new",
+  "fr": "{n} nouveaux",
+  "es": "{n} nuevos",
+  "de": "{n} neu",
+  "pt": "{n} novos"
+ },
+ "{n} modificati": {
+  "en": "{n} changed",
+  "fr": "{n} modifiés",
+  "es": "{n} modificados",
+  "de": "{n} geändert",
+  "pt": "{n} modificados"
+ },
+ "{n} spostati": {
+  "en": "{n} moved",
+  "fr": "{n} déplacés",
+  "es": "{n} movidos",
+  "de": "{n} verschoben",
+  "pt": "{n} movidos"
+ },
+ "{n} non più presenti": {
+  "en": "{n} no longer present",
+  "fr": "{n} absents",
+  "es": "{n} ya no están",
+  "de": "{n} nicht mehr vorhanden",
+  "pt": "{n} não existem mais"
+ },
+ "{n} non letti": {
+  "en": "{n} not read",
+  "fr": "{n} non lus",
+  "es": "{n} sin leer",
+  "de": "{n} nicht gelesen",
+  "pt": "{n} não lidos"
+ },
+ "Cerco i documenti nelle cartelle… {n} trovati": {
+  "en": "Looking for documents in the folders… {n} found",
+  "fr": "Recherche des documents dans les dossiers… {n} trouvés",
+  "es": "Buscando documentos en las carpetas… {n} encontrados",
+  "de": "Dokumente in den Ordnern werden gesucht … {n} gefunden",
+  "pt": "Procurando documentos nas pastas… {n} encontrados"
+ },
+ "Cartelle non trovate · {folders}": {
+  "en": "Folders not found · {folders}",
+  "fr": "Dossiers introuvables · {folders}",
+  "es": "Carpetas no encontradas · {folders}",
+  "de": "Ordner nicht gefunden · {folders}",
+  "pt": "Pastas não encontradas · {folders}"
+ },
+ "Non trovo altre occorrenze in questo documento.": {
+  "en": "I can’t find other matches in this document.",
+  "fr": "Je ne trouve pas d’autres occurrences dans ce document.",
+  "es": "No encuentro más coincidencias en este documento.",
+  "de": "In diesem Dokument gibt es keine weiteren Treffer.",
+  "pt": "Não encontro outras ocorrências neste documento."
+ },
+ "Scorciatoia globale non disponibile · {error}": {
+  "en": "Global shortcut unavailable · {error}",
+  "fr": "Raccourci global indisponible · {error}",
+  "es": "Atajo global no disponible · {error}",
+  "de": "Globale Tastenkombination nicht verfügbar · {error}",
+  "pt": "Atalho global indisponível · {error}"
+ },
+ "{files} file indicizzati · {ocr} OCR in coda": {
+  "en": "{files} files indexed · {ocr} OCR queued",
+  "fr": "{files} fichiers indexés · {ocr} OCR en attente",
+  "es": "{files} archivos indexados · {ocr} OCR en cola",
+  "de": "{files} Dateien indiziert · {ocr} OCR in der Warteschlange",
+  "pt": "{files} arquivos indexados · {ocr} OCR na fila"
+ },
+ "Stato archivio non disponibile": {
+  "en": "Archive status unavailable",
+  "fr": "État de l’archive indisponible",
+  "es": "Estado del archivo no disponible",
+  "de": "Archivstatus nicht verfügbar",
+  "pt": "Estado do arquivo indisponível"
+ },
+ "Cerca…": {
+  "en": "Search…",
+  "fr": "Rechercher…",
+  "es": "Buscar…",
+  "de": "Suchen …",
+  "pt": "Pesquisar…"
+ },
+ "Impostazioni": {
+  "en": "Settings",
+  "fr": "Réglages",
+  "es": "Ajustes",
+  "de": "Einstellungen",
+  "pt": "Configurações"
+ },
+ "Informazioni": {
+  "en": "About",
+  "fr": "À propos",
+  "es": "Acerca de",
+  "de": "Info",
+  "pt": "Sobre"
+ },
+ "Esci": {
+  "en": "Quit",
+  "fr": "Quitter",
+  "es": "Salir",
+  "de": "Beenden",
+  "pt": "Sair"
+ },
+ "Riprendi": {
+  "en": "Resume",
+  "fr": "Reprendre",
+  "es": "Reanudar",
+  "de": "Fortsetzen",
+  "pt": "Retomar"
+ },
+ "Pausa": {
+  "en": "Pause",
+  "fr": "Pause",
+  "es": "Pausa",
+  "de": "Pause",
+  "pt": "Pausa"
+ },
+ "Informazioni su StillFind": {
+  "en": "About StillFind",
+  "fr": "À propos de StillFind",
+  "es": "Acerca de StillFind",
+  "de": "Über StillFind",
+  "pt": "Sobre o StillFind"
+ },
+ "Chiudi": {
+  "en": "Close",
+  "fr": "Fermer",
+  "es": "Cerrar",
+  "de": "Schließen",
+  "pt": "Fechar"
+ },
+ "Versione {version}": {
+  "en": "Version {version}",
+  "fr": "Version {version}",
+  "es": "Versión {version}",
+  "de": "Version {version}",
+  "pt": "Versão {version}"
+ },
+ "Scegli la lingua": {
+  "en": "Choose your language",
+  "fr": "Choisissez votre langue",
+  "es": "Elige tu idioma",
+  "de": "Wählen Sie Ihre Sprache",
+  "pt": "Escolha o idioma"
+ },
+ "Potrai cambiarla in Impostazioni → Aspetto e Sistema → Lingua.": {
+  "en": "You can change it later in Settings → Appearance and System → Language.",
+  "fr": "Vous pourrez la changer dans Réglages → Apparence et système → Langue.",
+  "es": "Podrás cambiarlo en Ajustes → Apariencia y sistema → Idioma.",
+  "de": "Sie können sie später unter Einstellungen → Darstellung und System → Sprache ändern.",
+  "pt": "Você poderá alterá-lo em Configurações → Aparência e Sistema → Idioma."
+ },
+ "Continua": {
+  "en": "Continue",
+  "fr": "Continuer",
+  "es": "Continuar",
+  "de": "Weiter",
+  "pt": "Continuar"
+ },
+ "Entità o documento": {
+  "en": "Entity or document",
+  "fr": "Entité ou document",
+  "es": "Entidad o documento",
+  "de": "Entität oder Dokument",
+  "pt": "Entidade ou documento"
+ },
+ "Carico i collegamenti…": {
+  "en": "Loading the links…",
+  "fr": "Chargement des liens…",
+  "es": "Cargando los vínculos…",
+  "de": "Verknüpfungen werden geladen …",
+  "pt": "Carregando os vínculos…"
+ },
+ "Entità": {
+  "en": "Entities",
+  "fr": "Entités",
+  "es": "Entidades",
+  "de": "Entitäten",
+  "pt": "Entidades"
+ },
+ "Versioni": {
+  "en": "Versions",
+  "fr": "Versions",
+  "es": "Versiones",
+  "de": "Versionen",
+  "pt": "Versões"
+ },
+ "Testo simile al {pct}": {
+  "en": "Text {pct} similar",
+  "fr": "Texte similaire à {pct}",
+  "es": "Texto similar al {pct}",
+  "de": "Text zu {pct} ähnlich",
+  "pt": "Texto {pct} semelhante"
+ },
+ "Documenti simili": {
+  "en": "Similar documents",
+  "fr": "Documents similaires",
+  "es": "Documentos similares",
+  "de": "Ähnliche Dokumente",
+  "pt": "Documentos semelhantes"
+ },
+ "Documento simile · {pct}": {
+  "en": "Similar document · {pct}",
+  "fr": "Document similaire · {pct}",
+  "es": "Documento similar · {pct}",
+  "de": "Ähnliches Dokument · {pct}",
+  "pt": "Documento semelhante · {pct}"
+ },
+ "Collegamento": {
+  "en": "Link",
+  "fr": "Lien",
+  "es": "Vínculo",
+  "de": "Verknüpfung",
+  "pt": "Vínculo"
+ },
+ "Nessun documento simile tra quelli già elaborati.": {
+  "en": "No similar document among those already processed.",
+  "fr": "Aucun document similaire parmi ceux déjà traités.",
+  "es": "Ningún documento similar entre los ya procesados.",
+  "de": "Kein ähnliches Dokument unter den bereits verarbeiteten.",
+  "pt": "Nenhum documento semelhante entre os já processados."
+ },
+ "Documenti collegati": {
+  "en": "Linked documents",
+  "fr": "Documents liés",
+  "es": "Documentos vinculados",
+  "de": "Verknüpfte Dokumente",
+  "pt": "Documentos vinculados"
+ },
+ "Nessun collegamento trovato per questo documento.": {
+  "en": "No links found for this document.",
+  "fr": "Aucun lien trouvé pour ce document.",
+  "es": "No se encontraron vínculos para este documento.",
+  "de": "Für dieses Dokument wurden keine Verknüpfungen gefunden.",
+  "pt": "Nenhum vínculo encontrado para este documento."
+ },
+ "I vettori del significato non sono disponibili.": {
+  "en": "The meaning vectors are not available.",
+  "fr": "Les vecteurs de sens ne sont pas disponibles.",
+  "es": "Los vectores de significado no están disponibles.",
+  "de": "Die Bedeutungsvektoren sind nicht verfügbar.",
+  "pt": "Os vetores de significado não estão disponíveis."
+ },
+ "− Nascondi le occorrenze ({n})": {
+  "en": "− Hide the matches ({n})",
+  "fr": "− Masquer les occurrences ({n})",
+  "es": "− Ocultar las coincidencias ({n})",
+  "de": "− Treffer ausblenden ({n})",
+  "pt": "− Ocultar as ocorrências ({n})"
+ },
+ "+ Altre occorrenze": {
+  "en": "+ More matches",
+  "fr": "+ Autres occurrences",
+  "es": "+ Más coincidencias",
+  "de": "+ Weitere Treffer",
+  "pt": "+ Mais ocorrências"
+ },
+ "Cerco le occorrenze…": {
+  "en": "Looking for matches…",
+  "fr": "Recherche des occurrences…",
+  "es": "Buscando coincidencias…",
+  "de": "Treffer werden gesucht …",
+  "pt": "Procurando ocorrências…"
+ },
+ "… e altre {n}: nell'anteprima si vedono tutte": {
+  "en": "… and {n} more: you can see them all in the preview",
+  "fr": "… et {n} autres : l’aperçu les affiche toutes",
+  "es": "… y {n} más: en la vista previa se ven todas",
+  "de": "… und {n} weitere: in der Vorschau sind alle zu sehen",
+  "pt": "… e mais {n}: na pré-visualização você vê todas"
+ },
+ "Scrivania": {
+  "en": "Desktop",
+  "fr": "Bureau",
+  "es": "Escritorio",
+  "de": "Schreibtisch",
+  "pt": "Área de trabalho"
+ },
+ "Download": {
+  "en": "Downloads",
+  "fr": "Téléchargements",
+  "es": "Descargas",
+  "de": "Downloads",
+  "pt": "Downloads"
+ },
+ "Spunta almeno una cartella, oppure scegline una.": {
+  "en": "Tick at least one folder, or choose one.",
+  "fr": "Cochez au moins un dossier, ou choisissez-en un.",
+  "es": "Marca al menos una carpeta, o elige una.",
+  "de": "Wählen Sie mindestens einen Ordner aus oder suchen Sie einen.",
+  "pt": "Marque pelo menos uma pasta ou escolha uma."
+ },
+ "Scegli una cartella per iniziare.": {
+  "en": "Choose a folder to begin.",
+  "fr": "Choisissez un dossier pour commencer.",
+  "es": "Elige una carpeta para empezar.",
+  "de": "Wählen Sie zum Start einen Ordner.",
+  "pt": "Escolha uma pasta para começar."
+ },
+ "Dove sono i tuoi documenti?": {
+  "en": "Where are your documents?",
+  "fr": "Où sont vos documents ?",
+  "es": "¿Dónde están tus documentos?",
+  "de": "Wo sind Ihre Dokumente?",
+  "pt": "Onde estão seus documentos?"
+ },
+ "Aggiungi cartella…": {
+  "en": "Add folder…",
+  "fr": "Ajouter un dossier…",
+  "es": "Añadir carpeta…",
+  "de": "Ordner hinzufügen …",
+  "pt": "Adicionar pasta…"
+ },
+ "Scegli una cartella": {
+  "en": "Choose a folder",
+  "fr": "Choisir un dossier",
+  "es": "Elegir una carpeta",
+  "de": "Ordner wählen",
+  "pt": "Escolher uma pasta"
+ },
+ "Data sconosciuta": {
+  "en": "Unknown date",
+  "fr": "Date inconnue",
+  "es": "Fecha desconocida",
+  "de": "Datum unbekannt",
+  "pt": "Data desconhecida"
+ },
+ "Annulla": {
+  "en": "Cancel",
+  "fr": "Annuler",
+  "es": "Cancelar",
+  "de": "Abbrechen",
+  "pt": "Cancelar"
+ }
+}

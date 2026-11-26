@@ -3,29 +3,40 @@
 """Scelta della cartella da dimenticare."""
 from __future__ import annotations
 
-from tkinter import simpledialog, ttk
+import customtkinter as ctk
+
+from stillfind.core.i18n import tr
+from stillfind.ui.theme import PAL, font, ghost_button, primary_button
+from stillfind.ui.widgets import SquareComboBox, SquareDialog
 
 
-class ForgetFolderDialog(simpledialog.Dialog):
-    def body(self, master):
-        folders = [row[0] for row in self.parent.con.execute(
+class ForgetFolderDialog(SquareDialog):
+    """Modale: il risultato (`.result`) è la cartella scelta, oppure None se si annulla."""
+
+    def __init__(self, parent, title=None):
+        super().__init__(parent, title or tr("Dimentica una cartella"), "640x250", minsize=(520, 250), resizable=True, modal=True)
+        self.result = None
+        folders = [row[0] for row in parent.con.execute(
             "SELECT path FROM dirs UNION SELECT folder FROM docs ORDER BY 1 COLLATE NOCASE")]
-        ttk.Label(master, text="Cartella da dimenticare").pack(anchor="w")
-        self.choice = ttk.Combobox(master, values=folders, state="readonly", width=64)
-        self.choice.pack(fill="x", pady=6)
+        confirm = primary_button(self, tr("Dimentica"), self._accept, width=110)
+        self.button_bar(confirm, ghost_button(self, tr("Annulla"), self.close, width=100))
+        if not folders:
+            confirm.configure(state="disabled")
+        ctk.CTkLabel(self, text=tr("Cartella da dimenticare"), font=font(13, True), text_color=PAL["text"], anchor="w"
+                     ).pack(anchor="w", padx=self.MARGIN, pady=(self.MARGIN, 6))
+        self.choice = SquareComboBox(self, values=folders or [""], state="readonly", height=36, font=font(13),
+                                     dropdown_font=font(13))
+        self.choice.pack(fill="x", padx=self.MARGIN)
         if folders:
-            self.choice.set(self.parent.folder_filter if self.parent.folder_filter in folders else folders[0])
-        ttk.Label(master, text="La rimozione include le sottocartelle. Gli originali restano sul disco.\n"
-                              "Puoi includere di nuovo la cartella dalle Impostazioni.").pack(anchor="w")
-        return self.choice
+            self.choice.set(parent.folder_filter if parent.folder_filter in folders else folders[0])
+        else:
+            self.choice.set("")
+        self.note = ctk.CTkLabel(self, text=tr("La rimozione include le sottocartelle. Gli originali restano sul disco.\n"
+                                               "Puoi includere di nuovo la cartella dalle Impostazioni."),
+                                 font=font(12), text_color=PAL["muted"], justify="left", anchor="w", wraplength=580)
+        self.note.pack(anchor="w", padx=self.MARGIN, pady=(12, 0))
+        self.wait_window()
 
-    def buttonbox(self):
-        bar = ttk.Frame(self)
-        bar.pack(anchor="e", padx=8, pady=8)
-        ttk.Button(bar, text="Annulla", command=self.cancel).pack(side="left", padx=5)
-        ttk.Button(bar, text="Dimentica", command=self.ok,
-                   state="normal" if self.choice.get() else "disabled").pack(side="left")
-        self.bind("<Escape>", self.cancel)
-
-    def apply(self):
-        self.result = self.choice.get()
+    def _accept(self):
+        self.result = self.choice.get() or None
+        self.destroy()

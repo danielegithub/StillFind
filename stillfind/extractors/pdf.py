@@ -3,6 +3,9 @@
 """Estrazione del testo dei PDF, pagina per pagina, con OCR solo dove manca il testo."""
 from __future__ import annotations
 
+from stillfind.core.problems import ReadProblems
+
+from stillfind.core.ocr_languages import OcrLanguages
 from stillfind.core.errors import Stopped
 from stillfind.extractors.base import ExtractionRequest, Extractor
 from stillfind.extractors.ocr import Tesseract
@@ -46,10 +49,14 @@ class PdfExtractor(Extractor):
         if cfg.get("ocr") and Tesseract.available():
             max_pages = max(1, int(cfg.get("ocr_max_pages", 50) or 50))
             need_ocr = [i + 1 for i, t in enumerate(page_texts[:max_pages]) if cfg.get("_force_ocr") or len(t.strip()) < 40]
+            lang = OcrLanguages.normalize(cfg.get("ocr_lang"))
             previous = (info or {}).get("previous_ocr", {})
             recognized = dict(previous)
+            # Lingua di ogni pagina letta con OCR: quella già salvata per le pagine conservate, quella attuale per le nuove.
+            page_langs = {p: (info or {}).get("previous_ocr_lang", {}).get(p, "") for p in previous}
             cached = cache.get() if cache else {}
             recognized.update((p, cached[p]) for p in need_ocr if p in cached)
+            page_langs.update((p, lang) for p in need_ocr if p in cached)
             rest = [p for p in need_ocr if p not in recognized]
             failures = {}
             if rest:
@@ -64,6 +71,13 @@ class PdfExtractor(Extractor):
                         raise
                     # Il renderer può fallire già in apertura. Il testo digitale rimane disponibile.
                     failures.update(dict.fromkeys(rest, exc))
+            page_langs.update((p, lang) for p in rest if p in recognized)
+            # In una rielaborazione, una pagina che non si riesce a rileggere conserva il risultato precedente.
+            fallback = (info or {}).get("fallback_ocr", {})
+            for p in failures:
+                if p in fallback:
+                    recognized[p] = fallback[p]
+                    page_langs[p] = info.get("fallback_ocr_lang", {}).get(p, "")
             for p, txt in recognized.items():
                 if p <= len(page_texts):
                     states[p-1] = ("ocr" if txt.strip() else
@@ -71,11 +85,15 @@ class PdfExtractor(Extractor):
                     if txt.strip():
                         page_texts[p-1] = txt
             for p in failures:
-                states[p-1] = "error"
+                if p not in fallback:
+                    states[p-1] = "error"
             if failures:
                 p = next(iter(failures))
-                info["partial_error"] = f"Lettura parziale · OCR, pag. {p}: {failures[p]}"
+                info["partial_error"] = f"{ReadProblems.PARTIAL_OCR} pag. {p}: {failures[p]}"
             ocr_used = bool(recognized or need_ocr)
+            if info is not None:
+                info["page_langs"] = {p: page_langs.get(p, "") for p in recognized if p <= len(page_texts)}
+                info["ocr_langs"] = set(info["page_langs"].values())
         if info is not None:
             info["blank_pages"] = sum(1 for t in page_texts if len(t.strip()) < 40)
             starts, pos = [], 0

@@ -20,19 +20,25 @@ from tkinter import filedialog, messagebox, ttk
 
 import customtkinter as ctk
 
-from stillfind.core import about, config, errors, system, labels as ui_text
+from stillfind.core import about, config, errors, i18n, system, labels as ui_text
+
+from stillfind.core.problems import ReadProblems
+from stillfind.core.i18n import mark, tr, trn
+from stillfind.extractors.ocr import Tesseract
 from stillfind.indexing.relations import RelationGraph
 from stillfind.runtime import agent
 from stillfind.runtime.hotkey import Registration
 from stillfind.runtime.signals import AppSignals
 from stillfind.search.engine import HIT_START, SearchEngine
-from stillfind.search.preview import DocumentPreview
+from stillfind.search.preview import DocumentPreview, OCCURRENCES_SHOWN
 from stillfind.search.query import Query, WHERE_ALL, WHERE_NAME
+from stillfind.semantic.models import ModelCatalog
 from stillfind.semantic.search import SemanticIndex, SemanticSearch
 from stillfind.storage.database import Database
 from stillfind.storage.protection import ArchiveProtection
 from stillfind.tools.export import CsvExporter
 from stillfind.ui import security_ui
+from stillfind.ui.brand import Brand
 from stillfind.ui.dialogs.about import AboutDialog
 from stillfind.ui.dialogs.audit import AuditDialog
 from stillfind.ui.dialogs.compare import CompareDialog
@@ -46,33 +52,34 @@ from stillfind.ui.dialogs.library import LibraryDialog
 from stillfind.ui.dialogs.redact import RedactDialog
 from stillfind.ui.dialogs.settings import SettingsDialog
 from stillfind.ui.search_criteria import SearchCriteria
-from stillfind.ui.theme import PAL, col, font, ghost_button, card
+from stillfind.ui.theme import PAL, col, font, ghost_button, primary_button, card, configure_theme
 from stillfind.ui.views.relations import RelationsPane
 from stillfind.ui.views.results import ResultList
-from stillfind.ui.views.welcome import WelcomeView
-from stillfind.ui.widgets import PreviewAction
+from stillfind.ui.views.intro import IntroView
+from stillfind.ui.views.language import LanguageView
+from stillfind.ui.views.setup import SetupView
+from stillfind.ui.widgets import EmbeddingBadge, IdSelector, MenuBar, ModelsPanel, PreviewAction, SquareEntry, SquareOptionMenu
 
 
-ORDERS = {"Più pertinenti": "rank", "Più recenti": "date", "Data del documento": "document_date",
-          "Nome (A-Z)": "name"}
 RECENT_COUNT = 15  # documenti mostrati quando la ricerca è vuota
 
 
 class App(ctk.CTk):
-    MODE_HITS, MODE_FULL = "Occorrenze", "Testo completo"
-    MODE_LINKS = "Collegati"
+    MODE_HITS, MODE_FULL, MODE_LINKS = "hits", "full", "links"
 
     def __init__(self, quit_token=None):
         self.cfg = config.Settings.load()
         ctk.set_appearance_mode(self.cfg.get("theme", "system"))
-        ctk.set_default_color_theme("blue")
+        configure_theme()
         super().__init__()
         self.title("StillFind")
+        Brand.set_window_icon(self)
         self.geometry("1240x780")
         self.minsize(940, 600)
         self.configure(fg_color=PAL["bg"])
         self.con = Database.connect()
         self.protection = ArchiveProtection.settings(config.DB_PATH)
+        ArchiveProtection.prepare_visibility(config.DB_PATH, self.cfg.get("hide_encryption_secret", False))
         self._last_input = time.monotonic()
         self._history_job = None
         self._history_signature = None
@@ -95,8 +102,6 @@ class App(ctk.CTk):
         self.folder_filter: str | None = None
         self._folder_map: dict[str, str] = {}
         self._silent = False
-        self._prog_on = False
-        self._prog_mode = "indeterminate"
         self._last_scan = 0.0
         self._dirs_sig = None
         self._hint = None
@@ -119,23 +124,31 @@ class App(ctk.CTk):
         self._embedder_lock = threading.Lock()
         self._embedder_failed = False
         self._forced_q: str | None = None  # testo cercato premendo Invio (anche se molto corto)
-        self.welcome: WelcomeView | None = None
+        self.welcome: SetupView | None = None
+        self.language_view: LanguageView | None = None
+        self.intro: IntroView | None = None
         self._build()
         self.restyle()
         self.protocol("WM_DELETE_WINDOW", self._close)
         self._shortcut = Registration(lambda: self.cfg.get("global_shortcut", True),
                                              AppSignals.signal_window, lambda s: self.msgs.put(("shortcut_error", s)))
-        self._tray = Registration(lambda: True, lambda action: self.msgs.put(("tray", action)),
+        self._tray = Registration(lambda: self.cfg.get("show_tray", True), lambda action: self.msgs.put(("tray", action)),
                                          lambda _: None, tray=lambda: self._state)
         if self.protection["mode"] == "vault":
             for event in ("<KeyPress>", "<ButtonPress>", "<Motion>", "<MouseWheel>"):
                 self.bind_all(event, self._activity, add="+")
         self.after(400, self._session_tick)
         self.after(150, self._poll)
+        self.after(self.EMBEDDING_REFRESH_MS, self._refresh_embedding_states)
         self.bind("<FocusIn>", self._on_focus)
         self.reschedule_auto_scan()
         if not self.cfg["folders"]:
-            self._show_welcome()
+            if not self.cfg.get("ui_language"):
+                self._show_language_choice()
+            elif not self.cfg.get("intro_seen"):
+                self._show_intro()
+            else:
+                self._show_welcome()
         else:
             self.start_index()
 
@@ -159,7 +172,7 @@ class App(ctk.CTk):
                 self._window_action(action)
             self._sync_worker()
         except Exception as exc:
-            self.status.configure(text=f"Stato dell’archivio non disponibile · {exc}")
+            self.status.configure(text=tr("Stato dell’archivio non disponibile · {error}", error=exc))
         self.after(400, self._session_tick)
 
     def _window_action(self, action):
@@ -197,26 +210,92 @@ class App(ctk.CTk):
         elif not self.welcome:
             self.entry.focus_set()
 
+    def _show_language_choice(self):
+        self.language_view = LanguageView(self, self._finish_language_choice)
+        self.language_view.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.language_view.lift()
+
+    def _finish_language_choice(self, code: str):
+        """La lingua scelta vale subito: si salva, si ricostruisce la finestra con i nuovi testi e si prosegue."""
+        self.cfg["ui_language"] = i18n.Translator.set_language(code)
+        self.cfg.save()
+        self.language_view.destroy()
+        self.language_view = None
+        for child in list(self.winfo_children()):
+            child.destroy()
+        self._build()
+        self.restyle()
+        self._show_intro()
+
+    def _show_intro(self):
+        self.intro = IntroView(self, self._finish_intro)
+        self.intro.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.intro.lift()
+
+    def _finish_intro(self):
+        """Fine (o salto) della presentazione: si ricorda e si passa alla configurazione."""
+        self.cfg["intro_seen"] = True
+        self.cfg.save()
+        if self.intro is not None:
+            self.intro.destroy()
+            self.intro = None
+        self._show_welcome()
+
     def _show_welcome(self):
-        self.welcome = WelcomeView(self, self._finish_welcome)
+        self.welcome = SetupView(self, self._finish_setup, self.protection["mode"])
         self.welcome.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.welcome.lift()
 
     def _finish_welcome(self, paths: list[str]):
-        self.cfg["folders"] = [{"path": p, "recursive": True} for p in paths]
+        """Compatibilità: solo le cartelle (le altre scelte restano quelle di prima)."""
+        self._finish_setup({"folders": paths})
+
+    def _finish_setup(self, choices: dict):
+        """Fine della configurazione iniziale. La cifratura va applicata per prima, ad archivio ancora vuoto, così
+        nasce già protetto; poi si salvano le scelte e parte la prima indicizzazione."""
+        protection = choices.get("protection") or {}
+        if protection.get("change"):
+            try:
+                self.con.close()
+                ArchiveProtection.migrate(config.DB_PATH, protection["mode"], protection.get("passphrase"),
+                                          protection.get("minutes", 10),
+                                          hide_secret=self.cfg.get("hide_encryption_secret", False))
+            except Exception as exc:
+                self.con = Database.connect()
+                if self.welcome is not None:
+                    self.welcome.show_error(str(exc))
+                return
+        for name in ("language_view", "intro"):
+            if getattr(self, name) is not None:
+                getattr(self, name).destroy()
+                setattr(self, name, None)
+        self.cfg["intro_seen"] = True
+        self.cfg["ui_language"] = self.cfg.get("ui_language") or i18n.Translator.language()
+        recursive = choices.get("recursive", True)
+        self.cfg["folders"] = [{"path": path, "recursive": recursive} for path in choices["folders"]]
+        for key, setting in (("ocr", "ocr"), ("ocr_lang", "ocr_lang"), ("semantic", "semantic_search")):
+            if key in choices:
+                self.cfg[setting] = choices[key]
+        if "auto_scan" in choices:
+            self.cfg["auto_scan_seconds"] = 60 if choices["auto_scan"] else 0
         self.cfg.save()
         if self.welcome is not None:
             self._welcome_vars = self.welcome.choices  # le variabili Tk non devono essere liberate da un altro thread
             self.welcome.destroy()
             self.welcome = None
+        if protection.get("change"):
+            security_ui.restart(self)  # riparte con l'archivio protetto (la cassaforte chiede la passphrase)
+            return
         self.reschedule_auto_scan()
+        self._update_models()
         self.start_index(force=True)
         self.do_search()
         self.entry.focus_set()
 
     # ---- costruzione
     def _menu(self, parent, var, values, width, command):
-        return ctk.CTkOptionMenu(parent, variable=var, values=values, width=width, height=34, corner_radius=10,
+        return SquareOptionMenu(parent, variable=var, values=values, width=width, height=34,
+                                 dynamic_resizing=False,
                                  font=font(13), dropdown_font=font(13), fg_color=PAL["card"],
                                  button_color=PAL["card"], button_hover_color=PAL["ghost_hover"],
                                  text_color=PAL["text"], command=command)
@@ -225,201 +304,290 @@ class App(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
 
-        # --- in alto: nome, spiegazione e due soli pulsanti
-        head = ctk.CTkFrame(self, fg_color="transparent")
-        head.grid(row=0, column=0, sticky="ew", padx=22, pady=(18, 0))
-        head.grid_columnconfigure(1, weight=1)
-        names = ctk.CTkFrame(head, fg_color="transparent")
-        names.grid(row=0, column=0, sticky="w")
-        ctk.CTkLabel(names, text="StillFind", font=font(24, True), text_color=PAL["text"]).pack(anchor="w")
-        ctk.CTkLabel(names, text="Cerca dentro i tuoi documenti", font=font(13), text_color=PAL["muted"]).pack(anchor="w")
-        ctk.CTkLabel(head, text="🔒  Funziona senza internet: nulla esce dal computer", font=font(12),
-                     text_color=PAL["muted"]).grid(row=0, column=1, sticky="w", padx=22, pady=(14, 0))
-        self.btn_more = ghost_button(head, "⋯", self._more_menu, width=44)
-        self.btn_more.grid(row=0, column=2, padx=(0, 8))
-        ghost_button(head, "⚙  Impostazioni", lambda: SettingsDialog(self)).grid(row=0, column=3)
+        # Barra dei menu classica: File, Strumenti, Aiuto, con i suggerimenti da tastiera a destra.
+        self.command_bar = MenuBar(self)
+        self.command_bar.grid(row=0, column=0, sticky="ew", pady=(0, 1))
+        self.command_bar.grid_columnconfigure(3, weight=1)
+        mod = "⌘" if sys.platform == "darwin" else "Ctrl"
+        self.command_bar.add(tr("File"), self._fill_file_menu, self._update_file_menu)
+        self.command_bar.add(tr("Strumenti"), self._fill_tools_menu, self._update_tools_menu)
+        self.command_bar.add(tr("Aiuto"), self._fill_help_menu)
+        ctk.CTkLabel(self.command_bar, text=tr("{mod}+K  Cerca     F3  Occorrenza successiva", mod=mod), font=font(11),
+                     text_color=PAL["muted"], anchor="e").grid(row=0, column=3, sticky="e", padx=16)
 
-        # --- ricerca
-        bar = ctk.CTkFrame(self, fg_color="transparent")
-        bar.grid(row=1, column=0, sticky="ew", padx=22, pady=(14, 0))
-        bar.grid_columnconfigure(0, weight=1)
+        self.header = ctk.CTkFrame(self, corner_radius=0, fg_color=PAL["bg"], border_width=0)
+        self.header.grid(row=1, column=0, sticky="ew")
+        self.header.grid_columnconfigure(1, weight=1)
+        logo = ctk.CTkFrame(self.header, fg_color="transparent", corner_radius=0, border_width=0)
+        logo.grid(row=0, column=0, padx=(16, 18), pady=10, sticky="w")
+        ctk.CTkLabel(logo, text="", image=Brand.symbol(34)).pack(side="left", padx=(0, 8))
+        ctk.CTkLabel(logo, text="StillFind", font=font(24, True), text_color=PAL["text"]).pack(side="left")
+        ctk.CTkLabel(self.header, text=tr("Cerca dentro i tuoi documenti"), font=font(13), text_color=PAL["muted"]).grid(
+            row=0, column=1, sticky="w")
+        ctk.CTkLabel(self.header, text=tr("OFFLINE"), font=font(11),
+                     text_color=PAL["muted"]).grid(row=0, column=2, padx=16)
+        encrypted = self.protection["mode"] != "plain"
+        self.lock_button = PreviewAction(self.header, "lock" if encrypted else "unlock",
+                                         tr("Archivio cifrato · clic per password e visibilità") if encrypted else
+                                         tr("Archivio in chiaro · clic per attivare la cifratura"),
+                                         lambda: security_ui.SecretDialog(self))
+        self.lock_button.configure(text=tr("CIFRATO") if encrypted else tr("NON CIFRATO"), width=156,
+                                   font=font(12, True), text_color=PAL["text"])
+        self.lock_button.grid(row=0, column=3, padx=(0, 16))
+
+        self.search_band = ctk.CTkFrame(self, corner_radius=0, fg_color=PAL["card"], border_width=1, border_color=PAL["line"])
+        self.search_band.grid(row=2, column=0, sticky="ew", padx=16, pady=(0, 10))
+        self.search_band.grid_columnconfigure(0, weight=1)
         self.qvar = tk.StringVar()
         self.qvar.trace_add("write", lambda *_: self._schedule())
-        self.entry = ctk.CTkEntry(bar, textvariable=self.qvar, height=50, corner_radius=14, font=font(17),
-                                  placeholder_text="Cosa cerchi?  Per esempio: contratto affitto, fattura gennaio…",
-                                  fg_color=PAL["card"], border_color=PAL["line"], border_width=1,
-                                  text_color=PAL["text"])
-        self.entry.grid(row=0, column=0, sticky="ew")
+        self.entry = SquareEntry(self.search_band, textvariable=self.qvar, height=40, corner_radius=0, font=font(16),
+                                  placeholder_text=tr("Cerca parole, nomi o frasi nei documenti…"), fg_color=PAL["field"],
+                                  border_color=PAL["line"], border_width=1, text_color=PAL["text"])
+        self.entry.grid(row=0, column=0, sticky="ew", padx=(12, 8), pady=(12, 8))
         self.entry.bind("<Return>", self._submit_query)
         self.entry.bind("<Escape>", lambda e: self.qvar.set(""))
         self.entry.bind("<Down>", lambda e: self._focus_list())
-        help_btn = ghost_button(bar, "?", self.show_help, width=50)
-        help_btn.configure(height=50, corner_radius=14, font=font(16, True))
-        help_btn.grid(row=0, column=1, padx=(10, 0))
+        search_button = primary_button(self.search_band, tr("Cerca"), self._submit_query, width=96)
+        search_button.configure(height=40)
+        search_button.grid(row=0, column=1, padx=(0, 12), pady=(12, 8))
+        self.filters = ctk.CTkFrame(self.search_band, fg_color="transparent", border_width=0, corner_radius=0)
+        self.filters.grid(row=1, column=0, columnspan=2, sticky="ew", padx=12, pady=(0, 12))
+        self.filters.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform="filters")
+        self.type_choices = self._type_choices([])
+        self.type_var = tk.StringVar(value=tr("Tutti i tipi"))
+        self.date_var = tk.StringVar(value=ui_text.DATE_CHOICES.label("any"))
+        self.folder_var = tk.StringVar(value=tr("Tutte le cartelle"))
+        self.where_var = tk.StringVar(value=ui_text.WHERE_CHOICES.label("all"))
+        menus = ((tr("Tipo"), self.type_var, self.type_choices.labels(), lambda _: self.do_search()),
+                 (tr("Data"), self.date_var, ui_text.DATE_CHOICES.labels(), self._on_date_choice),
+                 (tr("Cartella"), self.folder_var, [tr("Tutte le cartelle")], self._on_folder_choice),
+                 (tr("Cerca in"), self.where_var, ui_text.WHERE_CHOICES.labels(), lambda _: self.do_search()))
+        controls = []
+        for column, (label, variable, values, command) in enumerate(menus):
+            ctk.CTkLabel(self.filters, text=label, anchor="w", font=font(11), text_color=PAL["muted"]).grid(
+                row=0, column=column, sticky="ew", padx=(0, 8 if column < 3 else 0))
+            menu = self._menu(self.filters, variable, values, 150, command)
+            menu.grid(row=1, column=column, sticky="ew", padx=(0, 8 if column < 3 else 0))
+            controls.append(menu)
+        self.type_menu, self.date_menu, self.folder_menu, self.where_menu = controls
 
-        # --- filtri a menu (al posto della sintassi da ricordare a memoria)
-        flt = ctk.CTkFrame(self, fg_color="transparent")
-        flt.grid(row=2, column=0, sticky="ew", padx=22, pady=(10, 0))
-        ctk.CTkLabel(flt, text="Mostra:", font=font(13), text_color=PAL["muted"]).pack(side="left", padx=(2, 8))
-        self.type_var = tk.StringVar(value=ui_text.ALL_TYPES)
-        self.type_menu = self._menu(flt, self.type_var, [ui_text.ALL_TYPES], 170, lambda _: self.do_search())
-        self.type_menu.pack(side="left")
-        self.date_var = tk.StringVar(value=ui_text.ANY_DATE)
-        self.date_menu = self._menu(flt, self.date_var, list(ui_text.DATE_CHOICES) + [ui_text.CUSTOM_DATE], 170,
-                                    self._on_date_choice)
-        self.date_menu.pack(side="left", padx=(8, 0))
-        self.folder_var = tk.StringVar(value=ui_text.ALL_FOLDERS)
-        self.folder_menu = self._menu(flt, self.folder_var, [ui_text.ALL_FOLDERS], 210, self._on_folder_choice)
-        self.folder_menu.pack(side="left", padx=(8, 0))
-        ctk.CTkLabel(flt, text="Cerca in:", font=font(13), text_color=PAL["muted"]).pack(side="left", padx=(16, 8))
-        self.where_var = tk.StringVar(value=ui_text.WHERE_CHOICES[0][0])
-        self._menu(flt, self.where_var, [label for label, _ in ui_text.WHERE_CHOICES], 170,
-                   lambda _: self.do_search()).pack(side="left")
-
-        # --- risultati (a sinistra) e anteprima (a destra, alta quanto la finestra)
-        content = ctk.CTkFrame(self, fg_color="transparent")
-        content.grid(row=3, column=0, sticky="nsew", padx=22, pady=12)
-        content.grid_columnconfigure(0, weight=3, minsize=420, uniform="c")
-        content.grid_columnconfigure(1, weight=2, minsize=340, uniform="c")
-        content.grid_rowconfigure(0, weight=1)
-
-        res = card(content)
-        res.grid(row=0, column=0, sticky="nsew", padx=(0, 12))
+        # Un divisore reale: i due pannelli si possono allargare con il mouse.
+        self.split = tk.PanedWindow(self, orient="horizontal", sashwidth=7, sashpad=0, showhandle=False,
+                                   borderwidth=0, relief="flat", background=col("line"), opaqueresize=True)
+        self.split.grid(row=3, column=0, sticky="nsew", padx=16, pady=(0, 10))
+        self.results_panel = res = card(self.split)
+        self.preview_panel = pv = card(self.split)
+        self.split.add(res, minsize=340, width=480, stretch="always")
+        self.split.add(pv, minsize=440, width=700, stretch="always")
         res.grid_columnconfigure(0, weight=1)
-        res.grid_rowconfigure(1, weight=1)
-        rh = ctk.CTkFrame(res, fg_color="transparent")
-        rh.grid(row=0, column=0, sticky="ew", padx=16, pady=(10, 0))
+        res.grid_rowconfigure(2, weight=1)
+        rh = ctk.CTkFrame(res, fg_color="transparent", border_width=0)
+        rh.grid(row=0, column=0, sticky="ew", padx=12, pady=(8, 6))
         rh.grid_columnconfigure(0, weight=1)
-        self.res_head = ctk.CTkLabel(rh, text="", font=font(14, True), text_color=PAL["text"], anchor="w")
-        self.res_head.grid(row=0, column=0, sticky="w")
-        self.order_var = tk.StringVar(value="Più pertinenti")
-        ctk.CTkLabel(rh, text="Ordina:", font=font(12), text_color=PAL["muted"]).grid(row=0, column=1, padx=(0, 6))
-        om = self._menu(rh, self.order_var, list(ORDERS), 150, lambda _: self.do_search())
-        om.configure(height=28, corner_radius=8, font=font(12), dropdown_font=font(12))
-        om.grid(row=0, column=2)
+        self.res_head = ctk.CTkLabel(rh, text=tr("Documenti"), font=font(14, True), text_color=PAL["text"],
+                                     anchor="w", justify="left", width=0, wraplength=220)
+        self.res_head.grid(row=0, column=0, sticky="ew")
+        rh.bind("<Configure>", lambda e: self.res_head.configure(wraplength=max(120, e.width - 156)))
+        self.order_var = tk.StringVar(value=ui_text.ORDER_CHOICES.label("rank"))
+        om = self.order_menu = self._menu(rh, self.order_var, ui_text.ORDER_CHOICES.labels(), 140,
+                                          lambda _: self.do_search())
+        om.configure(height=28, font=font(11), dropdown_font=font(12))
+        om.grid(row=0, column=1, padx=(8, 0))
+        ctk.CTkFrame(res, height=1, corner_radius=0, border_width=0, fg_color=PAL["line"]).grid(row=1, column=0, sticky="ew", padx=1)
         self.results = ResultList(res, self._on_select, self.open_selected, self._popup, self.copy_path)
-        self.results.grid(row=1, column=0, sticky="nsew", padx=(4, 0), pady=(4, 8))
+        self.results.grid(row=2, column=0, sticky="nsew", padx=1, pady=(0, 1))
         self.results.on_more, self.results.on_occurrence = self._toggle_occurrences, self._open_occurrence
-        self.empty = ctk.CTkLabel(res, text="", font=font(15), text_color=PAL["muted"], fg_color=PAL["card"],
-                                  justify="center", wraplength=380)
+        self.empty = ctk.CTkLabel(res, text="", font=font(14), text_color=PAL["muted"], fg_color=PAL["card"],
+                                  justify="center", wraplength=300)
         self.empty.bind("<Button-1>", self._apply_hint)
         self.empty.place(relx=0.5, rely=0.55, anchor="center")
+        res.bind("<Configure>", lambda e: self.empty.configure(wraplength=max(180, e.width - 48)))
 
-        pv = card(content)
-        pv.grid(row=0, column=1, sticky="nsew")
         pv.grid_columnconfigure(0, weight=1)
-        pv.grid_rowconfigure(3, weight=1)
-        ph = ctk.CTkFrame(pv, fg_color="transparent")
-        ph.grid(row=0, column=0, sticky="ew", padx=16, pady=(14, 0))
-        ph.grid_columnconfigure(0, weight=1)
-        self.pv_title = ctk.CTkLabel(ph, text="Anteprima", anchor="w", font=font(15, True), text_color=PAL["text"],
-                                     wraplength=300, justify="left")
-        self.pv_title.grid(row=0, column=0, sticky="ew")
-        self.pv_path = ctk.CTkLabel(ph, text="Seleziona un risultato per leggerne il contenuto", anchor="w",
-                                    font=font(12), text_color=PAL["muted"], wraplength=300, justify="left")
-        self.pv_path.grid(row=1, column=0, sticky="ew")
-        self.btn_back = ghost_button(ph, "‹ Indietro", self._back)
-        self.btn_back.grid(row=0, column=1)
+        pv.grid_rowconfigure(5, weight=1)
+        ph = ctk.CTkFrame(pv, fg_color="transparent", border_width=0)
+        ph.grid(row=0, column=0, sticky="ew", padx=12, pady=(10, 0))
+        ph.grid_columnconfigure(1, weight=1)
+        self.pv_badge = EmbeddingBadge(ph)   # stato dei vettori del documento mostrato
+        self.pv_badge.grid(row=0, column=0, padx=(0, 8))
+        self.pv_badge.grid_remove()
+        self.pv_title = ctk.CTkLabel(ph, text=tr("Anteprima"), anchor="w", font=font(15, True), text_color=PAL["text"],
+                                     wraplength=340, justify="left")
+        self.pv_title.grid(row=0, column=1, sticky="ew")
+        self.btn_back = ghost_button(ph, tr("Indietro"), self._back, width=76)
+        self.btn_back.grid(row=0, column=2, padx=(8, 0))
         self.btn_back.grid_remove()
-        pb = ctk.CTkFrame(pv, fg_color="transparent")
-        pb.grid(row=1, column=0, sticky="ew", padx=16, pady=(10, 0))
+        self.pv_path = ctk.CTkLabel(pv, text=tr("Seleziona un risultato per leggerne il contenuto"), anchor="w",
+                                    font=font(11), text_color=PAL["muted"], wraplength=380, justify="left")
+        self.pv_path.grid(row=1, column=0, sticky="ew", padx=12)
+        ph.bind("<Configure>", lambda e: self.pv_title.configure(wraplength=max(180, e.width - 130)))
+        pv.bind("<Configure>", lambda e: self.pv_path.configure(wraplength=max(180, e.width - 28)))
+        pb = ctk.CTkFrame(pv, fg_color="transparent", border_width=0)
+        pb.grid(row=2, column=0, sticky="ew", padx=12, pady=8)
+        pb.grid_columnconfigure(1, weight=1)
+        tools = ctk.CTkFrame(pb, fg_color="transparent", border_width=0)
+        tools.grid(row=0, column=0, sticky="w")
         for icon, label, command in (
-            ("open", "Apri il file", self.open_selected),
-            ("folder", "Mostra nella cartella", self.reveal_selected),
-            ("copy", "Copia testo", self.copy_text),
-            ("redact", "Oscura il testo in una copia…", lambda: RedactDialog(self)),
+            ("open", tr("Apri il file"), self.open_selected),
+            ("folder", tr("Mostra nella cartella"), self.reveal_selected),
+            ("copy", tr("Copia testo"), self.copy_text),
+            ("redact", tr("Oscura il testo in una copia…"), lambda: RedactDialog(self)),
         ):
-            PreviewAction(pb, icon, label, command).pack(side="left", padx=(0, 6))
-        # --- vista del testo: brani attorno alle parole oppure documento intero, con ‹ › tra le occorrenze
-        nav = ctk.CTkFrame(pv, fg_color="transparent")
-        nav.grid(row=2, column=0, sticky="ew", padx=16, pady=(10, 0))
-        nav.grid_columnconfigure(1, weight=1)
-        self.pv_mode = ctk.CTkSegmentedButton(nav, values=[self.MODE_HITS, self.MODE_FULL, self.MODE_LINKS], command=self._on_mode,
-                                              font=font(12), height=28, selected_color=PAL["accent"],
-                                              selected_hover_color=PAL["accent_hover"])
+            PreviewAction(tools, icon, label, command).pack(side="left", padx=(0, 6))
+        hits = ctk.CTkFrame(pb, fg_color="transparent", border_width=0)
+        hits.grid(row=0, column=1, sticky="e")
+        self.hit_count = ctk.CTkLabel(hits, text="", font=font(11), text_color=PAL["muted"], anchor="e")
+        self.hit_count.grid(row=0, column=0, padx=(0, 8))
+        self.btn_hit_prev = ghost_button(hits, "<", lambda: self.step_hit(-1), width=30)
+        self.btn_hit_prev.grid(row=0, column=1)
+        self.btn_hit_next = ghost_button(hits, ">", lambda: self.step_hit(1), width=30)
+        self.btn_hit_next.grid(row=0, column=2, padx=(4, 0))
+        self.pv_mode = IdSelector(pv, ((self.MODE_HITS, tr("Occorrenze")), (self.MODE_FULL, tr("Testo completo")),
+                                       (self.MODE_LINKS, tr("Collegati"))), command=self._on_mode,
+                                  font=font(12), height=30)
         self.pv_mode.set(self.MODE_HITS)
-        self.pv_mode.grid(row=0, column=0, sticky="w")
-        self.hit_count = ctk.CTkLabel(nav, text="", font=font(12), text_color=PAL["muted"], anchor="e")
-        self.hit_count.grid(row=0, column=1, sticky="e", padx=(8, 6))
-        self.btn_hit_prev = ctk.CTkButton(nav, text="‹", width=32, height=28, corner_radius=8, fg_color="transparent",
-                                          hover_color=PAL["ghost_hover"], border_width=1, border_color=PAL["line"],
-                                          text_color=PAL["text"], font=font(15, True), command=lambda: self.step_hit(-1))
-        self.btn_hit_prev.grid(row=0, column=2)
-        self.btn_hit_next = ctk.CTkButton(nav, text="›", width=32, height=28, corner_radius=8, fg_color="transparent",
-                                          hover_color=PAL["ghost_hover"], border_width=1, border_color=PAL["line"],
-                                          text_color=PAL["text"], font=font(15, True), command=lambda: self.step_hit(1))
-        self.btn_hit_next.grid(row=0, column=3, padx=(4, 0))
-        self.prev = ctk.CTkTextbox(pv, wrap="word", corner_radius=10, fg_color=PAL["field"], font=font(13),
+        self.pv_mode.grid(row=3, column=0, sticky="ew", padx=12, pady=(0, 8))
+        ctk.CTkFrame(pv, height=1, corner_radius=0, border_width=0, fg_color=PAL["line"]).grid(row=4, column=0, sticky="ew", padx=1)
+        self.prev = ctk.CTkTextbox(pv, wrap="word", corner_radius=0, fg_color=PAL["field"], font=font(13),
                                    text_color=PAL["text"], border_width=0)
-        self.prev.grid(row=3, column=0, sticky="nsew", padx=12, pady=12)
+        self.prev.grid(row=5, column=0, sticky="nsew", padx=1, pady=(0, 1))
+        self.prev._textbox.configure(padx=16, pady=12)  # il testo non deve toccare il bordo del riquadro
         self.prev.configure(state="disabled")
         self.links = RelationsPane(pv, self)
-        self.links.grid(row=3, column=0, sticky="nsew", padx=10, pady=8)
+        self.links.grid(row=5, column=0, sticky="nsew", padx=1, pady=(0, 1))
         self.links.grid_remove()
 
-        # --- barra di stato
-        st = ctk.CTkFrame(self, fg_color="transparent")
-        st.grid(row=4, column=0, sticky="ew", padx=22, pady=(0, 12))
-        st.grid_columnconfigure(0, weight=1)
-        self.status = ctk.CTkLabel(st, text="", anchor="w", font=font(12), text_color=PAL["muted"])
-        self.status.grid(row=0, column=0, sticky="ew")
-        self.btn_due = ghost_button(st, "Scadenze", lambda: DocumentList(self))
-        self.btn_diag = ctk.CTkButton(st, text="", height=24, width=0, corner_radius=8,
-                                      fg_color="transparent", hover_color=PAL["ghost_hover"],
-                                      text_color=PAL["muted"], font=font(12),
-                                      command=lambda: DiagnosticsDialog(self))
-        self.progress = ctk.CTkProgressBar(st, mode="indeterminate", width=160, height=6,
+        self.footer = ctk.CTkFrame(self, fg_color=PAL["card"], corner_radius=0, border_width=1, border_color=PAL["line"])
+        self.footer.grid(row=4, column=0, sticky="ew")
+        self.footer.grid_columnconfigure(0, weight=1)
+        self.status = ctk.CTkLabel(self.footer, text="", anchor="w", justify="left", font=font(12),
+                                   text_color=PAL["text"], wraplength=900)
+        self.status.grid(row=0, column=0, sticky="ew", padx=16, pady=(8, 2))
+        self.footer.bind("<Configure>", lambda e: self.status.configure(wraplength=max(300, e.width - 32)))
+        # Avanzamento: percentuale in grassetto, barra rettangolare sempre visibile, dettaglio e «Ferma».
+        meter = ctk.CTkFrame(self.footer, fg_color="transparent", border_width=0)
+        meter.grid(row=1, column=0, sticky="ew", padx=16, pady=(2, 6))
+        meter.grid_columnconfigure(1, weight=1)
+        # Spazio riservato a testo, dettaglio e «Ferma»: la barra non cambia larghezza quando cambiano o compaiono.
+        meter.grid_columnconfigure(0, minsize=250)
+        meter.grid_columnconfigure(2, minsize=200)
+        meter.grid_columnconfigure(3, minsize=102)
+        self.meter_caption = ctk.CTkLabel(meter, text="", font=font(15, True), text_color=PAL["text"], anchor="w")
+        self.meter_caption.grid(row=0, column=0, sticky="w")
+        self.progress = ctk.CTkProgressBar(meter, mode="determinate", height=16, corner_radius=0,
                                            progress_color=PAL["accent"])
-        self.btn_stop = ctk.CTkButton(st, text="■ Ferma", height=24, width=68, corner_radius=8,
-                                      fg_color="transparent", hover_color=PAL["ghost_hover"],
-                                      border_width=1, border_color=PAL["line"],
-                                      text_color=PAL["text"], font=font(11),
-                                      command=self.stop_index)
+        self.progress.set(0)
+        self.progress.grid(row=0, column=1, sticky="ew", padx=14)
+        self.meter_detail = ctk.CTkLabel(meter, text="", font=font(12), text_color=PAL["muted"], anchor="e")
+        self.meter_detail.grid(row=0, column=2, sticky="e")
+        self.btn_stop = ghost_button(meter, tr("■  Ferma"), self.stop_index, width=88)
+        self.btn_stop.configure(height=28, font=font(12, True))
+        self._prog_on, self._prog_mode = False, ""
+        st = ctk.CTkFrame(self.footer, fg_color="transparent", border_width=0)
+        st.grid(row=2, column=0, sticky="ew", padx=16, pady=(0, 8))
+        st.grid_columnconfigure(0, weight=1)
+        ctk.CTkLabel(st, text=tr("ARCHIVIO LOCALE"), font=font(10, True), text_color=PAL["muted"]).grid(row=0, column=0, sticky="w")
+        self.btn_due = ghost_button(st, tr("Scadenze"), lambda: DocumentList(self))
+        self.btn_diag = ghost_button(st, "", lambda: DiagnosticsDialog(self))
+        self.btn_diag.configure(height=26, font=font(11))
+        # Riquadro sempre visibile: quale modello usa l'app (significato e OCR), con il suo suggerimento.
+        self.models_panel = ModelsPanel(st)
+        self.models_panel.grid(row=0, column=5, sticky="e", padx=(14, 0))
+        self._models_sig = None
+        self._update_models()
 
         self.menu = tk.Menu(self, tearoff=0)
-        self.menu.add_command(label="Apri", command=self.open_selected)
-        self.menu.add_command(label="Mostra nella cartella", command=self.reveal_selected)
-        self.menu.add_command(label="Copia percorso", command=self.copy_path)
-        self.menu.add_command(label="Confronta versioni", command=self.compare_selected)
-        self.menu.add_command(label="Oscura copia…", command=lambda: RedactDialog(self))
+        self.menu.add_command(label=tr("Apri"), command=self.open_selected)
+        self.menu.add_command(label=tr("Mostra nella cartella"), command=self.reveal_selected)
+        self.menu.add_command(label=tr("Copia percorso"), command=self.copy_path)
+        self.menu.add_command(label=tr("Confronta versioni"), command=self.compare_selected)
+        self.menu.add_command(label=tr("Oscura copia…"), command=lambda: RedactDialog(self))
         self.menu.add_separator()
-        self.menu.add_command(label="Dimentica questo file…", command=self._forget_result)
-        self.menu.add_command(label="Dimentica la cartella che lo contiene…",
+        self.menu.add_command(label=tr("Dimentica questo file…"), command=self._forget_result)
+        self.menu.add_command(label=tr("Dimentica la cartella che lo contiene…"),
                               command=lambda: self._forget_result(folder=True))
-        self.more = tk.Menu(self, tearoff=0)
-        self.more.add_command(label="Cronologia e ricerche salvate…", command=lambda: LibraryDialog(self))
-        self.more.add_command(label="Mappa dei dati personali…", command=lambda: AuditDialog(self))
-        if self.protection["mode"] == "vault":
-            self.more.add_command(label="Blocca cassaforte", command=lambda: security_ui.restart(self))
-        self.more.add_command(label="Salva i risultati in un file CSV…", command=self.export_results)
-        self.more.add_command(label="Cerca nuovi documenti adesso", command=self.start_index)
-        self.more.add_separator()
-        self.more.add_command(label="Dimentica una cartella…", command=self._forget_folder)
-        self.more.add_command(label="Stato dell'archivio…", command=lambda: DiagnosticsDialog(self))
-        self.more.add_command(label="Documenti duplicati…", command=lambda: DuplicatesDialog(self))
-        self.more.add_command(label="Scadenze…", command=lambda: DocumentList(self))
-        self.more.add_separator()
-        self.more.add_command(label="Come cercare", command=self.show_help)
-        self.more.add_command(label="Informazioni su StillFind", command=lambda: AboutDialog(self))
         for seq in ("<Control-k>", "<Command-k>", "<Control-f>", "<Command-f>"):
-            self.bind(seq, lambda e: (self.entry.focus_set(), "break")[1])
+            self.bind(seq, self._focus_search)
         for seq in ("<F3>", "<Control-g>", "<Command-g>"):  # occorrenza successiva / precedente nell'anteprima
             self.bind(seq, lambda e: self.step_hit(1))
         for seq in ("<Shift-F3>", "<Control-G>", "<Command-G>"):
             self.bind(seq, lambda e: self.step_hit(-1))
+        for seq in ("<Control-comma>", "<Command-comma>"):
+            self.bind(seq, lambda e: (self._window_action("settings"), "break")[1])
+        self.bind("<F1>", lambda e: (self.show_help(), "break")[1])
         self.entry.focus_set()
         self._refresh_filters()
         self.do_search()
 
-    def _more_menu(self):
-        b = self.btn_more
-        self.more.tk_popup(b.winfo_rootx(), b.winfo_rooty() + b.winfo_height())
+    # ---- barra dei menu
+    def _fill_file_menu(self, m):
+        mod = "⌘" if sys.platform == "darwin" else "Ctrl"
+        m.add_command(label=tr("Cerca nuovi documenti adesso"), command=self.start_index)
+        m.add_command(label=tr("Metti in pausa l’indicizzazione"), command=self._toggle_pause)
+        m.add_command(label=tr("Esporta risultati in CSV…"), command=self.export_results)
+        m.add_separator()
+        m.add_command(label=tr("Impostazioni…"), accelerator=f"{mod}+,", command=lambda: self._window_action("settings"))
+        m.add_command(label=tr("Blocca cassaforte"), command=lambda: security_ui.restart(self))
+        m.add_separator()
+        m.add_command(label=tr("Esci"), command=lambda: self._window_action("quit"))
 
-    def show_help(self):
-        HelpDialog(self)
+    def _update_file_menu(self, m):
+        st = self._state or agent.WorkerMonitor.read_status(self.con)
+        m.entryconfigure(1, label=tr("Riprendi l’indicizzazione") if st.get("manual_pause") else tr("Metti in pausa l’indicizzazione"),
+                         state="normal" if self.cfg["folders"] else "disabled")
+        m.entryconfigure(0, state="normal" if self.cfg["folders"] else "disabled")
+        m.entryconfigure(2, state="normal" if self.results.results else "disabled")
+        m.entryconfigure(5, state="normal" if self.protection["mode"] == "vault" else "disabled")
+
+    def _toggle_pause(self):
+        st = self._state or agent.WorkerMonitor.read_status(self.con)
+        self._window_action("resume" if st.get("manual_pause") else "pause")
+
+    def _fill_tools_menu(self, m):
+        m.add_command(label=tr("Cronologia e ricerche salvate…"), command=lambda: LibraryDialog(self))
+        m.add_command(label=tr("Scadenze documenti…"), command=lambda: DocumentList(self))
+        m.add_command(label=tr("Mappa dei dati personali (Audit)…"), command=lambda: AuditDialog(self))
+        m.add_command(label=tr("Oscura copia del documento…"), command=lambda: RedactDialog(self))
+        m.add_command(label=tr("Confronta due versioni selezionate…"), command=self.compare_selected)
+        m.add_command(label=tr("Documenti duplicati…"), command=lambda: DuplicatesDialog(self))
+        m.add_separator()
+        m.add_command(label=tr("Dimentica una cartella…"), command=self._forget_folder)
+        m.add_command(label=tr("Stato e diagnostica dell’archivio…"), command=lambda: DiagnosticsDialog(self))
+
+    def _update_tools_menu(self, m):
+        m.entryconfigure(3, state="normal" if self._current() else "disabled")
+        m.entryconfigure(4, state="normal" if len(self._selected_rows()) == 2 else "disabled")
+        m.entryconfigure(7, state="normal" if self.cfg["folders"] else "disabled")
+
+    def _fill_help_menu(self, m):
+        m.add_command(label=tr("Guida completa di StillFind…"), accelerator="F1", command=self.show_help)
+        m.add_command(label=tr("Sintassi rapida di ricerca…"), command=lambda: self.show_help("search"))
+        m.add_separator()
+        m.add_command(label=tr("Informazioni su StillFind…"), command=lambda: self._window_action("about"))
+
+    def _focus_search(self, event=None):
+        if self.welcome is not None:
+            self.welcome.focus_first()
+        else:
+            self.entry.focus_set()
+        return "break"
+
+    def show_help(self, chapter: str | None = None):
+        if isinstance(HelpDialog, type):
+            existing = next((w for w in self.winfo_children() if isinstance(w, HelpDialog) and w.winfo_exists()), None)
+            if existing is not None:
+                if chapter:
+                    existing.select_chapter(chapter)
+                existing.deiconify()
+                existing.lift()
+                existing.focus_force()
+                return existing
+        return HelpDialog(self, chapter=chapter) if chapter else HelpDialog(self)
 
     # ---- aspetto (Tk classici che non accettano coppie chiaro/scuro)
     def restyle(self):
+        self.split.configure(background=col("line"))
+        self.command_bar.restyle()
         st = ttk.Style(self)
         st.theme_use("clam")
         st.configure("Cerca.Treeview", background=col("card"), fieldbackground=col("card"),
@@ -438,6 +606,9 @@ class App(ctk.CTk):
         t.tag_config("err", foreground=col("err"))
         self.empty.configure(fg_color=PAL["card"])
         self.results.restyle()
+        for child in self.winfo_children():
+            if hasattr(child, "restyle") and child.winfo_exists():
+                child.restyle()
 
     # ---- filtri
     def _submit_query(self, event=None):
@@ -456,29 +627,30 @@ class App(ctk.CTk):
 
     def _idle_status(self) -> str:
         n = self.con.execute("SELECT COUNT(*) FROM docs").fetchone()[0]
-        return f"{ui_text.thousands(n)} documenti pronti da cercare" if n else "Nessun documento ancora"
+        return trn("{n} documento pronto da cercare", "{n} documenti pronti da cercare", n) if n else tr("Nessun documento ancora")
 
     def _refresh_filters(self):
         exts = [r[0] for r in self.con.execute("SELECT DISTINCT ext FROM docs")]
-        values = [ui_text.ALL_TYPES] + ui_text.present_categories(exts)
-        self.type_menu.configure(values=values)
-        if self.type_var.get() not in values:
-            self.type_var.set(ui_text.ALL_TYPES)
+        chosen = self.type_choices.id(self.type_var.get(), "all")
+        self.type_choices = self._type_choices(exts)
+        self.type_menu.configure(values=self.type_choices.labels())
+        self.type_var.set(self.type_choices.label(chosen if chosen in self.type_choices.ids else "all"))
         err_n = self.con.execute("SELECT COUNT(*) FROM docs WHERE error != ''").fetchone()[0]
         if err_n:
-            self.btn_diag.configure(text=f"{err_n} {'file non letto' if err_n == 1 else 'file non letti'}  ·  perché?")
+            self.btn_diag.configure(text=trn("{n} file non letto  ·  perché?", "{n} file non letti  ·  perché?", err_n))
             self.btn_diag.grid(row=0, column=1, padx=(10, 0))
         else:
             self.btn_diag.grid_forget()
         count = RelationGraph(self.con).upcoming_count() if self.cfg.get("deadline_alerts", True) else 0
         if count:
-            self.btn_due.configure(text=f"Scadenze entro 30 giorni · {count} doc.")
+            self.btn_due.configure(text=tr("Scadenze entro 30 giorni · {n} doc.", n=count))
             self.btn_due.grid(row=0, column=4, padx=6)
         else:
             self.btn_due.grid_remove()
         self._refresh_folders()
         if not self.indexing:
             self.status.configure(text=self._idle_status())
+            self._update_meter()
 
     def _refresh_folders(self):
         """Menu «Cartella»: le cartelle scelte e le loro sottocartelle dirette (le altre con `in:Nome`)."""
@@ -503,32 +675,42 @@ class App(ctk.CTk):
                 if par == root and len(entries) < 80:
                     entries[unique(f"{base} › {os.path.basename(p.rstrip('/\\\\')) or p}")] = p
         self._folder_map = entries
-        self.folder_menu.configure(values=[ui_text.ALL_FOLDERS] + list(entries))
+        self.folder_menu.configure(values=[tr("Tutte le cartelle")] + list(entries))
         current = next((k for k, v in entries.items() if v == self.folder_filter), None)
         if current is None:
             self.folder_filter = None
-        self.folder_var.set(current or ui_text.ALL_FOLDERS)
+        self.folder_var.set(current or tr("Tutte le cartelle"))
 
     def _on_folder_choice(self, label: str):
         self.folder_filter = self._folder_map.get(label)
         self.do_search()
 
     def _where(self) -> str:
-        return dict(ui_text.WHERE_CHOICES).get(self.where_var.get(), WHERE_ALL)
+        return ui_text.WHERE_CHOICES.id(self.where_var.get(), WHERE_ALL)
 
     def _date_bounds(self) -> tuple[float | None, float | None]:
         """(dopo, prima) del filtro «Data»: un periodo scelto a mano oppure una delle scelte rapide."""
-        if self._date_custom and self.date_var.get() == self._date_custom[2]:
+        if self._date_id() == "range":
             return self._date_custom[0], self._date_custom[1]
-        return ui_text.date_after(self.date_var.get()), None
+        return ui_text.date_after(self._date_id()), None
+
+    def _date_id(self) -> str:
+        """Identificatore della scelta nel menu «Data»; «range» se è un periodo scritto a mano."""
+        if self._date_custom and self.date_var.get() == self._date_custom[2]:
+            return "range"
+        return ui_text.DATE_CHOICES.id(self.date_var.get(), "any")
+
+    def _type_choices(self, exts) -> ui_text.Choices:
+        names = dict(ui_text.CATEGORY_NAMES.items)
+        return ui_text.Choices([("all", mark("Tutti i tipi"))] + [(cid, names[cid]) for cid in ui_text.present_categories(exts)])
 
     def _on_date_choice(self, choice: str):
-        if choice != ui_text.CUSTOM_DATE:
+        if ui_text.DATE_CHOICES.id(choice) != ui_text.CUSTOM_DATE:
             self.do_search()
             return
         prev = self._date_custom
         # il menu mostra già «Scegli le date…»: si rimette la scelta precedente finché non si conferma
-        self.date_var.set(prev[2] if prev else ui_text.ANY_DATE)
+        self.date_var.set(prev[2] if prev else ui_text.DATE_CHOICES.label("any"))
         DateRangeDialog(self, self._apply_date_range, prev[3] if prev else "", prev[4] if prev else "")
 
     def _apply_date_range(self, after, before, label, start_text, end_text):
@@ -537,10 +719,13 @@ class App(ctk.CTk):
         self.do_search()
 
     def _type_exts(self):
-        exts = ui_text.category_exts(self.type_var.get())
+        exts = ui_text.category_exts(self.type_choices.id(self.type_var.get(), "all"))
         return list(exts) or None
 
     # ---- ricerca
+    def _order_id(self) -> str:
+        return ui_text.ORDER_CHOICES.id(self.order_var.get(), "rank")
+
     def _show_empty(self, text: str, hint: str | None = None):
         self._hint = hint
         self.empty.configure(text=text, cursor="hand2" if hint else "")
@@ -550,7 +735,9 @@ class App(ctk.CTk):
     def do_search(self, force: bool = False):
         """Avvia la ricerca in un thread, così la finestra non si blocca mai. Mentre si digita, sotto le 3
         lettere non si cerca (sarebbe troppo lento e inutile): si cerca premendo Invio."""
-        self._debounce = None
+        if self._debounce is not None:
+            self.after_cancel(self._debounce)
+            self._debounce = None
         q = self.qvar.get().strip()
         if force:
             self._forced_q = q
@@ -559,7 +746,7 @@ class App(ctk.CTk):
         exts = self._type_exts()
         after, before = self._date_bounds()
         where = self._where()
-        order = ORDERS[self.order_var.get()]
+        order = self._order_id()
         under = self.folder_filter
         filtered = bool(exts or after or before or under or (run_q and where != WHERE_ALL))
         self._search_seq += 1
@@ -571,9 +758,9 @@ class App(ctk.CTk):
             except prev.Error:
                 pass
         if short:
-            self.res_head.configure(text="Scrivi almeno 3 lettere, oppure premi Invio")
+            self.res_head.configure(text=tr("Scrivi almeno 3 lettere, oppure premi Invio"))
         elif run_q:
-            self.res_head.configure(text="Sto cercando…")
+            self.res_head.configure(text=tr("Sto cercando…"))
 
         def work():
             con = ArchiveProtection.connection(config.DB_PATH)  # connessione propria: quella della finestra è sua
@@ -587,6 +774,7 @@ class App(ctk.CTk):
                     res = SearchEngine(con).list_documents(exts, order, under=under, flt=flt or None)
                 else:
                     res = SearchEngine(con).list_documents(None, "document_date" if order == "document_date" else "date", RECENT_COUNT)
+                SearchEngine(con).add_embedding(res, self.cfg)  # stato dei vettori di ogni documento mostrato
                 hint = SearchEngine(con).suggest(run_q) if run_q and not res else None
                 self.msgs.put(("results", (seq, run_q, filtered, short, res, hint)))
             except con.Error as ex:
@@ -611,6 +799,7 @@ class App(ctk.CTk):
                     self._embedder = Embedder()
                 except Exception:  # modello rifiutato, libreria mancante…: solo parole
                     self._embedder_failed = True
+                self.msgs.put(("models", None))  # il piè di pagina mostra com'è andato il controllo
             return self._embedder
 
     def _search_rows(self, con, q, exts, order, under, after, before=None, where="all") -> list[dict]:
@@ -636,15 +825,15 @@ class App(ctk.CTk):
         self.rows = {str(i): r for i, r in enumerate(res)}
         n = len(res)
         if q:
-            head = "1 risultato" if n == 1 else f"{ui_text.thousands(n)} risultati"
+            head = trn("{n} risultato", "{n} risultati", n)
             if n >= 500:
-                head += " (i primi 500)"
+                head += " " + tr("(i primi 500)")
         elif short:
-            head = "Scrivi almeno 3 lettere, oppure premi Invio"
+            head = tr("Scrivi almeno 3 lettere, oppure premi Invio")
         elif filtered:
-            head = "1 documento" if n == 1 else f"{ui_text.thousands(n)} documenti"
+            head = trn("{n} documento", "{n} documenti", n)
         else:
-            head = "Documenti recenti" if n else ""
+            head = tr("Documenti recenti") if n else tr("Documenti")
         self.res_head.configure(text=head)
         roots = self._roots()
         for r in res:  # solo le ricerche per parole nel testo hanno «altre occorrenze» da mostrare
@@ -660,32 +849,32 @@ class App(ctk.CTk):
 
     def _explain_empty(self, q: str, filtered: bool, hint: str | None = None):
         if q:
-            text = (f"Nessun risultato per «{q}» con i filtri scelti.\n\nProva a togliere qualche filtro in alto."
-                    if filtered else f"Nessun risultato per «{q}»\n\nProva con meno parole o controlla l'ortografia.")
+            text = (tr("Nessun risultato per «{q}» con i filtri scelti.\n\nProva a togliere qualche filtro in alto.", q=q)
+                    if filtered else tr("Nessun risultato per «{q}»\n\nProva con meno parole o controlla l'ortografia.", q=q))
             if hint:
-                text = f"Nessun risultato per «{q}»\n\nIntendevi «{hint}»?\n(clicca qui per cercarlo)"
+                text = tr("Nessun risultato per «{q}»\n\nIntendevi «{hint}»?\n(clicca qui per cercarlo)", q=q, hint=hint)
             self._show_empty(text, hint)
         elif filtered:
-            self._show_empty("Nessun documento corrisponde ai filtri scelti.")
+            self._show_empty(tr("Nessun documento corrisponde ai filtri scelti."))
         elif self.indexing:
-            self._show_empty("Sto leggendo i tuoi documenti…\nTra poco potrai cercarli.")
+            self._show_empty(tr("Sto leggendo i tuoi documenti…\nTra poco potrai cercarli."))
         elif self.con.execute("SELECT COUNT(*) FROM docs").fetchone()[0] == 0:
-            self._show_empty("Non ho trovato documenti nelle cartelle scelte.\nControlla le cartelle da Impostazioni.")
+            self._show_empty(tr("Non ho trovato documenti nelle cartelle scelte.\nControlla le cartelle da Impostazioni."))
         else:
-            self._show_empty("Scrivi qui sopra cosa cerchi.")
+            self._show_empty(tr("Scrivi qui sopra cosa cerchi."))
 
     def _block(self, r: dict, q: str, roots: list[str]) -> list[tuple[str, tuple]]:
         """Un risultato: titolo, cartella e data, poi la frase in cui compare la parola cercata."""
         where = ui_text.friendly_folder(r["folder"], roots)
         stamp = ui_text.relative_date(r["mtime"])
-        if self.order_var.get() == "Data del documento":
-            stamp = ("Documento del " + "/".join(reversed(r["document_date"].split("-")))
-                     if r.get("document_date") else "Modifica del file: " + stamp)
+        if self._order_id() == "document_date":
+            stamp = (tr("Documento del {date}", date=self._document_date(r["document_date"]))
+                     if r.get("document_date") else tr("Modifica del file: {date}", date=stamp))
         segs: list[tuple[str, tuple]] = [
-            (ui_text.icon(r["ext"]) + "  ", ("icon",)), (r["name"], ("title",)),
-            (f"     {where}  ·  {stamp}", ("meta",)), ("\n", ())]
-        if r.get("error") and not r["error"].startswith("Lettura parziale"):
-            segs.append(("Non sono riuscito a leggere il contenuto: il file si trova solo per nome.\n", ("snip", "warn")))
+            (r["ext"].upper() + "  ", ("icon",)), (r["name"] + "\n", ("title",)),
+            (f"{where}  ·  {stamp}\n", ("meta",))]
+        if r.get("error") and not ReadProblems.is_partial(r["error"]):
+            segs.append((tr("Non sono riuscito a leggere il contenuto: il file si trova solo per nome.") + "\n", ("snip", "warn")))
         elif q:
             parts = DocumentPreview.snippet_parts(r.get("snippet", ""))
             page = r["location"] + " — " if r.get("location") else ""
@@ -698,9 +887,18 @@ class App(ctk.CTk):
             elif r.get("semantic"):  # trovato per significato: non ci sono parole da evidenziare, si mostra il passaggio
                 segs.append((f"{page}≈ {r['snippet']}\n", ("snip",)))
             else:
-                segs.append(("Trovato nel nome del file\n", ("snip", "warn")))
+                segs.append((tr("Trovato nel nome del file") + "\n", ("snip", "warn")))
         segs.append(("\n", ("gap",)))
         return segs
+
+    @staticmethod
+    def _document_date(iso: str) -> str:
+        """Data del documento (AAAA-MM-GG) nel formato numerico della lingua."""
+        try:
+            year, month, day = (int(x) for x in iso.split("-"))
+        except ValueError:
+            return iso
+        return i18n.Formats.numeric_date(year, month, day)
 
     def _apply_hint(self, _event=None):
         if self._hint:
@@ -710,16 +908,16 @@ class App(ctk.CTk):
         """Salva in CSV i risultati dell'ultima ricerca."""
         rows = list(self.results.results)
         if not rows:
-            messagebox.showinfo("Salva i risultati", "Non ci sono risultati da salvare.", parent=self)
+            messagebox.showinfo(tr("Salva i risultati"), tr("Non ci sono risultati da salvare."), parent=self)
             return
-        path = filedialog.asksaveasfilename(parent=self, defaultextension=".csv", initialfile="risultati.csv",
-                                            filetypes=[("CSV (si apre con Excel)", "*.csv")])
+        path = filedialog.asksaveasfilename(parent=self, defaultextension=".csv", initialfile=tr("risultati.csv"),
+                                            filetypes=[(tr("CSV (si apre con Excel)"), "*.csv")])
         if path:
             try:
                 n = CsvExporter(path).write(rows)
-                self.status.configure(text=f"{n} risultati salvati in {system.short_path(path)}")
+                self.status.configure(text=tr("{n} risultati salvati in {path}", n=n, path=system.short_path(path)))
             except OSError as ex:
-                messagebox.showerror("Salva i risultati", f"Non riesco a salvare il file: {ex}", parent=self)
+                messagebox.showerror(tr("Salva i risultati"), tr("Non riesco a salvare il file: {error}", error=ex), parent=self)
 
     def _focus_list(self):
         self.results.focus_list()
@@ -745,8 +943,9 @@ class App(ctk.CTk):
         self.links.grid_remove()
         self.prev.grid()
         self._pv_layout = self._pv_content = self._pv_hits_parts = self._pv_full_parts = None
-        self.pv_title.configure(text="Anteprima")
-        self.pv_path.configure(text="Seleziona un risultato per leggerne il contenuto")
+        self.pv_title.configure(text=tr("Anteprima"))
+        self.pv_badge.set_state(None)
+        self.pv_path.configure(text=tr("Seleziona un risultato per leggerne il contenuto"))
         self._set_preview([])
 
     # ---- occorrenze: contatore, ‹ ›, vista a brani o testo completo
@@ -761,7 +960,7 @@ class App(ctk.CTk):
         state = "normal" if n else "disabled"
         self.btn_hit_prev.configure(state=state)
         self.btn_hit_next.configure(state=state)
-        self.hit_count.configure(text=("1 occorrenza" if n == 1 else f"{ui_text.thousands(n)} occorrenze") if n else "")
+        self.hit_count.configure(text=trn("{n} occorrenza", "{n} occorrenze", n) if n else "")
 
     def _goto_hit(self, i: int):
         if not self._hit_ranges:
@@ -773,7 +972,7 @@ class App(ctk.CTk):
         t.tag_add("current", a, b)
         t.tag_raise("current")
         t.see(a)
-        self.hit_count.configure(text=f"{self._hit_i + 1} di {ui_text.thousands(len(self._hit_ranges))}")
+        self.hit_count.configure(text=tr("{i} di {n}", i=self._hit_i + 1, n=ui_text.thousands(len(self._hit_ranges))))
 
     def step_hit(self, delta: int):
         """Occorrenza successiva (+1) o precedente (-1); dopo l'ultima si riparte dalla prima."""
@@ -804,7 +1003,7 @@ class App(ctk.CTk):
             return
         if self.pv_mode.get() == self.MODE_FULL:
             if self._pv_full_parts is None:
-                self._set_preview([("Preparo il testo completo…", "dim")])
+                self._set_preview([(tr("Preparo il testo completo…"), "dim")])
                 self._prepare_full_text()
                 return
             goto, self._pending_hit = (self._pending_hit or 0), None  # l'occorrenza scelta nell'elenco, o la prima
@@ -824,7 +1023,7 @@ class App(ctk.CTk):
                 parts = (DocumentPreview.anchored_parts(content, *anchor, full=True, layout=layout) if anchor else
                          DocumentPreview.full_text_parts(content, terms, layout=layout))
             except Exception as ex:
-                parts = [(f"Non riesco a mostrare il testo: {ex}", "err")]
+                parts = [(tr("Non riesco a mostrare il testo: {error}", error=ex), "err")]
             self.msgs.put(("preview_full", (seq, parts)))
 
         threading.Thread(target=work, daemon=True).start()
@@ -862,15 +1061,16 @@ class App(ctk.CTk):
             text = self.prev._textbox.get("sel.first", "sel.last")
         except tk.TclError:
             text = ""
-        what = "Testo selezionato copiato"
+        selected = True
         if not text:
             if not self._pv_content:
-                self.status.configure(text="Non c'è testo da copiare: scegli prima un documento.")
+                self.status.configure(text=tr("Non c'è testo da copiare: scegli prima un documento."))
                 return
-            text, what = self._pv_content.replace("\r\n", "\n"), "Testo del documento copiato"
+            text, selected = self._pv_content.replace("\r\n", "\n"), False
         self.clipboard_clear()
         self.clipboard_append(text)
-        self.status.configure(text=f"{what} ({ui_text.thousands(len(text))} caratteri)")
+        self.status.configure(text=(tr("Testo selezionato copiato ({n} caratteri)", n=ui_text.thousands(len(text))) if selected
+                                    else tr("Testo del documento copiato ({n} caratteri)", n=ui_text.thousands(len(text)))))
 
     def _on_select(self):
         self._linked_row = None
@@ -881,7 +1081,7 @@ class App(ctk.CTk):
     def open_indexed(self, doc_id, start=None, end=None):
         row = SearchEngine(self.con).documents_by_id([doc_id]).get(doc_id)
         if row is None:
-            self.status.configure(text="Il documento non è più nell’archivio.")
+            self.status.configure(text=tr("Il documento non è più nell’archivio."))
             return
         if self._current():
             self._back_stack.append((self._linked_row, self.pv_mode.get()))
@@ -914,21 +1114,23 @@ class App(ctk.CTk):
         self.links.reset()
         self._render_preview()
         self.pv_title.configure(text=r["name"])
+        self._show_embedding_badge(r)
         where = ui_text.friendly_folder(r["folder"], self._roots())
-        stamp = (f"Documento del {'/'.join(reversed(r['document_date'].split('-')))} ({r['date_source']})" if r.get("document_date")
-                 else f"Modifica del file: {ui_text.relative_date(r['mtime'])}")
+        stamp = (tr("Documento del {date} ({source})", date=self._document_date(r["document_date"]),
+                    source=r["date_source"]) if r.get("document_date")
+                 else tr("Modifica del file: {date}", date=ui_text.relative_date(r["mtime"])))
         self.pv_path.configure(text=f"{where}  ·  {stamp}"
-                                    + ("  ·  OCR utilizzato nel documento" if r.get("ocr") else ""))
-        if r.get("error") and not r["error"].startswith("Lettura parziale"):
-            self._set_preview([(f"Non sono riuscito a leggere questo file: {r['error']}\n", "err"),
-                               ("Il file si trova comunque cercando il suo nome.\n", "dim")])
+                                    + ("  ·  " + tr("OCR utilizzato nel documento") if r.get("ocr") else ""))
+        if r.get("error") and not ReadProblems.is_partial(r["error"]):
+            self._set_preview([(tr("Non sono riuscito a leggere questo file: {error}", error=ReadProblems.display(r["error"])) + "\n", "err"),
+                               (tr("Il file si trova comunque cercando il suo nome.") + "\n", "dim")])
             return
         # subito: l'estratto già calcolato da SQLite; poi, in un thread, tutte le occorrenze
         quick = DocumentPreview.snippet_parts(r.get("snippet", ""))
         if quick and r.get("location"):
             quick.insert(0, (r["location"] + "\n", "title"))
-        self._set_preview(quick + [("\nCarico gli altri punti in cui compare…", "dim")] if quick
-                          else [("Carico l'anteprima…", "dim")])
+        self._set_preview(quick + [("\n" + tr("Carico gli altri punti in cui compare…"), "dim")] if quick
+                          else [(tr("Carico l'anteprima…"), "dim")])
         terms = Query.parse(self.qvar.get()).terms()
         doc_id = r["id"]
 
@@ -937,13 +1139,43 @@ class App(ctk.CTk):
             try:
                 content, layout = DocumentPreview.read_document(doc_id)
                 parts = (DocumentPreview.anchored_parts(content, *anchor, layout=layout) if anchor else
-                         DocumentPreview.preview_parts(content, terms, max_n=DocumentPreview.OCCURRENCES_SHOWN, layout=layout,
+                         DocumentPreview.preview_parts(content, terms, max_n=OCCURRENCES_SHOWN, layout=layout,
                                                preferred=r.get("passage_start")))
             except Exception as ex:
-                parts = [(f"Non riesco a mostrare l'anteprima: {ex}", "err")]
+                parts = [(tr("Non riesco a mostrare l'anteprima: {error}", error=ex), "err")]
             self.msgs.put(("preview", (seq, parts, content, terms, layout)))
 
         threading.Thread(target=work, daemon=True).start()
+
+    # ---- stato dei vettori («significato») del documento
+    EMBEDDING_REFRESH_MS = 5000
+
+    def _show_embedding_badge(self, r: dict):
+        """Badge dell'anteprima, riletto dall'archivio: lo stato può essere cambiato dopo la ricerca."""
+        try:
+            state = SearchEngine(self.con).embedding_state(r["id"], self.cfg)
+        except self.con.Error:
+            state = r.get("embedding")
+        r["embedding"] = state
+        self.pv_badge.set_state(state)
+
+    def _refresh_embedding_states(self):
+        """Mentre il lavoratore calcola i vettori, porta a «attivo» le icone dei documenti in coda già mostrati."""
+        if self._closing:
+            return
+        try:
+            rows = self.results.results
+            queued = [i for i, r in enumerate(rows) if (r.get("embedding") or {}).get("state") == "pending"]
+            if queued:
+                states = SemanticIndex(self.con).document_states([rows[i]["id"] for i in queued], self.cfg)
+                for i in queued:
+                    self.results.set_embedding(i, states.get(rows[i]["id"]))
+            current = self._current()
+            if current and (self.pv_badge.embedding or {}).get("state") == "pending":
+                self._show_embedding_badge(current)
+        except (self.con.Error, tk.TclError):
+            pass  # archivio occupato o finestra in chiusura: si riprova al prossimo giro
+        self.after(self.EMBEDDING_REFRESH_MS, self._refresh_embedding_states)
 
     # ---- azioni sul file
     def _current(self):
@@ -955,7 +1187,7 @@ class App(ctk.CTk):
 
     def _popup(self, e):
         n = len(self.results.selected)
-        self.menu.entryconfigure(2, label=f"Copia {n} percorsi" if n > 1 else "Copia percorso")
+        self.menu.entryconfigure(2, label=tr("Copia {n} percorsi", n=n) if n > 1 else tr("Copia percorso"))
         self.menu.entryconfigure(3, state="normal" if n == 2 else "disabled")
         self.menu.tk_popup(e.x_root, e.y_root)
 
@@ -966,16 +1198,18 @@ class App(ctk.CTk):
             self._confirm_forget(path, folder)
 
     def _forget_folder(self):
-        path = ForgetFolderDialog(self, "Dimentica una cartella dall’archivio").result
+        path = ForgetFolderDialog(self, tr("Dimentica una cartella dall’archivio")).result
         if path:
             self.start_index(force=True, target=path, forget="folder")
 
     def _confirm_forget(self, path, folder):
-        subject = "questa cartella e tutte le sottocartelle" if folder else "questo file"
-        if messagebox.askyesno("Dimentica dall’archivio",
-                               f"Rimuovere dall’indice {subject}?\n\n{path}\n\n"
-                               "Gli originali restano sul disco. Potrai includere di nuovo il percorso "
-                               "dalle opzioni avanzate delle Impostazioni.", parent=self):
+        if messagebox.askyesno(tr("Dimentica dall’archivio"),
+                               (tr("Rimuovere dall’indice questa cartella e tutte le sottocartelle?\n\n{path}\n\n"
+                                   "Gli originali restano sul disco. Potrai includere di nuovo il percorso "
+                                   "dalle opzioni avanzate delle Impostazioni.", path=path) if folder else
+                                tr("Rimuovere dall’indice questo file?\n\n{path}\n\n"
+                                   "Gli originali restano sul disco. Potrai includere di nuovo il percorso "
+                                   "dalle opzioni avanzate delle Impostazioni.", path=path)), parent=self):
             self.start_index(force=True, target=path, forget="folder" if folder else "file")
 
     def compare_selected(self):
@@ -989,7 +1223,7 @@ class App(ctk.CTk):
             try:
                 system.open_file(r["path"])
             except Exception as ex:
-                messagebox.showerror("StillFind", f"Non riesco ad aprire il file:\n{ex}")
+                messagebox.showerror("StillFind", tr("Non riesco ad aprire il file:\n{error}", error=ex))
 
     def reveal_selected(self):
         r = self._current()
@@ -1002,30 +1236,50 @@ class App(ctk.CTk):
         if rows:
             self.clipboard_clear()
             self.clipboard_append("\n".join(r["path"] for r in rows))
-            self.status.configure(text="Percorso copiato negli appunti" if len(rows) == 1
-                                  else f"{len(rows)} percorsi copiati negli appunti")
+            self.status.configure(text=tr("Percorso copiato negli appunti") if len(rows) == 1
+                                  else tr("{n} percorsi copiati negli appunti", n=len(rows)))
 
     # ---- lettura dei documenti in background
-    def _show_progress(self, on: bool, mode: str = "indeterminate", value: float = 0.0):
-        if on:
-            if not self._prog_on:
-                self._prog_on = True
-                self.progress.grid(row=0, column=2, padx=(12, 0))
-                self.btn_stop.grid(row=0, column=3, padx=(8, 0))
-                self._prog_mode = ""
-            if mode != self._prog_mode:
-                self.progress.stop()
-                self.progress.configure(mode=mode)
-                self._prog_mode = mode
-                if mode == "indeterminate":
-                    self.progress.start()
-            if mode == "determinate":
-                self.progress.set(max(0.0, min(1.0, value)))
-        elif self._prog_on:
-            self._prog_on = False
+    METER_COLORS = {"done": "ready", "paused": "pending", "stopped": "pending"}
+
+    def _show_progress(self, on: bool, mode: str = "indeterminate", value: float = 0.0, kind: str = ""):
+        """`on`: lavoro in corso («Ferma» visibile). La barra c'è sempre: a riposo mostra lo stato dell'archivio."""
+        self.progress.configure(progress_color=PAL[self.METER_COLORS.get(kind, "accent")])
+        if on and not self._prog_on:
+            self.btn_stop.grid(row=0, column=3, padx=(14, 0))
+        elif not on and self._prog_on:
+            self.btn_stop.grid_remove()
+        self._prog_on = on
+        if mode != self._prog_mode:
             self.progress.stop()
-            self.progress.grid_forget()
-            self.btn_stop.grid_forget()
+            self.progress.configure(mode=mode)
+            self._prog_mode = mode
+            if mode == "indeterminate":
+                self.progress.start()
+        if mode == "determinate":
+            self.progress.set(max(0.0, min(1.0, value)))
+
+    def _set_meter(self, meter: dict):
+        self.meter_caption.configure(text=meter["caption"])
+        self.meter_detail.configure(text=meter["detail"])
+        known = meter["value"] is not None
+        self._show_progress(meter["active"], "determinate" if known else "indeterminate",
+                            meter["value"] or 0.0, meter["kind"])
+
+    def _update_models(self):
+        """Aggiorna il riquadro dei modelli nel piè di pagina; non tocca nulla se lo stato non è cambiato."""
+        model = ModelCatalog.status(SemanticIndex.availability(self.cfg), loaded=self._embedder is not None,
+                                    failed=self._embedder_failed)
+        labels = ui_text.footer_models(model, Tesseract.status(self.cfg))
+        if labels != self._models_sig:
+            self._models_sig = labels
+            self.models_panel.set_state(labels)
+
+    def _update_meter(self, st: dict | None = None, quiet: bool = False):
+        """Ridisegna il blocco di avanzamento dallo stato del lavoratore (oppure da quello dell'archivio a riposo)."""
+        self._update_models()
+        st = st or self._state or agent.WorkerMonitor.read_status(self.con)
+        self._set_meter(ui_text.footer_progress(st, st.get("indexed", 0), quiet))
 
     def stop_index(self):
         self._reindex_pending = None
@@ -1040,7 +1294,7 @@ class App(ctk.CTk):
         for run in runs:
             if run:
                 agent.WorkerMonitor.stop_file(run).touch(mode=0o600)
-        self.status.configure(text="Mi fermo…")
+        self.status.configure(text=tr("Mi fermo…"))
 
     def rebuild_index(self):
         self._dirs_sig = None
@@ -1051,7 +1305,7 @@ class App(ctk.CTk):
                     forget=None):
         if not self.cfg["folders"] and not target and not rebuild:
             if not silent:
-                self.status.configure(text="Scegli le cartelle da Impostazioni.")
+                self.status.configure(text=tr("Scegli le cartelle da Impostazioni."))
             return
         st = agent.WorkerMonitor.read_status(self.con)
         req = dict(silent=silent, force=force, retry_errors=retry_errors, target=target,
@@ -1066,7 +1320,7 @@ class App(ctk.CTk):
                     self._interrupt_index()
             return
         if st["manual_pause"] and not force:
-            self.status.configure(text="Indicizzazione in pausa")
+            self.status.configure(text=tr("Indicizzazione in pausa"))
             return
         run = uuid.uuid4().hex
         self._last_scan = time.monotonic()
@@ -1081,8 +1335,8 @@ class App(ctk.CTk):
         self._own_run, self._request = run, req
         self.indexing = True
         if not silent:
-            self.status.configure(text="Rimozione dall’archivio…" if forget else "Cerco i documenti nelle cartelle…")
-            self._show_progress(True)
+            self.status.configure(text=tr("Rimozione dall’archivio…") if forget else tr("Cerco i documenti nelle cartelle…"))
+            self._update_meter({"phase": "forget" if forget else "scan", "scanned": 0, "indexed": st.get("indexed", 0)})
 
     def _sync_worker(self):
         code = self._worker.poll() if self._worker is not None else None
@@ -1100,7 +1354,7 @@ class App(ctk.CTk):
                 elif (self._request["force"] or not active) and self._reindex_pending is None:
                     self._reindex_pending = self._request
             elif code and (st["run"] != self._own_run or st["phase"] != "error"):
-                launch_error = "Il lavoratore non è partito nel recinto senza rete."
+                launch_error = tr("Il lavoratore non è partito nel recinto senza rete.")
                 if not active:
                     agent.WorkerMonitor.launch_failed(self.con, self._own_run, launch_error)
                     st = self.con.worker_status()
@@ -1117,49 +1371,46 @@ class App(ctk.CTk):
             self.start_index(**req)
             return
         if launch_error:
-            self._show_progress(False)
+            self._update_meter(st)
             self.status.configure(text=launch_error)
             return
         if st == previous and code is None:
             return
+        self._update_meter(st, quiet=self._silent and st["run"] == self._own_run)
         if st["phase"] == "forget":
-            self.status.configure(text="Rimozione dall’archivio…")
+            self.status.configure(text=tr("Rimozione dall’archivio…"))
         elif st.get("forgotten"):
-            self._show_progress(False)
             self._clear_preview()
             self._refresh_filters()
             self.do_search()
-            self.status.configure(text=f"File rimossi dall’archivio · {st['removed']}" +
-                                       (" · Indicizzazione in pausa" if st["manual_pause"] else ""))
+            self.status.configure(text=tr("File rimossi dall’archivio · {n}", n=st["removed"]) +
+                                       (" · " + tr("Indicizzazione in pausa") if st["manual_pause"] else ""))
         elif st["manual_pause"] and st["phase"] != "error":
-            self._show_progress(active)
-            self.status.configure(text="Indicizzazione in pausa")
+            self.status.configure(text=tr("Indicizzazione in pausa"))
         elif active:
             if st.get("paused"):
-                self._show_progress(True)
-                self.status.configure(text="In pausa a batteria. Riprendo quando colleghi l’alimentatore.")
+                self.status.configure(text=tr("In pausa a batteria. Riprendo quando colleghi l’alimentatore."))
             elif st["phase"] == "embed":
-                self._show_progress(True, "determinate", st.get("done", 0) / max(1, st.get("total", 0)))
-                self.status.configure(text=f"Calcolo del significato · {st.get('done', 0)} di {st.get('total', 0)}")
+                self.status.configure(text=tr("Calcolo del significato · {done} di {total}",
+                                              done=st.get("done", 0), total=st.get("total", 0)))
             elif st["phase"] == "index" and st.get("total"):
-                self._show_progress(True, "determinate", st["done"] / st["total"])
-                self.status.configure(text=f"Lettura {min(st['done'] + 1, st['total'])} di {st['total']} · "
-                                           f"{st.get('current', '')} · puoi già cercare")
+                self.status.configure(text=tr("Lettura {done} di {total} · {current} · puoi già cercare",
+                                              done=min(st["done"] + 1, st["total"]), total=st["total"],
+                                              current=st.get("current", "")))
             elif not self._silent or st["run"] != self._own_run:
-                self._show_progress(True)
-                self.status.configure(text=f"Cerco i documenti nelle cartelle… {st.get('scanned', 0)} trovati")
+                self.status.configure(text=tr("Cerco i documenti nelle cartelle… {n} trovati", n=st.get("scanned", 0)))
         elif self._worker is None:
-            self._show_progress(False)
             self._refresh_filters()
             if st["phase"] == "error":
-                self.status.configure(text="Lettura interrotta · " + st["error"])
+                self.status.configure(text=tr("Lettura interrotta · {error}", error=st["error"]))
             elif st.get("stopped"):
-                self.status.configure(text="Lettura interrotta")
+                self.status.configure(text=tr("Lettura interrotta"))
             elif st["phase"] == "done":
-                details = [f"{st[k]} {label}" for k, label in (("added", "nuovi"), ("updated", "modificati"),
-                           ("moved", "spostati"), ("removed", "non più presenti"), ("errors", "non letti")) if st.get(k)]
+                labels = {"added": mark("{n} nuovi"), "updated": mark("{n} modificati"), "moved": mark("{n} spostati"),
+                          "removed": mark("{n} non più presenti"), "errors": mark("{n} non letti")}
+                details = [tr(labels[k], n=st[k]) for k in labels if st.get(k)]
                 if st.get("missing"):
-                    details.append("Cartelle non trovate · " + ", ".join(st["missing"]))
+                    details.append(tr("Cartelle non trovate · {folders}", folders=", ".join(st["missing"])))
                 self.status.configure(text=" · ".join([self._idle_status(), *details]))
             if previous is not None or st["phase"] == "done":
                 self.do_search()
@@ -1194,6 +1445,8 @@ class App(ctk.CTk):
                     self._window_action(data)
                     if self._closing:
                         return
+                elif kind == "models":
+                    self._update_models()
                 elif kind == "results":
                     if data[0] == self._search_seq:
                         self._apply_results(*data[1:])
@@ -1211,7 +1464,7 @@ class App(ctk.CTk):
                             self.results.set_open(i, (items, total))
                         else:
                             self.results.set_open(i, False)
-                            self.status.configure(text="Non trovo altre occorrenze in questo documento.")
+                            self.status.configure(text=tr("Non trovo altre occorrenze in questo documento."))
                 elif kind == "preview_full":
                     seq, parts = data
                     if seq == self._preview_seq:
@@ -1220,10 +1473,10 @@ class App(ctk.CTk):
                         if self.pv_mode.get() == self.MODE_FULL:
                             self._render_preview()
                 elif kind == "shortcut_error":
-                    self.status.configure(text=f"Scorciatoia globale non disponibile · {data}")
+                    self.status.configure(text=tr("Scorciatoia globale non disponibile · {error}", error=data))
         except Exception as ex:  # un errore qui non deve fermare per sempre l'aggiornamento
             try:
-                self.status.configure(text=f"Errore interno: {ex}")
+                self.status.configure(text=tr("Errore interno: {error}", error=ex))
             except tk.TclError:
                 pass
         self.after(80, self._poll)
@@ -1232,6 +1485,8 @@ class App(ctk.CTk):
         if self._closing:
             return
         self._closing = True
+        ArchiveProtection.forget()
+        security_ui.SecretControls.clear_session_views(self)
         self.withdraw()
         for child in self.winfo_children():
             if isinstance(child, tk.Toplevel):
@@ -1280,7 +1535,7 @@ def run(configure=False, action="open", quit_token=None) -> None:
                     app.after_idle(lambda: app._window_action(action))
                 app.mainloop()
         except (RuntimeError, OSError) as exc:
-            messagebox.showerror("Apertura di StillFind", str(exc))
+            messagebox.showerror(tr("Apertura di StillFind"), str(exc))
         finally:
             if sys.platform == "win32":
                 (config.APP_DIR / "window.pid").unlink(missing_ok=True)

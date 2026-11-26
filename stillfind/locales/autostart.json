@@ -1,0 +1,44 @@
+{
+ "Avvio e icona di sistema": {
+  "en": "Startup and system icon",
+  "fr": "Démarrage et icône système",
+  "es": "Inicio e icono del sistema",
+  "de": "Start und Systemsymbol",
+  "pt": "Inicialização e ícone do sistema"
+ },
+ "L’icona permette di aprire la ricerca e mettere in pausa la lettura senza aprire la finestra.": {
+  "en": "The icon lets you open search and pause reading without opening the window.",
+  "fr": "L’icône permet d’ouvrir la recherche et de mettre la lecture en pause sans ouvrir la fenêtre.",
+  "es": "El icono permite abrir la búsqueda y pausar la lectura sin abrir la ventana.",
+  "de": "Über das Symbol öffnen Sie die Suche und pausieren das Lesen, ohne das Fenster zu öffnen.",
+  "pt": "O ícone permite abrir a pesquisa e pausar a leitura sem abrir a janela."
+ },
+ "Mostra l’icona nella barra di sistema": {
+  "en": "Show the icon in the system bar",
+  "fr": "Afficher l’icône dans la barre système",
+  "es": "Mostrar el icono en la barra del sistema",
+  "de": "Symbol in der Systemleiste anzeigen",
+  "pt": "Mostrar o ícone na barra do sistema"
+ },
+ "Avvia StillFind all’accesso al computer": {
+  "en": "Start StillFind when I log in",
+  "fr": "Lancer StillFind à l’ouverture de session",
+  "es": "Iniciar StillFind al iniciar sesión",
+  "de": "StillFind bei der Anmeldung starten",
+  "pt": "Iniciar o StillFind ao fazer login"
+ },
+ "All’avvio parte in silenzio, senza aprire la finestra: la apri dall’icona o dalla scorciatoia.": {
+  "en": "At startup it runs quietly without opening the window: you open it from the icon or the shortcut.",
+  "fr": "Au démarrage, il se lance en silence sans ouvrir la fenêtre : vous l’ouvrez depuis l’icône ou le raccourci.",
+  "es": "Al iniciar arranca en silencio, sin abrir la ventana: la abres desde el icono o el atajo.",
+  "de": "Beim Start läuft es still im Hintergrund, ohne das Fenster zu öffnen: Sie öffnen es über das Symbol oder die Tastenkombination.",
+  "pt": "Na inicialização ele roda em silêncio, sem abrir a janela: você a abre pelo ícone ou pelo atalho."
+ },
+ "Non riesco a cambiare l’avvio all’accesso: {error}": {
+  "en": "I can’t change startup at login: {error}",
+  "fr": "Impossible de modifier le démarrage à l’ouverture de session : {error}",
+  "es": "No puedo cambiar el inicio al iniciar sesión: {error}",
+  "de": "Der Start bei der Anmeldung lässt sich nicht ändern: {error}",
+  "pt": "Não consigo alterar a inicialização no login: {error}"
+ }
+}

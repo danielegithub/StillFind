@@ -1,3 +1,24 @@
+Componenti incorporati nella distribuzione completa
+
+Tesseract OCR e tessdata_fast (ita, eng, fra, spa, deu, por, osd): Apache License 2.0.
+https://github.com/tesseract-ocr/tesseract
+https://github.com/tesseract-ocr/tessdata_fast
+
+Leptonica: licenza BSD a due clausole.
+https://github.com/DanBloomberg/leptonica
+
+multilingual-e5-small: modello di intfloat / progetto Microsoft E5 (MIT).
+La conversione ONNX quantizzata distribuita è di Xenova.
+https://huggingface.co/intfloat/multilingual-e5-small
+https://huggingface.co/Xenova/multilingual-e5-small
+https://github.com/microsoft/unilm/tree/master/e5
+
+ONNX Runtime: Microsoft, MIT. SentencePiece: Google, Apache License 2.0.
+Le licenze del modello, dei dati OCR, dei motori, delle librerie Python e
+gli avvisi disponibili delle dipendenze native sono inclusi nella directory
+licenses/ delle risorse dell'app (Contents/Resources/licenses su macOS).
+Le versioni e le dipendenze native variano per sistema operativo.
+
 Componenti per la protezione dell'indice e l'oscuramento
 
 SQLCipher Community Edition — Zetetic LLC. Licenza BSD a tre clausole.

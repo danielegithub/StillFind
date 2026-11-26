@@ -1,0 +1,304 @@
+{
+ "Non cifrare": {
+  "en": "Do not encrypt",
+  "fr": "Ne pas chiffrer",
+  "es": "No cifrar",
+  "de": "Nicht verschlüsseln",
+  "pt": "Não cifrar"
+ },
+ "L’attivazione richiede tempo e spazio aggiuntivi per preparare l’indice. Il modello è incluso nell’app e puoi cambiare la scelta in qualsiasi momento dalle Impostazioni.": {
+  "en": "Turning it on takes extra time and space to prepare the index. The model is included in the app and you can change the choice at any time in Settings.",
+  "fr": "L’activation demande du temps et de l’espace supplémentaires pour préparer l’index. Le modèle est inclus dans l’application et vous pouvez changer ce choix à tout moment dans les Réglages.",
+  "es": "Activarla requiere tiempo y espacio adicionales para preparar el índice. El modelo está incluido en la aplicación y puedes cambiar la elección en cualquier momento desde Ajustes.",
+  "de": "Das Aktivieren braucht zusätzliche Zeit und Speicherplatz, um den Index vorzubereiten. Das Modell ist in der App enthalten, und Sie können die Auswahl jederzeit in den Einstellungen ändern.",
+  "pt": "Ativar exige tempo e espaço adicionais para preparar o índice. O modelo está incluído no aplicativo e você pode mudar a escolha a qualquer momento nas Configurações."
+ },
+ "Vuoi proteggere l’archivio con la cifratura?": {
+  "en": "Do you want to protect the archive with encryption?",
+  "fr": "Voulez-vous protéger l’archive par le chiffrement ?",
+  "es": "¿Quieres proteger el archivo con cifrado?",
+  "de": "Möchten Sie das Archiv durch Verschlüsselung schützen?",
+  "pt": "Deseja proteger o arquivo com cifragem?"
+ },
+ "Viene cifrato l’archivio locale di StillFind (testo estratto, ricerche salvate e indice). I documenti originali non vengono modificati.": {
+  "en": "StillFind’s local archive is encrypted (extracted text, saved searches and index). Your original documents are not modified.",
+  "fr": "L’archive locale de StillFind est chiffrée (texte extrait, recherches enregistrées et index). Les documents originaux ne sont pas modifiés.",
+  "es": "Se cifra el archivo local de StillFind (texto extraído, búsquedas guardadas e índice). Los documentos originales no se modifican.",
+  "de": "Das lokale Archiv von StillFind wird verschlüsselt (extrahierter Text, gespeicherte Suchen und Index). Die Originaldokumente werden nicht verändert.",
+  "pt": "O arquivo local do StillFind é cifrado (texto extraído, pesquisas salvas e índice). Os documentos originais não são modificados."
+ },
+ "Nessuna cifratura: l’archivio è leggibile da chi ha accesso al disco.": {
+  "en": "No encryption: the archive can be read by anyone with access to the disk.",
+  "fr": "Aucun chiffrement : l’archive est lisible par toute personne ayant accès au disque.",
+  "es": "Sin cifrado: el archivo lo puede leer quien tenga acceso al disco.",
+  "de": "Keine Verschlüsselung: Das Archiv ist für jeden mit Zugriff auf die Festplatte lesbar.",
+  "pt": "Sem cifragem: o arquivo pode ser lido por quem tiver acesso ao disco."
+ },
+ "La chiave è custodita dall’account del computer. Non c’è nulla da ricordare, ma se cambi computer o account non potrai aprire l’archivio: dovrai ricostruirlo dai documenti.": {
+  "en": "The key is kept by the computer account. There is nothing to remember, but if you change computer or account you will not be able to open the archive: you will have to rebuild it from the documents.",
+  "fr": "La clé est conservée par le compte de l’ordinateur. Rien à retenir, mais si vous changez d’ordinateur ou de compte, vous ne pourrez plus ouvrir l’archive : il faudra la reconstruire à partir des documents.",
+  "es": "La clave la custodia la cuenta del ordenador. No hay nada que recordar, pero si cambias de ordenador o de cuenta no podrás abrir el archivo: tendrás que reconstruirlo a partir de los documentos.",
+  "de": "Der Schlüssel wird vom Computerkonto verwahrt. Sie müssen sich nichts merken, aber wenn Sie Computer oder Konto wechseln, lässt sich das Archiv nicht mehr öffnen: Sie müssen es aus den Dokumenten neu aufbauen.",
+  "pt": "A chave é guardada pela conta do computador. Não há nada para lembrar, mas se você trocar de computador ou de conta não poderá abrir o arquivo: terá de reconstruí-lo a partir dos documentos."
+ },
+ "Scegli una passphrase: viene richiesta a ogni apertura e l’archivio si blocca per inattività. Non esiste un modo per recuperarla: se la perdi dovrai ricostruire l’archivio dai documenti originali.": {
+  "en": "Choose a passphrase: it is asked for every time you open the app and the archive locks after inactivity. There is no way to recover it: if you lose it you will have to rebuild the archive from the original documents.",
+  "fr": "Choisissez une phrase secrète : elle est demandée à chaque ouverture et l’archive se verrouille après inactivité. Il n’existe aucun moyen de la récupérer : si vous la perdez, il faudra reconstruire l’archive à partir des documents originaux.",
+  "es": "Elige una frase de contraseña: se pide en cada apertura y el archivo se bloquea por inactividad. No hay forma de recuperarla: si la pierdes tendrás que reconstruir el archivo a partir de los documentos originales.",
+  "de": "Wählen Sie eine Passphrase: Sie wird bei jedem Öffnen verlangt, und das Archiv sperrt sich bei Inaktivität. Sie lässt sich nicht wiederherstellen: Wenn Sie sie verlieren, müssen Sie das Archiv aus den Originaldokumenten neu aufbauen.",
+  "pt": "Escolha uma frase secreta: ela é pedida a cada abertura e o arquivo se bloqueia por inatividade. Não existe como recuperá-la: se você a perder, terá de reconstruir o arquivo a partir dos documentos originais."
+ },
+ "Cambiare la cifratura in seguito può richiedere una conversione dell’archivio.": {
+  "en": "Changing the encryption later may require converting the archive.",
+  "fr": "Changer le chiffrement plus tard peut nécessiter une conversion de l’archive.",
+  "es": "Cambiar el cifrado más adelante puede requerir una conversión del archivo.",
+  "de": "Eine spätere Änderung der Verschlüsselung kann eine Umwandlung des Archivs erfordern.",
+  "pt": "Mudar a cifragem depois pode exigir uma conversão do arquivo."
+ },
+ "Scegli le cartelle da leggere. I documenti originali restano dove sono.": {
+  "en": "Choose the folders to read. Your original documents stay where they are.",
+  "fr": "Choisissez les dossiers à lire. Les documents originaux restent là où ils sont.",
+  "es": "Elige las carpetas que leer. Los documentos originales se quedan donde están.",
+  "de": "Wählen Sie die zu lesenden Ordner. Die Originaldokumente bleiben, wo sie sind.",
+  "pt": "Escolha as pastas a ler. Os documentos originais ficam onde estão."
+ },
+ "Vuoi leggere anche scansioni e fotografie?": {
+  "en": "Do you also want to read scans and photos?",
+  "fr": "Voulez-vous lire aussi les numérisations et les photos ?",
+  "es": "¿Quieres leer también escaneos y fotografías?",
+  "de": "Möchten Sie auch Scans und Fotos lesen?",
+  "pt": "Deseja ler também digitalizações e fotografias?"
+ },
+ "Permette di cercare anche dentro scansioni e fotografie. Può richiedere più tempo.": {
+  "en": "It lets you search inside scans and photos too. It may take longer.",
+  "fr": "Permet de rechercher aussi dans les numérisations et les photos. Cela peut prendre plus de temps.",
+  "es": "Permite buscar también dentro de escaneos y fotografías. Puede tardar más.",
+  "de": "Damit lassen sich auch Scans und Fotos durchsuchen. Das kann länger dauern.",
+  "pt": "Permite pesquisar também dentro de digitalizações e fotografias. Pode levar mais tempo."
+ },
+ "Vuoi attivare la ricerca per significato?": {
+  "en": "Do you want to turn on search by meaning?",
+  "fr": "Voulez-vous activer la recherche par sens ?",
+  "es": "¿Quieres activar la búsqueda por significado?",
+  "de": "Möchten Sie die Bedeutungssuche aktivieren?",
+  "pt": "Deseja ativar a pesquisa por significado?"
+ },
+ "Cerca usando le parole presenti nei documenti oppure anche concetti simili. Tutto viene elaborato sul tuo computer.": {
+  "en": "Search using the words in your documents, or similar concepts too. Everything is processed on your computer.",
+  "fr": "Recherchez avec les mots présents dans les documents, ou aussi avec des concepts proches. Tout est traité sur votre ordinateur.",
+  "es": "Busca con las palabras que hay en los documentos o también con conceptos similares. Todo se procesa en tu ordenador.",
+  "de": "Suchen Sie mit den Wörtern in Ihren Dokumenten oder auch mit ähnlichen Konzepten. Alles wird auf Ihrem Computer verarbeitet.",
+  "pt": "Pesquise usando as palavras presentes nos documentos ou também conceitos semelhantes. Tudo é processado no seu computador."
+ },
+ "Questa installazione non include il modello: la ricerca per significato non è disponibile.": {
+  "en": "This installation does not include the model: search by meaning is not available.",
+  "fr": "Cette installation n’inclut pas le modèle : la recherche par sens n’est pas disponible.",
+  "es": "Esta instalación no incluye el modelo: la búsqueda por significado no está disponible.",
+  "de": "Diese Installation enthält das Modell nicht: Die Bedeutungssuche ist nicht verfügbar.",
+  "pt": "Esta instalação não inclui o modelo: a pesquisa por significado não está disponível."
+ },
+ "Tutto pronto": {
+  "en": "All set",
+  "fr": "Tout est prêt",
+  "es": "Todo listo",
+  "de": "Alles bereit",
+  "pt": "Tudo pronto"
+ },
+ "Controlla il riepilogo. Potrai cambiare ogni scelta dalle Impostazioni.": {
+  "en": "Check the summary. You can change any choice later in Settings.",
+  "fr": "Vérifiez le récapitulatif. Vous pourrez modifier chaque choix dans les Réglages.",
+  "es": "Revisa el resumen. Podrás cambiar cualquier elección desde Ajustes.",
+  "de": "Prüfen Sie die Zusammenfassung. Jede Auswahl lässt sich später in den Einstellungen ändern.",
+  "pt": "Confira o resumo. Você poderá mudar qualquer escolha nas Configurações."
+ },
+ "Per leggere scansioni e immagini spunta almeno una lingua.": {
+  "en": "To read scans and images, tick at least one language.",
+  "fr": "Pour lire les numérisations et les images, cochez au moins une langue.",
+  "es": "Para leer escaneos e imágenes, marca al menos un idioma.",
+  "de": "Um Scans und Bilder zu lesen, wählen Sie mindestens eine Sprache.",
+  "pt": "Para ler digitalizações e imagens, marque pelo menos um idioma."
+ },
+ "PRIMO AVVIO  /  PASSO {i} DI {n}  /  {title}": {
+  "en": "FIRST START  /  STEP {i} OF {n}  /  {title}",
+  "fr": "PREMIER LANCEMENT  /  ÉTAPE {i} SUR {n}  /  {title}",
+  "es": "PRIMER INICIO  /  PASO {i} DE {n}  /  {title}",
+  "de": "ERSTER START  /  SCHRITT {i} VON {n}  /  {title}",
+  "pt": "PRIMEIRO INÍCIO  /  PASSO {i} DE {n}  /  {title}"
+ },
+ "L’archivio è già protetto: {mode}. Potrai cambiare la protezione dalle Impostazioni.": {
+  "en": "The archive is already protected: {mode}. You can change the protection in Settings.",
+  "fr": "L’archive est déjà protégée : {mode}. Vous pourrez changer la protection dans les Réglages.",
+  "es": "El archivo ya está protegido: {mode}. Podrás cambiar la protección desde Ajustes.",
+  "de": "Das Archiv ist bereits geschützt: {mode}. Den Schutz können Sie in den Einstellungen ändern.",
+  "pt": "O arquivo já está protegido: {mode}. Você poderá mudar a proteção nas Configurações."
+ },
+ "Passphrase": {
+  "en": "Passphrase",
+  "fr": "Phrase secrète",
+  "es": "Frase de contraseña",
+  "de": "Passphrase",
+  "pt": "Frase secreta"
+ },
+ "Ripeti la passphrase": {
+  "en": "Repeat the passphrase",
+  "fr": "Répétez la phrase secrète",
+  "es": "Repite la frase de contraseña",
+  "de": "Passphrase wiederholen",
+  "pt": "Repita a frase secreta"
+ },
+ "Disattivata — Solo parole chiave": {
+  "en": "Off — Keywords only",
+  "fr": "Désactivée — Mots-clés seulement",
+  "es": "Desactivada — Solo palabras clave",
+  "de": "Aus — Nur Stichwörter",
+  "pt": "Desativada — Só palavras-chave"
+ },
+ "Cercando “riparazione automobile”, vengono cercate quelle parole e le varianti riconosciute. Un documento che parla soltanto di “intervento del meccanico sulla vettura” potrebbe non comparire.": {
+  "en": "Searching for “car repair”, those words and the recognised variants are searched. A document that only talks about “mechanic work on the vehicle” might not appear.",
+  "fr": "En cherchant « réparation automobile », ces mots et leurs variantes reconnues sont recherchés. Un document qui parle seulement d’« intervention du mécanicien sur le véhicule » pourrait ne pas apparaître.",
+  "es": "Al buscar «reparación de automóvil», se buscan esas palabras y las variantes reconocidas. Un documento que solo hable de «intervención del mecánico en el vehículo» podría no aparecer.",
+  "de": "Bei der Suche nach „Autoreparatur“ werden diese Wörter und die erkannten Varianten gesucht. Ein Dokument, das nur von „Eingriff des Mechanikers am Fahrzeug“ spricht, erscheint möglicherweise nicht.",
+  "pt": "Pesquisando “reparo de automóvel”, são procuradas essas palavras e as variantes reconhecidas. Um documento que fale apenas de “intervenção do mecânico no veículo” pode não aparecer."
+ },
+ "Attivata — Parole chiave e significato": {
+  "en": "On — Keywords and meaning",
+  "fr": "Activée — Mots-clés et sens",
+  "es": "Activada — Palabras clave y significado",
+  "de": "An — Stichwörter und Bedeutung",
+  "pt": "Ativada — Palavras-chave e significado"
+ },
+ "La stessa ricerca può trovare anche “intervento del meccanico sulla vettura”, perché esprime un concetto simile.": {
+  "en": "The same search can also find “mechanic work on the vehicle”, because it expresses a similar concept.",
+  "fr": "La même recherche peut aussi trouver « intervention du mécanicien sur le véhicule », car cela exprime un concept proche.",
+  "es": "La misma búsqueda puede encontrar también «intervención del mecánico en el vehículo», porque expresa un concepto similar.",
+  "de": "Dieselbe Suche kann auch „Eingriff des Mechanikers am Fahrzeug“ finden, weil es ein ähnliches Konzept ausdrückt.",
+  "pt": "A mesma pesquisa também pode encontrar “intervenção do mecânico no veículo”, porque expressa um conceito semelhante."
+ },
+ "Protezione": {
+  "en": "Protection",
+  "fr": "Protection",
+  "es": "Protección",
+  "de": "Schutz",
+  "pt": "Proteção"
+ },
+ "OCR": {
+  "en": "OCR",
+  "fr": "OCR",
+  "es": "OCR",
+  "de": "OCR",
+  "pt": "OCR"
+ },
+ "Conferma": {
+  "en": "Confirm",
+  "fr": "Confirmation",
+  "es": "Confirmación",
+  "de": "Bestätigung",
+  "pt": "Confirmação"
+ },
+ "Avvia indicizzazione": {
+  "en": "Start indexing",
+  "fr": "Lancer l’indexation",
+  "es": "Iniciar indexación",
+  "de": "Indizierung starten",
+  "pt": "Iniciar indexação"
+ },
+ "attivo ({langs})": {
+  "en": "on ({langs})",
+  "fr": "activé ({langs})",
+  "es": "activado ({langs})",
+  "de": "an ({langs})",
+  "pt": "ativado ({langs})"
+ },
+ "parole chiave e significato": {
+  "en": "keywords and meaning",
+  "fr": "mots-clés et sens",
+  "es": "palabras clave y significado",
+  "de": "Stichwörter und Bedeutung",
+  "pt": "palavras-chave e significado"
+ },
+ "solo parole chiave": {
+  "en": "keywords only",
+  "fr": "mots-clés seulement",
+  "es": "solo palabras clave",
+  "de": "nur Stichwörter",
+  "pt": "só palavras-chave"
+ },
+ "Minuti di inattività prima del blocco": {
+  "en": "Minutes of inactivity before locking",
+  "fr": "Minutes d’inactivité avant le verrouillage",
+  "es": "Minutos de inactividad antes del bloqueo",
+  "de": "Minuten Inaktivität bis zur Sperre",
+  "pt": "Minutos de inatividade antes do bloqueio"
+ },
+ "Includi anche le sottocartelle": {
+  "en": "Include subfolders too",
+  "fr": "Inclure aussi les sous-dossiers",
+  "es": "Incluir también las subcarpetas",
+  "de": "Unterordner einbeziehen",
+  "pt": "Incluir também as subpastas"
+ },
+ "Controlla automaticamente i file nuovi o modificati": {
+  "en": "Automatically check for new or changed files",
+  "fr": "Contrôler automatiquement les fichiers nouveaux ou modifiés",
+  "es": "Comprobar automáticamente los archivos nuevos o modificados",
+  "de": "Neue oder geänderte Dateien automatisch prüfen",
+  "pt": "Verificar automaticamente arquivos novos ou modificados"
+ },
+ "In quali lingue sono scritti i documenti?": {
+  "en": "What languages are the documents written in?",
+  "fr": "Dans quelles langues sont écrits les documents ?",
+  "es": "¿En qué idiomas están escritos los documentos?",
+  "de": "In welchen Sprachen sind die Dokumente geschrieben?",
+  "pt": "Em quais idiomas os documentos estão escritos?"
+ },
+ "controllo automatico": {
+  "en": "automatic checking",
+  "fr": "contrôle automatique",
+  "es": "comprobación automática",
+  "de": "automatische Prüfung",
+  "pt": "verificação automática"
+ },
+ "controllo manuale": {
+  "en": "manual checking",
+  "fr": "contrôle manuel",
+  "es": "comprobación manual",
+  "de": "manuelle Prüfung",
+  "pt": "verificação manual"
+ },
+ "{n} cartella": {
+  "en": {
+   "one": "{n} folder",
+   "other": "{n} folders"
+  },
+  "fr": {
+   "one": "{n} dossier",
+   "other": "{n} dossiers"
+  },
+  "es": {
+   "one": "{n} carpeta",
+   "other": "{n} carpetas"
+  },
+  "de": {
+   "one": "{n} Ordner",
+   "other": "{n} Ordner"
+  },
+  "pt": {
+   "one": "{n} pasta",
+   "other": "{n} pastas"
+  }
+ },
+ "con sottocartelle": {
+  "en": "with subfolders",
+  "fr": "avec sous-dossiers",
+  "es": "con subcarpetas",
+  "de": "mit Unterordnern",
+  "pt": "com subpastas"
+ },
+ "senza sottocartelle": {
+  "en": "without subfolders",
+  "fr": "sans sous-dossiers",
+  "es": "sin subcarpetas",
+  "de": "ohne Unterordner",
+  "pt": "sem subpastas"
+ }
+}

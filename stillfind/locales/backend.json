@@ -1,0 +1,317 @@
+{
+ "Registrazione evento macOS fallita.": {
+  "en": "Registering the macOS event failed.",
+  "fr": "L’enregistrement de l’événement macOS a échoué.",
+  "es": "Falló el registro del evento de macOS.",
+  "de": "Das Registrieren des macOS-Ereignisses ist fehlgeschlagen.",
+  "pt": "Falha ao registrar o evento do macOS."
+ },
+ "Combinazione già in uso.": {
+  "en": "Key combination already in use.",
+  "fr": "Combinaison déjà utilisée.",
+  "es": "Combinación ya en uso.",
+  "de": "Tastenkombination bereits belegt.",
+  "pt": "Combinação já em uso."
+ },
+ "È richiesto un display X11 locale.": {
+  "en": "A local X11 display is required.",
+  "fr": "Un affichage X11 local est requis.",
+  "es": "Se requiere una pantalla X11 local.",
+  "de": "Ein lokales X11-Display ist erforderlich.",
+  "pt": "É necessário um display X11 local."
+ },
+ "Display X11 non disponibile.": {
+  "en": "X11 display not available.",
+  "fr": "Affichage X11 indisponible.",
+  "es": "Pantalla X11 no disponible.",
+  "de": "X11-Display nicht verfügbar.",
+  "pt": "Display X11 indisponível."
+ },
+ "Bus di sessione non locale.": {
+  "en": "Session bus is not local.",
+  "fr": "Le bus de session n’est pas local.",
+  "es": "El bus de sesión no es local.",
+  "de": "Der Sitzungsbus ist nicht lokal.",
+  "pt": "O barramento de sessão não é local."
+ },
+ "Bus locale della sessione non disponibile.": {
+  "en": "Local session bus not available.",
+  "fr": "Bus de session local indisponible.",
+  "es": "Bus de sesión local no disponible.",
+  "de": "Lokaler Sitzungsbus nicht verfügbar.",
+  "pt": "Barramento de sessão local indisponível."
+ },
+ "Parametri del portale non validi.": {
+  "en": "Invalid portal parameters.",
+  "fr": "Paramètres du portail non valides.",
+  "es": "Parámetros del portal no válidos.",
+  "de": "Ungültige Portalparameter.",
+  "pt": "Parâmetros do portal inválidos."
+ },
+ "Il desktop non offre il portale per le scorciatoie.": {
+  "en": "The desktop does not offer the shortcuts portal.",
+  "fr": "Le bureau ne propose pas le portail des raccourcis.",
+  "es": "El escritorio no ofrece el portal de atajos.",
+  "de": "Der Desktop bietet kein Portal für Tastenkombinationen.",
+  "pt": "A área de trabalho não oferece o portal de atalhos."
+ },
+ "Il desktop non ha autorizzato la scorciatoia.": {
+  "en": "The desktop did not authorise the shortcut.",
+  "fr": "Le bureau n’a pas autorisé le raccourci.",
+  "es": "El escritorio no autorizó el atajo.",
+  "de": "Der Desktop hat die Tastenkombination nicht erlaubt.",
+  "pt": "A área de trabalho não autorizou o atalho."
+ },
+ "Sessione del portale non disponibile.": {
+  "en": "Portal session not available.",
+  "fr": "Session du portail indisponible.",
+  "es": "Sesión del portal no disponible.",
+  "de": "Portalsitzung nicht verfügbar.",
+  "pt": "Sessão do portal indisponível."
+ },
+ "Sessione del portale non valida.": {
+  "en": "Invalid portal session.",
+  "fr": "Session du portail non valide.",
+  "es": "Sesión del portal no válida.",
+  "de": "Ungültige Portalsitzung.",
+  "pt": "Sessão do portal inválida."
+ },
+ "Foglio {title}": {
+  "en": "Sheet {title}",
+  "fr": "Feuille {title}",
+  "es": "Hoja {title}",
+  "de": "Blatt {title}",
+  "pt": "Planilha {title}"
+ },
+ "Slide {title}": {
+  "en": "Slide {title}",
+  "fr": "Diapositive {title}",
+  "es": "Diapositiva {title}",
+  "de": "Folie {title}",
+  "pt": "Slide {title}"
+ },
+ "Pag. {number}": {
+  "en": "Page {number}",
+  "fr": "Page {number}",
+  "es": "Pág. {number}",
+  "de": "Seite {number}",
+  "pt": "Pág. {number}"
+ },
+ "testo digitale": {
+  "en": "digital text",
+  "fr": "texte numérique",
+  "es": "texto digital",
+  "de": "digitaler Text",
+  "pt": "texto digital"
+ },
+ "testo breve, OCR da eseguire": {
+  "en": "short text, OCR to run",
+  "fr": "texte court, OCR à effectuer",
+  "es": "texto breve, OCR por hacer",
+  "de": "kurzer Text, OCR ausstehend",
+  "pt": "texto curto, OCR a executar"
+ },
+ "errore OCR": {
+  "en": "OCR error",
+  "fr": "erreur OCR",
+  "es": "error de OCR",
+  "de": "OCR-Fehler",
+  "pt": "erro de OCR"
+ },
+ "OCR da eseguire": {
+  "en": "OCR to run",
+  "fr": "OCR à effectuer",
+  "es": "OCR por hacer",
+  "de": "OCR ausstehend",
+  "pt": "OCR a executar"
+ },
+ "OCR senza testo": {
+  "en": "OCR found no text",
+  "fr": "OCR sans texte",
+  "es": "OCR sin texto",
+  "de": "OCR ohne Text",
+  "pt": "OCR sem texto"
+ },
+ "testo digitale, OCR senza testo": {
+  "en": "digital text, OCR found no text",
+  "fr": "texte numérique, OCR sans texte",
+  "es": "texto digital, OCR sin texto",
+  "de": "digitaler Text, OCR ohne Text",
+  "pt": "texto digital, OCR sem texto"
+ },
+ "Nessun testo estratto: il file è stato trovato solo per il nome.": {
+  "en": "No text extracted: the file was found by name only.",
+  "fr": "Aucun texte extrait : le fichier n’a été trouvé que par son nom.",
+  "es": "Ningún texto extraído: el archivo se encontró solo por el nombre.",
+  "de": "Kein Text extrahiert: Die Datei wurde nur über den Namen gefunden.",
+  "pt": "Nenhum texto extraído: o arquivo foi encontrado só pelo nome."
+ },
+ "… Il testo continua: qui si vedono i primi {shown} caratteri su {total}. «Copia testo» copia tutto il documento.": {
+  "en": "… The text continues: here you see the first {shown} characters out of {total}. “Copy text” copies the whole document.",
+  "fr": "… Le texte continue : vous voyez ici les {shown} premiers caractères sur {total}. « Copier le texte » copie tout le document.",
+  "es": "… El texto continúa: aquí se ven los primeros {shown} caracteres de {total}. «Copiar texto» copia todo el documento.",
+  "de": "… Der Text geht weiter: Hier sehen Sie die ersten {shown} von {total} Zeichen. „Text kopieren“ kopiert das ganze Dokument.",
+  "pt": "… O texto continua: aqui você vê os primeiros {shown} caracteres de {total}. “Copiar texto” copia todo o documento."
+ },
+ "Nessuna occorrenza nel contenuto (trovato nel nome del file). Anteprima iniziale:": {
+  "en": "No match in the content (found in the file name). Initial preview:",
+  "fr": "Aucune occurrence dans le contenu (trouvé dans le nom du fichier). Aperçu du début :",
+  "es": "Ninguna coincidencia en el contenido (encontrado en el nombre del archivo). Vista previa inicial:",
+  "de": "Kein Treffer im Inhalt (im Dateinamen gefunden). Anfangsvorschau:",
+  "pt": "Nenhuma ocorrência no conteúdo (encontrado no nome do arquivo). Pré-visualização inicial:"
+ },
+ "Accesso al portachiavi macOS fallito ({code}).": {
+  "en": "Access to the macOS keychain failed ({code}).",
+  "fr": "L’accès au trousseau macOS a échoué ({code}).",
+  "es": "Falló el acceso al llavero de macOS ({code}).",
+  "de": "Der Zugriff auf den macOS-Schlüsselbund ist fehlgeschlagen ({code}).",
+  "pt": "Falha no acesso ao chaveiro do macOS ({code})."
+ },
+ "Secret Service richiede un bus di sessione locale.": {
+  "en": "Secret Service requires a local session bus.",
+  "fr": "Secret Service nécessite un bus de session local.",
+  "es": "Secret Service requiere un bus de sesión local.",
+  "de": "Secret Service benötigt einen lokalen Sitzungsbus.",
+  "pt": "O Secret Service exige um barramento de sessão local."
+ },
+ "Il portachiavi Secret Service non è disponibile o è bloccato.": {
+  "en": "The Secret Service keychain is not available or is locked.",
+  "fr": "Le trousseau Secret Service est indisponible ou verrouillé.",
+  "es": "El llavero de Secret Service no está disponible o está bloqueado.",
+  "de": "Der Secret-Service-Schlüsselbund ist nicht verfügbar oder gesperrt.",
+  "pt": "O chaveiro do Secret Service não está disponível ou está bloqueado."
+ },
+ "Per il portachiavi Linux occorre secret-tool (libsecret).": {
+  "en": "The Linux keychain needs secret-tool (libsecret).",
+  "fr": "Le trousseau Linux nécessite secret-tool (libsecret).",
+  "es": "El llavero de Linux necesita secret-tool (libsecret).",
+  "de": "Für den Linux-Schlüsselbund wird secret-tool (libsecret) benötigt.",
+  "pt": "O chaveiro do Linux precisa do secret-tool (libsecret)."
+ },
+ "Mancano le impostazioni di apertura del database cifrato.": {
+  "en": "The settings to open the encrypted database are missing.",
+  "fr": "Les réglages d’ouverture de la base chiffrée sont absents.",
+  "es": "Faltan los ajustes de apertura de la base de datos cifrada.",
+  "de": "Die Einstellungen zum Öffnen der verschlüsselten Datenbank fehlen.",
+  "pt": "Faltam as configurações de abertura do banco de dados cifrado."
+ },
+ "L’archivio non è cifrato.": {
+  "en": "The archive is not encrypted.",
+  "fr": "L’archive n’est pas chiffrée.",
+  "es": "El archivo no está cifrado.",
+  "de": "Das Archiv ist nicht verschlüsselt.",
+  "pt": "O arquivo não está cifrado."
+ },
+ "L'archivio non usa una passphrase.": {
+  "en": "The archive does not use a passphrase.",
+  "fr": "L’archive n’utilise pas de phrase secrète.",
+  "es": "El archivo no usa una frase de contraseña.",
+  "de": "Das Archiv verwendet keine Passphrase.",
+  "pt": "O arquivo não usa frase secreta."
+ },
+ "Configurazione KDF SQLCipher non supportata.": {
+  "en": "Unsupported SQLCipher KDF configuration.",
+  "fr": "Configuration KDF SQLCipher non prise en charge.",
+  "es": "Configuración KDF de SQLCipher no admitida.",
+  "de": "Nicht unterstützte SQLCipher-KDF-Konfiguration.",
+  "pt": "Configuração KDF do SQLCipher não suportada."
+ },
+ "Modalità o intervallo di blocco non valido.": {
+  "en": "Invalid mode or lock interval.",
+  "fr": "Mode ou intervalle de verrouillage non valide.",
+  "es": "Modo o intervalo de bloqueo no válido.",
+  "de": "Ungültiger Modus oder Sperrintervall.",
+  "pt": "Modo ou intervalo de bloqueio inválido."
+ },
+ "Inserisci una passphrase.": {
+  "en": "Enter a passphrase.",
+  "fr": "Saisissez une phrase secrète.",
+  "es": "Introduce una frase de contraseña.",
+  "de": "Geben Sie eine Passphrase ein.",
+  "pt": "Digite uma frase secreta."
+ },
+ "Archivio occupato. Attendi la fine delle altre operazioni e riprova.": {
+  "en": "Archive busy. Wait for the other operations to finish and try again.",
+  "fr": "Archive occupée. Attendez la fin des autres opérations et réessayez.",
+  "es": "Archivo ocupado. Espera a que terminen las otras operaciones e inténtalo de nuevo.",
+  "de": "Archiv belegt. Warten Sie, bis die anderen Vorgänge beendet sind, und versuchen Sie es erneut.",
+  "pt": "Arquivo ocupado. Aguarde o fim das outras operações e tente novamente."
+ },
+ "Reinserisci la password attuale per mostrarla.": {
+  "en": "Re-enter the current password to show it.",
+  "fr": "Ressaisissez le mot de passe actuel pour l’afficher.",
+  "es": "Vuelve a introducir la contraseña actual para mostrarla.",
+  "de": "Geben Sie das aktuelle Passwort erneut ein, um es anzuzeigen.",
+  "pt": "Digite novamente a senha atual para mostrá-la."
+ },
+ "Chiave errata: inserisci i 64 caratteri esadecimali salvati.": {
+  "en": "Wrong key: enter the 64 hexadecimal characters you saved.",
+  "fr": "Clé erronée : saisissez les 64 caractères hexadécimaux enregistrés.",
+  "es": "Clave incorrecta: introduce los 64 caracteres hexadecimales guardados.",
+  "de": "Falscher Schlüssel: Geben Sie die gespeicherten 64 Hexadezimalzeichen ein.",
+  "pt": "Chave incorreta: digite os 64 caracteres hexadecimais salvos."
+ },
+ "Il componente locale sqlcipher3 non è installato.": {
+  "en": "The local component sqlcipher3 is not installed.",
+  "fr": "Le composant local sqlcipher3 n’est pas installé.",
+  "es": "El componente local sqlcipher3 no está instalado.",
+  "de": "Die lokale Komponente sqlcipher3 ist nicht installiert.",
+  "pt": "O componente local sqlcipher3 não está instalado."
+ },
+ "Cassaforte bloccata. Apri StillFind e inserisci la passphrase.": {
+  "en": "Vault locked. Open StillFind and enter the passphrase.",
+  "fr": "Coffre-fort verrouillé. Ouvrez StillFind et saisissez la phrase secrète.",
+  "es": "Caja fuerte bloqueada. Abre StillFind e introduce la frase de contraseña.",
+  "de": "Tresor gesperrt. Öffnen Sie StillFind und geben Sie die Passphrase ein.",
+  "pt": "Cofre bloqueado. Abra o StillFind e digite a frase secreta."
+ },
+ "La chiave dell’archivio non è disponibile nel portachiavi.": {
+  "en": "The archive key is not available in the keychain.",
+  "fr": "La clé de l’archive n’est pas disponible dans le trousseau.",
+  "es": "La clave del archivo no está disponible en el llavero.",
+  "de": "Der Schlüssel des Archivs ist im Schlüsselbund nicht verfügbar.",
+  "pt": "A chave do arquivo não está disponível no chaveiro."
+ },
+ "Passphrase errata o archivio illeggibile.": {
+  "en": "Wrong passphrase or unreadable archive.",
+  "fr": "Phrase secrète erronée ou archive illisible.",
+  "es": "Frase de contraseña incorrecta o archivo ilegible.",
+  "de": "Falsche Passphrase oder unlesbares Archiv.",
+  "pt": "Frase secreta incorreta ou arquivo ilegível."
+ },
+ "Attendi la chiusura degli altri lettori dell'archivio.": {
+  "en": "Wait for the other readers of the archive to close.",
+  "fr": "Attendez la fermeture des autres lecteurs de l’archive.",
+  "es": "Espera a que se cierren los otros lectores del archivo.",
+  "de": "Warten Sie, bis die anderen Leser des Archivs geschlossen sind.",
+  "pt": "Aguarde o fechamento dos outros leitores do arquivo."
+ },
+ "Password errata o archivio illeggibile.": {
+  "en": "Wrong password or unreadable archive.",
+  "fr": "Mot de passe erroné ou archive illisible.",
+  "es": "Contraseña incorrecta o archivo ilegible.",
+  "de": "Falsches Passwort oder unlesbares Archiv.",
+  "pt": "Senha incorreta ou arquivo ilegível."
+ },
+ "SQLCipher non disponibile.": {
+  "en": "SQLCipher not available.",
+  "fr": "SQLCipher indisponible.",
+  "es": "SQLCipher no disponible.",
+  "de": "SQLCipher nicht verfügbar.",
+  "pt": "SQLCipher indisponível."
+ },
+ "La copia dell'archivio non supera la verifica di integrità.": {
+  "en": "The archive copy fails the integrity check.",
+  "fr": "La copie de l’archive ne passe pas la vérification d’intégrité.",
+  "es": "La copia del archivo no supera la verificación de integridad.",
+  "de": "Die Kopie des Archivs besteht die Integritätsprüfung nicht.",
+  "pt": "A cópia do arquivo não passa na verificação de integridade."
+ },
+ "La verifica delle pagine cifrate è fallita.": {
+  "en": "Checking the encrypted pages failed.",
+  "fr": "La vérification des pages chiffrées a échoué.",
+  "es": "Falló la verificación de las páginas cifradas.",
+  "de": "Die Prüfung der verschlüsselten Seiten ist fehlgeschlagen.",
+  "pt": "A verificação das páginas cifradas falhou."
+ }
+}

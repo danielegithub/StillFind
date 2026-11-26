@@ -15,6 +15,7 @@ import threading
 import weakref
 from pathlib import Path
 
+from stillfind.core.i18n import tr
 from stillfind.storage.credentials import LEGACY_SERVICE, SERVICE, CredentialStore
 from stillfind.storage.database import Database
 
@@ -49,7 +50,7 @@ class Lease:
                 fcntl.flock(self.file.fileno(), flag | fcntl.LOCK_NB)
         except OSError as exc:
             self.close()
-            raise RuntimeError("Archivio occupato. Attendi la fine delle altre operazioni e riprova.") from exc
+            raise RuntimeError(tr("Archivio occupato. Attendi la fine delle altre operazioni e riprova.")) from exc
 
     def close(self):
         self.file.close()
@@ -62,6 +63,8 @@ class ArchiveProtection:
     CLEAR = CLEAR
     _session = bytearray()
     _session_id = None
+    _secret = bytearray()
+    _secret_id = None
     _mutex = threading.RLock()
     _open_settings = weakref.WeakValueDictionary()
 
@@ -72,13 +75,85 @@ class ArchiveProtection:
             cls._session[:] = b"\0" * len(cls._session)
             cls._session.clear()
             cls._session_id = None
+            cls.hide_secret()
+
+    @classmethod
+    def hide_secret(cls):
+        """Azzera il segreto visualizzabile; la chiave derivata resta utilizzabile fino al blocco."""
+        with cls._mutex:
+            cls._secret[:] = b"\0" * len(cls._secret)
+            cls._secret.clear()
+            cls._secret_id = None
+
+    @classmethod
+    def remember_secret(cls, spec, secret):
+        with cls._mutex:
+            cls.hide_secret()
+            if spec["mode"] != "plain":
+                cls._secret.extend(secret)
+                cls._secret_id = spec["id"]
+
+    @classmethod
+    def visible_secret(cls, path):
+        """Copia temporanea, da azzerare dopo l'uso. Non recupera un segreto nascosto."""
+        spec = cls.settings(path)
+        with cls._mutex:
+            if cls._secret_id != spec.get("id") or not cls._secret:
+                raise Locked(tr("Reinserisci la password attuale per mostrarla."))
+            return cls._secret.copy()
+
+    @classmethod
+    def prepare_visibility(cls, path, hidden):
+        """All'avvio UI recupera la chiave automatica solo se la visibilità è consentita."""
+        spec = cls.settings(path)
+        if hidden or spec["mode"] == "plain":
+            cls.hide_secret()
+        elif spec["mode"] == "auto":
+            key = cls._key(Path(path), spec)
+            try:
+                cls.remember_secret(spec, memoryview(key)[2:-1])
+            finally:
+                key[:] = b"\0" * len(key)
+
+    @classmethod
+    def verify_secret(cls, path, secret):
+        """Verifica contro SQLCipher senza cambiare sessione o visibilità.
+
+        La modalità Portachiavi usa i 64 caratteri esadecimali mostrati nella UI;
+        la Cassaforte usa la passphrase originale, mai la chiave derivata.
+        """
+        spec = cls.settings(path)
+        if spec["mode"] == "plain":
+            raise Locked(tr("L’archivio non è cifrato."))
+        if spec["mode"] == "auto":
+            if not re.fullmatch(rb"[0-9a-f]{64}", secret):
+                raise Locked(tr("Chiave errata: inserisci i 64 caratteri esadecimali salvati."))
+            key = bytearray(b"x'")
+            key.extend(secret)
+            key.extend(b"'")
+        else:
+            key = cls._phrase_key(secret)
+        lease = None
+        try:
+            lease = Lease(path)
+            # Riusa la descrizione già letta: non riapre il file DB e non altera i lock SQLite.
+            lease.archive_settings = cls._archive_settings(path)
+            try:
+                con = cls._open(path, cls.cipher(), key, lease, readonly=True)
+            except cls.cipher().DatabaseError as exc:
+                raise Locked(tr("Password errata o archivio illeggibile.")) from exc
+            con.close()
+        finally:
+            key[:] = b"\0" * len(key)
+            if lease is not None:
+                lease.close()
 
     @staticmethod
     def cipher():
         try:
             import sqlcipher3
         except ImportError as exc:
-            raise RuntimeError("Il componente locale sqlcipher3 non è installato.") from exc
+            raise RuntimeError(tr("Il componente locale sqlcipher3 non è installato.")) from exc
         return sqlcipher3
 
     @staticmethod
@@ -117,7 +192,7 @@ class ArchiveProtection:
                 return data
         except (OSError, ValueError, KeyError, TypeError):
             pass
-        raise Locked("Mancano le impostazioni di apertura del database cifrato.")
+        raise Locked(tr("Mancano le impostazioni di apertura del database cifrato."))
 
     @classmethod
     def remember(cls, spec, key):
@@ -130,7 +205,7 @@ class ArchiveProtection:
     def session_key(cls, spec):
         with cls._mutex:
             if cls._session_id != spec["id"] or not cls._session:
-                raise Locked("Cassaforte bloccata. Apri StillFind e inserisci la passphrase.")
+                raise Locked(tr("Cassaforte bloccata. Apri StillFind e inserisci la passphrase."))
             return cls._session.copy()
 
     @classmethod
@@ -141,7 +216,7 @@ class ArchiveProtection:
             service = SERVICE if spec.get("credential_service") == SERVICE else LEGACY_SERVICE
             key = CredentialStore.access("get", spec["id"], path.parent, service=service)
             if not key or not re.fullmatch(rb"x'[0-9a-f]{64}'", key):
-                raise Locked("La chiave dell’archivio non è disponibile nel portachiavi.")
+                raise Locked(tr("La chiave dell’archivio non è disponibile nel portachiavi."))
             return key
         return bytearray()
 
@@ -167,7 +242,7 @@ class ArchiveProtection:
                 con.execute("PRAGMA cipher_memory_security=ON")
                 con.set_key(key)
                 if not con.execute("PRAGMA cipher_version").fetchone():
-                    raise RuntimeError("SQLCipher non disponibile.")
+                    raise RuntimeError(tr("SQLCipher non disponibile."))
             con.execute("PRAGMA temp_store=MEMORY")
             con.execute("SELECT count(*) FROM sqlite_master").fetchone()
             return con
@@ -194,19 +269,21 @@ class ArchiveProtection:
             key[:] = b"\0" * len(key)
 
     @classmethod
-    def unlock(cls, path, phrase):
+    def unlock(cls, path, phrase, *, hide_secret=True):
         spec = cls.settings(path)
         if spec["mode"] != "vault":
-            raise RuntimeError("L'archivio non usa una passphrase.")
+            raise RuntimeError(tr("L'archivio non usa una passphrase."))
         key = cls._phrase_key(phrase)
         try:
             con = cls._open(path, cls.cipher(), key)
             try:
                 cls._remember_derived(con, spec, key)
+                if not hide_secret:
+                    cls.remember_secret(spec, memoryview(key)[len(b"CercaDoc:"):])
             finally:
                 con.close()
         except cls.cipher().DatabaseError as exc:
-            raise Locked("Passphrase errata o archivio illeggibile.") from exc
+            raise Locked(tr("Passphrase errata o archivio illeggibile.")) from exc
         finally:
             key[:] = b"\0" * len(key)
 
@@ -222,7 +299,7 @@ class ArchiveProtection:
         salt = bytes.fromhex(con.execute("PRAGMA cipher_salt").fetchone()[0])
         rounds = int(con.execute("PRAGMA kdf_iter").fetchone()[0])
         if con.execute("PRAGMA cipher_kdf_algorithm").fetchone()[0] != "PBKDF2_HMAC_SHA512":
-            raise RuntimeError("Configurazione KDF SQLCipher non supportata.")
+            raise RuntimeError(tr("Configurazione KDF SQLCipher non supportata."))
         raw = hashlib.pbkdf2_hmac("sha512", phrase, salt, rounds, 32)
         cls.remember(spec, b"x'" + raw.hex().encode("ascii") + b"'")
 
@@ -283,12 +360,12 @@ class ArchiveProtection:
             item.unlink(missing_ok=True)
 
     @classmethod
-    def migrate(cls, path, mode, phrase=None, minutes=10):
+    def migrate(cls, path, mode, phrase=None, minutes=10, *, hide_secret=True):
         """Le connessioni devono essere chiuse. La testata attiva seleziona le proprie credenziali anche dopo un crash."""
         if mode not in ("plain", "auto", "vault") or not 1 <= minutes <= 1440:
-            raise ValueError("Modalità o intervallo di blocco non valido.")
+            raise ValueError(tr("Modalità o intervallo di blocco non valido."))
         if mode == "vault" and not phrase:
-            raise ValueError("Inserisci una passphrase.")
+            raise ValueError(tr("Inserisci una passphrase."))
         path = Path(path)
         driver = cls.cipher()
         lease = Lease(path, exclusive=True)
@@ -304,7 +381,7 @@ class ArchiveProtection:
                 old_header = f.read(16)
             source = cls._open(path, driver, old_key)
             if source.execute("PRAGMA journal_mode=DELETE").fetchone()[0] != "delete":
-                raise RuntimeError("Attendi la chiusura degli altri lettori dell'archivio.")
+                raise RuntimeError(tr("Attendi la chiusura degli altri lettori dell'archivio."))
             cls._migrate_vectors(source, path)
             version = source.execute("PRAGMA user_version").fetchone()[0]
             if mode == "auto":
@@ -326,9 +403,9 @@ class ArchiveProtection:
                 if new_key:
                     target.execute("CREATE TABLE IF NOT EXISTS vector_values(id INTEGER PRIMARY KEY, value BLOB NOT NULL)")
                 if target.execute("PRAGMA integrity_check").fetchone() != ("ok",):
-                    raise RuntimeError("La copia dell'archivio non supera la verifica di integrità.")
+                    raise RuntimeError(tr("La copia dell'archivio non supera la verifica di integrità."))
                 if new_key and target.execute("PRAGMA cipher_integrity_check").fetchall():
-                    raise RuntimeError("La verifica delle pagine cifrate è fallita.")
+                    raise RuntimeError(tr("La verifica delle pagine cifrate è fallita."))
                 if target.execute("SELECT 1 FROM sqlite_master WHERE name='fts'").fetchone():
                     target.execute("INSERT INTO fts(fts) VALUES('integrity-check')")
                 target.commit()
@@ -356,8 +433,12 @@ class ArchiveProtection:
                 opened = cls._open(path, driver, new_key)
                 try:
                     cls._remember_derived(opened, spec, new_key)
+                    if not hide_secret:
+                        cls.remember_secret(spec, memoryview(new_key)[len(b"CercaDoc:"):])
                 finally:
                     opened.close()
+            elif mode == "auto" and not hide_secret:
+                cls.remember_secret(spec, memoryview(new_key)[2:-1])
             if old["mode"] == "auto":
                 service = SERVICE if old.get("credential_service") == SERVICE else LEGACY_SERVICE
                 CredentialStore.access("delete", old["id"], path.parent, service=service)

@@ -18,6 +18,7 @@ import uuid
 from contextlib import closing
 
 from stillfind.core.config import APP_DIR, DB_PATH, Settings
+from stillfind.core.i18n import tr
 from stillfind.core.locks import ProcessLock
 from stillfind.indexing.indexer import Indexer
 from stillfind.runtime.background import PowerMonitor
@@ -50,7 +51,7 @@ class WorkerMonitor:
                 with lock:
                     st = con.worker_status()
                     if st["phase"] in cls.ACTIVE:
-                        con.publish_progress(st["run"], {"phase": "error", "error": "Lavoratore interrotto."})
+                        con.publish_progress(st["run"], {"phase": "error", "error": tr("Lavoratore interrotto.")})
                         st = con.worker_status()
         return st
 
@@ -230,7 +231,8 @@ class Agent:
             with closing(Database.connect()) as con:
                 return WorkerMonitor.read_status(con)
 
-        tray = Registration(lambda: not AppSignals.window_owns_tray(), tray_action, lambda _: None,
+        tray = Registration(lambda: Settings.load().get("show_tray", True) and not AppSignals.window_owns_tray(),
+                            tray_action, lambda _: None,
                                    tray=tray_status)
         try:
             PowerMonitor.lower_thread_priority()
@@ -361,7 +363,7 @@ class WorkerRun:
 
     def _forget(self, con, stop, publish) -> int:
         if self.forget not in ("file", "folder") or not self.target:
-            raise ValueError("Seleziona un file o una cartella dell’archivio.")
+            raise ValueError(tr("Seleziona un file o una cartella dell’archivio."))
         publish({"phase": "forget"})
         if stop.cancelled():
             publish({"phase": "done", "stopped": True}, True)

@@ -9,8 +9,11 @@ Va lanciato sul sistema di destinazione (PyInstaller non fa cross-compilazione):
     Linux   -> dist/StillFind/StillFind
 
     python -m venv .venv-build
-    .venv-build/bin/pip install pyinstaller pypdf customtkinter snowballstemmer sqlcipher3 pypdfium2 Pillow numpy
+    .venv-build/bin/pip install -r requirements-build.txt
+    .venv-build/bin/python packaging/prepare_assets.py
     .venv-build/bin/python build.py
+
+Tesseract deve essere installato sulla macchina di build; viene incorporato nel pacchetto.
 
 Lo script si ferma con errore se nel pacchetto finito c'è un modulo di rete
 o se l'auto-verifica dell'eseguibile fallisce. Per distribuire basta consegnare
@@ -19,6 +22,7 @@ la cartella (o l'.app) / uno zip.
 import importlib.util
 import platform
 import re
+import runpy
 import shutil
 import subprocess
 import sys
@@ -26,13 +30,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from stillfind.core.offline import NETWORK_MODULES  # stessa lista usata a runtime
+# Legge la stessa lista senza avviare il blocco di rete dell'app nel processo di build.
+NETWORK_MODULES = runpy.run_path(str(HERE / "stillfind/core/offline.py"))["NETWORK_MODULES"]
 
 SYSTEM = platform.system()  # Windows | Darwin | Linux
 # moduli da escludere dal pacchetto (oltre a quelli di rete elencati in stillfind/core/offline.py)
 EXTRA_EXCLUDES = ["pip", "setuptools", "unittest", "pydoc", "doctest", "distutils", "multiprocessing"]
 # nomi di file/moduli che indicano capacità di rete
-FORBIDDEN = re.compile(r"(^|[/\\._])(_socket|_ssl|socket|ssl|urllib|http|ftplib|smtplib|asyncio|"
+FORBIDDEN = re.compile(r"(^|[/\\._])(_socket|_ssl|socket|ssl|urllib[./\\](?:request|response|error|robotparser)|http|ftplib|smtplib|asyncio|"
                        r"xmlrpc|webbrowser)([._/\\]|$)", re.I)
 
 
@@ -43,6 +48,14 @@ def executable(dist: Path) -> Path:
 
 
 def main() -> int:
+    sys.path.insert(0, str(HERE / "packaging"))
+    from bundle import arguments, verify
+    required = ("onnxruntime", "sentencepiece", "sqlcipher3", "pypdfium2", "numpy", "PIL", "tkinter")
+    missing = [name for name in required if importlib.util.find_spec(name) is None]
+    if missing:
+        raise RuntimeError("Build completa: dipendenze mancanti: " + ", ".join(missing)
+                           + ". Installa requirements-build.txt.")
+    bundle_arguments = arguments()
     cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean", "--onedir", "--windowed",
            "--name", "StillFind", "--hidden-import", "pypdf", "--hidden-import", "stillfind.ui.app",
            "--paths", str(HERE),
@@ -51,13 +64,12 @@ def main() -> int:
            "--copy-metadata", "sqlcipher3", "--copy-metadata", "pypdfium2", "--copy-metadata", "Pillow"]
     for name in ("LICENSE", "THIRD_PARTY_NOTICES"):
         cmd += ["--add-data", str(HERE / name) + ":."]
-    if importlib.util.find_spec("onnxruntime") and importlib.util.find_spec("sentencepiece"):
-        cmd += ["--collect-binaries", "onnxruntime", "--collect-data", "onnxruntime", "--hidden-import", "sentencepiece"]
+    cmd += ["--collect-binaries", "onnxruntime", "--collect-data", "onnxruntime", "--hidden-import", "sentencepiece"]
+    cmd += bundle_arguments
     for m in sorted(set(NETWORK_MODULES) | set(EXTRA_EXCLUDES)):
-        if "." not in m:  # escludere il pacchetto radice esclude anche i sotto-moduli
-            cmd += ["--exclude-module", m]
+        cmd += ["--exclude-module", m]
     cmd.append(str(HERE / "stillfind" / "__main__.py"))
-    print(">>", " ".join(cmd))
+    print(">> PyInstaller: build completa con modelli e OCR incorporati", flush=True)
     if subprocess.call(cmd, cwd=HERE) != 0:
         return 1
 
@@ -73,7 +85,7 @@ def main() -> int:
             print("rimosso dal pacchetto:", p.relative_to(dist))
             removed = True
     if removed and SYSTEM == "Darwin":  # la modifica invalida la firma: si rifà (firma locale)
-        subprocess.run(["codesign", "--force", "--deep", "-s", "-", str(dist / "StillFind.app")], check=False)
+        subprocess.run(["codesign", "--force", "--deep", "-s", "-", str(dist / "StillFind.app")], check=True)
 
     # 1) nessun file di rete tra quelli distribuiti (librerie binarie di estensione)
     bad = [str(p.relative_to(dist)) for package in packages for p in package.rglob("*")
@@ -99,6 +111,7 @@ def main() -> int:
     if r.returncode != 0:
         print("ERRORE: l'eseguibile non ha superato la verifica offline", r.stderr)
         return 3
+    verify(dist / ("StillFind.app" if SYSTEM == "Darwin" else "StillFind"))
     print(f"OK: {exe.parent if SYSTEM != 'Darwin' else dist / 'StillFind.app'} non contiene né può usare moduli di rete.")
     return 0
 

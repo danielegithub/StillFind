@@ -1,0 +1,1511 @@
+{
+ "PDF protetto da password": {
+  "en": "PDF protected by a password",
+  "fr": "PDF protégé par un mot de passe",
+  "es": "PDF protegido con contraseña",
+  "de": "PDF mit Passwort geschützt",
+  "pt": "PDF protegido por senha"
+ },
+ "File oltre il limite ({size} > {limit} MB)": {
+  "en": "File over the limit ({size} > {limit} MB)",
+  "fr": "Fichier au-delà de la limite ({size} > {limit} Mo)",
+  "es": "Archivo por encima del límite ({size} > {limit} MB)",
+  "de": "Datei über dem Limit ({size} > {limit} MB)",
+  "pt": "Arquivo acima do limite ({size} > {limit} MB)"
+ },
+ "Lettura parziale · OCR, pag. {page}: {detail}": {
+  "en": "Partial reading · OCR, page {page}: {detail}",
+  "fr": "Lecture partielle · OCR, page {page} : {detail}",
+  "es": "Lectura parcial · OCR, pág. {page}: {detail}",
+  "de": "Teilweise gelesen · OCR, Seite {page}: {detail}",
+  "pt": "Leitura parcial · OCR, pág. {page}: {detail}"
+ },
+ "Lettura parziale · {n} elementi non leggibili": {
+  "en": "Partial reading · {n} items could not be read",
+  "fr": "Lecture partielle · {n} éléments illisibles",
+  "es": "Lectura parcial · {n} elementos ilegibles",
+  "de": "Teilweise gelesen · {n} Elemente nicht lesbar",
+  "pt": "Leitura parcial · {n} elementos ilegíveis"
+ },
+ "Lettura parziale · {detail}": {
+  "en": "Partial reading · {detail}",
+  "fr": "Lecture partielle · {detail}",
+  "es": "Lectura parcial · {detail}",
+  "de": "Teilweise gelesen · {detail}",
+  "pt": "Leitura parcial · {detail}"
+ },
+ "Tesseract non installato": {
+  "en": "Tesseract not installed",
+  "fr": "Tesseract non installé",
+  "es": "Tesseract no instalado",
+  "de": "Tesseract nicht installiert",
+  "pt": "Tesseract não instalado"
+ },
+ "Tesseract non disponibile.": {
+  "en": "Tesseract not available.",
+  "fr": "Tesseract indisponible.",
+  "es": "Tesseract no disponible.",
+  "de": "Tesseract nicht verfügbar.",
+  "pt": "Tesseract indisponível."
+ },
+ "Tesseract errore ({code})": {
+  "en": "Tesseract error ({code})",
+  "fr": "Erreur Tesseract ({code})",
+  "es": "Error de Tesseract ({code})",
+  "de": "Tesseract-Fehler ({code})",
+  "pt": "Erro do Tesseract ({code})"
+ },
+ "pdftoppm fallito": {
+  "en": "pdftoppm failed",
+  "fr": "pdftoppm a échoué",
+  "es": "pdftoppm falló",
+  "de": "pdftoppm fehlgeschlagen",
+  "pt": "pdftoppm falhou"
+ },
+ "OCR dei PDF: serve pypdfium2, pdftoppm (Poppler) oppure PyMuPDF": {
+  "en": "PDF OCR needs pypdfium2, pdftoppm (Poppler) or PyMuPDF",
+  "fr": "OCR des PDF : pypdfium2, pdftoppm (Poppler) ou PyMuPDF est requis",
+  "es": "OCR de PDF: hace falta pypdfium2, pdftoppm (Poppler) o PyMuPDF",
+  "de": "PDF-OCR: pypdfium2, pdftoppm (Poppler) oder PyMuPDF erforderlich",
+  "pt": "OCR de PDF: é preciso pypdfium2, pdftoppm (Poppler) ou PyMuPDF"
+ },
+ "per i PDF installa pypdf:  pip install pypdf": {
+  "en": "to read PDFs install pypdf:  pip install pypdf",
+  "fr": "pour les PDF, installez pypdf :  pip install pypdf",
+  "es": "para los PDF instala pypdf:  pip install pypdf",
+  "de": "für PDFs pypdf installieren:  pip install pypdf",
+  "pt": "para PDFs instale o pypdf:  pip install pypdf"
+ },
+ "Contenuto interno troppo grande ({name})": {
+  "en": "Internal content too large ({name})",
+  "fr": "Contenu interne trop volumineux ({name})",
+  "es": "Contenido interno demasiado grande ({name})",
+  "de": "Interner Inhalt zu groß ({name})",
+  "pt": "Conteúdo interno grande demais ({name})"
+ },
+ "Contenuto decompresso oltre il limite complessivo.": {
+  "en": "Decompressed content over the overall limit.",
+  "fr": "Contenu décompressé au-delà de la limite globale.",
+  "es": "Contenido descomprimido por encima del límite total.",
+  "de": "Entpackter Inhalt über dem Gesamtlimit.",
+  "pt": "Conteúdo descompactado acima do limite total."
+ },
+ "Troppi elementi nel documento Office.": {
+  "en": "Too many items in the Office document.",
+  "fr": "Trop d’éléments dans le document Office.",
+  "es": "Demasiados elementos en el documento de Office.",
+  "de": "Zu viele Elemente im Office-Dokument.",
+  "pt": "Elementos demais no documento do Office."
+ },
+ "Dichiarazione XML non supportata nel libro.": {
+  "en": "XML declaration not supported in the book.",
+  "fr": "Déclaration XML non prise en charge dans le livre.",
+  "es": "Declaración XML no admitida en el libro.",
+  "de": "XML-Deklaration im Buch nicht unterstützt.",
+  "pt": "Declaração XML não suportada no livro."
+ },
+ "Archivio con troppi elementi.": {
+  "en": "Archive with too many items.",
+  "fr": "Archive comportant trop d’éléments.",
+  "es": "Archivo con demasiados elementos.",
+  "de": "Archiv mit zu vielen Elementen.",
+  "pt": "Arquivo com elementos demais."
+ },
+ "Dimensione del membro non valida.": {
+  "en": "Invalid member size.",
+  "fr": "Taille de l’élément non valide.",
+  "es": "Tamaño del elemento no válido.",
+  "de": "Ungültige Größe des Elements.",
+  "pt": "Tamanho do item inválido."
+ },
+ "Percorso EPUB non valido.": {
+  "en": "Invalid EPUB path.",
+  "fr": "Chemin EPUB non valide.",
+  "es": "Ruta EPUB no válida.",
+  "de": "Ungültiger EPUB-Pfad.",
+  "pt": "Caminho EPUB inválido."
+ },
+ "Descrizione EPUB assente.": {
+  "en": "EPUB description missing.",
+  "fr": "Description EPUB absente.",
+  "es": "Falta la descripción del EPUB.",
+  "de": "EPUB-Beschreibung fehlt.",
+  "pt": "Descrição do EPUB ausente."
+ },
+ "file .p7m senza documento (firma separata o formato non riconosciuto)": {
+  "en": "a .p7m file without a document (detached signature or unrecognised format)",
+  "fr": "fichier .p7m sans document (signature détachée ou format non reconnu)",
+  "es": "archivo .p7m sin documento (firma separada o formato no reconocido)",
+  "de": ".p7m-Datei ohne Dokument (abgesetzte Signatur oder unbekanntes Format)",
+  "pt": "arquivo .p7m sem documento (assinatura separada ou formato não reconhecido)"
+ },
+ "documento contenuto oltre il limite di dimensione": {
+  "en": "contained document over the size limit",
+  "fr": "document contenu au-delà de la limite de taille",
+  "es": "documento contenido por encima del límite de tamaño",
+  "de": "enthaltenes Dokument über dem Größenlimit",
+  "pt": "documento contido acima do limite de tamanho"
+ },
+ "tipo di documento contenuto non riconosciuto": {
+  "en": "type of contained document not recognised",
+  "fr": "type de document contenu non reconnu",
+  "es": "tipo de documento contenido no reconocido",
+  "de": "Typ des enthaltenen Dokuments nicht erkannt",
+  "pt": "tipo de documento contido não reconhecido"
+ },
+ "Nome": {
+  "en": "Name",
+  "fr": "Nom",
+  "es": "Nombre",
+  "de": "Name",
+  "pt": "Nome"
+ },
+ "Percorso": {
+  "en": "Path",
+  "fr": "Chemin",
+  "es": "Ruta",
+  "de": "Pfad",
+  "pt": "Caminho"
+ },
+ "Modificato": {
+  "en": "Modified",
+  "fr": "Modifié",
+  "es": "Modificado",
+  "de": "Geändert",
+  "pt": "Modificado"
+ },
+ "Dimensione (byte)": {
+  "en": "Size (bytes)",
+  "fr": "Taille (octets)",
+  "es": "Tamaño (bytes)",
+  "de": "Größe (Byte)",
+  "pt": "Tamanho (bytes)"
+ },
+ "Estratto": {
+  "en": "Excerpt",
+  "fr": "Extrait",
+  "es": "Extracto",
+  "de": "Auszug",
+  "pt": "Trecho"
+ },
+ "Dai un nome alla ricerca.": {
+  "en": "Give the search a name.",
+  "fr": "Donnez un nom à la recherche.",
+  "es": "Dale un nombre a la búsqueda.",
+  "de": "Geben Sie der Suche einen Namen.",
+  "pt": "Dê um nome à pesquisa."
+ },
+ "Controlla tutte le pagine e seleziona almeno una zona da oscurare.": {
+  "en": "Check all the pages and select at least one area to redact.",
+  "fr": "Vérifiez toutes les pages et sélectionnez au moins une zone à caviarder.",
+  "es": "Revisa todas las páginas y selecciona al menos una zona que ocultar.",
+  "de": "Prüfen Sie alle Seiten und wählen Sie mindestens einen Bereich zum Schwärzen.",
+  "pt": "Verifique todas as páginas e selecione pelo menos uma área a ocultar."
+ },
+ "Nessuna occorrenza da oscurare.": {
+  "en": "No matches to redact.",
+  "fr": "Aucune occurrence à caviarder.",
+  "es": "Ninguna coincidencia que ocultar.",
+  "de": "Keine Treffer zum Schwärzen.",
+  "pt": "Nenhuma ocorrência a ocultar."
+ },
+ "Per controllare anche il testo nelle immagini serve Tesseract.": {
+  "en": "Tesseract is needed to also check the text in images.",
+  "fr": "Tesseract est nécessaire pour vérifier aussi le texte des images.",
+  "es": "Hace falta Tesseract para revisar también el texto de las imágenes.",
+  "de": "Um auch den Text in Bildern zu prüfen, wird Tesseract benötigt.",
+  "pt": "O Tesseract é necessário para verificar também o texto das imagens."
+ },
+ "OCR non riuscito. Verifica la lingua installata nelle Impostazioni.": {
+  "en": "OCR failed. Check the installed language in Settings.",
+  "fr": "L’OCR a échoué. Vérifiez la langue installée dans les Réglages.",
+  "es": "El OCR falló. Revisa el idioma instalado en Ajustes.",
+  "de": "OCR fehlgeschlagen. Prüfen Sie die installierte Sprache in den Einstellungen.",
+  "pt": "O OCR falhou. Verifique o idioma instalado nas Configurações."
+ },
+ "Mappa dei dati personali": {
+  "en": "Personal data map",
+  "fr": "Carte des données personnelles",
+  "es": "Mapa de datos personales",
+  "de": "Karte der personenbezogenen Daten",
+  "pt": "Mapa de dados pessoais"
+ },
+ "Sono considerate le entità abilitate e il testo già indicizzato.": {
+  "en": "Only enabled entities and already indexed text are considered.",
+  "fr": "Seuls les types d’entités activés et le texte déjà indexé sont pris en compte.",
+  "es": "Se consideran las entidades activadas y el texto ya indexado.",
+  "de": "Berücksichtigt werden die aktivierten Entitäten und der bereits indizierte Text.",
+  "pt": "São consideradas as entidades ativadas e o texto já indexado."
+ },
+ "Ricerca delle menzioni nell’archivio…": {
+  "en": "Looking for mentions in the archive…",
+  "fr": "Recherche des mentions dans l’archive…",
+  "es": "Buscando menciones en el archivo…",
+  "de": "Erwähnungen im Archiv werden gesucht …",
+  "pt": "Procurando menções no arquivo…"
+ },
+ "Cerca nell’archivio": {
+  "en": "Search the archive",
+  "fr": "Rechercher dans l’archive",
+  "es": "Buscar en el archivo",
+  "de": "Im Archiv suchen",
+  "pt": "Pesquisar no arquivo"
+ },
+ "Desktop e Download": {
+  "en": "Desktop and Downloads",
+  "fr": "Bureau et Téléchargements",
+  "es": "Escritorio y Descargas",
+  "de": "Schreibtisch und Downloads",
+  "pt": "Área de trabalho e Downloads"
+ },
+ "Controlla cartella…": {
+  "en": "Check folder…",
+  "fr": "Vérifier un dossier…",
+  "es": "Revisar carpeta…",
+  "de": "Ordner prüfen …",
+  "pt": "Verificar pasta…"
+ },
+ "Documento": {
+  "en": "Document",
+  "fr": "Document",
+  "es": "Documento",
+  "de": "Dokument",
+  "pt": "Documento"
+ },
+ "Valore trovato": {
+  "en": "Value found",
+  "fr": "Valeur trouvée",
+  "es": "Valor encontrado",
+  "de": "Gefundener Wert",
+  "pt": "Valor encontrado"
+ },
+ "Nessuna cartella Desktop o Download disponibile.": {
+  "en": "No Desktop or Downloads folder available.",
+  "fr": "Aucun dossier Bureau ou Téléchargements disponible.",
+  "es": "No hay carpeta de Escritorio ni de Descargas disponible.",
+  "de": "Kein Schreibtisch- oder Download-Ordner verfügbar.",
+  "pt": "Nenhuma pasta de Área de trabalho ou Downloads disponível."
+ },
+ "Identificativo del soggetto": {
+  "en": "Subject identifier",
+  "fr": "Identifiant de la personne",
+  "es": "Identificador del sujeto",
+  "de": "Kennung der Person",
+  "pt": "Identificador do titular"
+ },
+ "Testo esatto": {
+  "en": "Exact text",
+  "fr": "Texte exact",
+  "es": "Texto exacto",
+  "de": "Genauer Text",
+  "pt": "Texto exato"
+ },
+ "{n} file nell’archivio da verificare in Diagnostica": {
+  "en": {
+   "one": "{n} file in the archive to check in Diagnostics",
+   "other": "{n} files in the archive to check in Diagnostics"
+  },
+  "fr": {
+   "one": "{n} fichier de l’archive à vérifier dans le Diagnostic",
+   "other": "{n} fichiers de l’archive à vérifier dans le Diagnostic"
+  },
+  "es": {
+   "one": "{n} archivo del archivo por revisar en Diagnóstico",
+   "other": "{n} archivos del archivo por revisar en Diagnóstico"
+  },
+  "de": {
+   "one": "{n} Datei im Archiv in der Diagnose zu prüfen",
+   "other": "{n} Dateien im Archiv in der Diagnose zu prüfen"
+  },
+  "pt": {
+   "one": "{n} arquivo no arquivo a verificar em Diagnóstico",
+   "other": "{n} arquivos no arquivo a verificar em Diagnóstico"
+  }
+ },
+ "doppio clic per aprire il passaggio": {
+  "en": "double-click to open the passage",
+  "fr": "double-cliquez pour ouvrir le passage",
+  "es": "doble clic para abrir el pasaje",
+  "de": "Doppelklick, um den Abschnitt zu öffnen",
+  "pt": "clique duas vezes para abrir o trecho"
+ },
+ "{n} file con riscontri nel testo indicizzato": {
+  "en": {
+   "one": "{n} file with matches in the indexed text",
+   "other": "{n} files with matches in the indexed text"
+  },
+  "fr": {
+   "one": "{n} fichier avec des correspondances dans le texte indexé",
+   "other": "{n} fichiers avec des correspondances dans le texte indexé"
+  },
+  "es": {
+   "one": "{n} archivo con coincidencias en el texto indexado",
+   "other": "{n} archivos con coincidencias en el texto indexado"
+  },
+  "de": {
+   "one": "{n} Datei mit Treffern im indizierten Text",
+   "other": "{n} Dateien mit Treffern im indizierten Text"
+  },
+  "pt": {
+   "one": "{n} arquivo com ocorrências no texto indexado",
+   "other": "{n} arquivos com ocorrências no texto indexado"
+  }
+ },
+ "Confronto i testi…": {
+  "en": "Comparing the texts…",
+  "fr": "Comparaison des textes…",
+  "es": "Comparando los textos…",
+  "de": "Texte werden verglichen …",
+  "pt": "Comparando os textos…"
+ },
+ "Differenza {i} di {n}": {
+  "en": "Difference {i} of {n}",
+  "fr": "Différence {i} sur {n}",
+  "es": "Diferencia {i} de {n}",
+  "de": "Unterschied {i} von {n}",
+  "pt": "Diferença {i} de {n}"
+ },
+ "Per confrontare le versioni serve testo leggibile in entrambi i documenti.": {
+  "en": "To compare versions, both documents need readable text.",
+  "fr": "Pour comparer les versions, les deux documents doivent contenir du texte lisible.",
+  "es": "Para comparar versiones hace falta texto legible en ambos documentos.",
+  "de": "Zum Vergleichen der Versionen brauchen beide Dokumente lesbaren Text.",
+  "pt": "Para comparar versões, os dois documentos precisam ter texto legível."
+ },
+ "I testi estratti coincidono.": {
+  "en": "The extracted texts are identical.",
+  "fr": "Les textes extraits sont identiques.",
+  "es": "Los textos extraídos coinciden.",
+  "de": "Die extrahierten Texte stimmen überein.",
+  "pt": "Os textos extraídos coincidem."
+ },
+ "Scegli le date": {
+  "en": "Choose dates",
+  "fr": "Choisir les dates",
+  "es": "Elegir fechas",
+  "de": "Datum wählen",
+  "pt": "Escolher datas"
+ },
+ "Applica": {
+  "en": "Apply",
+  "fr": "Appliquer",
+  "es": "Aplicar",
+  "de": "Anwenden",
+  "pt": "Aplicar"
+ },
+ "Dal": {
+  "en": "From",
+  "fr": "Du",
+  "es": "Desde",
+  "de": "Von",
+  "pt": "De"
+ },
+ "Al": {
+  "en": "To",
+  "fr": "Au",
+  "es": "Hasta",
+  "de": "Bis",
+  "pt": "Até"
+ },
+ "gg/mm/aaaa": {
+  "en": "dd/mm/yyyy",
+  "fr": "jj/mm/aaaa",
+  "es": "dd/mm/aaaa",
+  "de": "TT.MM.JJJJ",
+  "pt": "dd/mm/aaaa"
+ },
+ "Documenti modificati in questo periodo": {
+  "en": "Documents modified in this period",
+  "fr": "Documents modifiés pendant cette période",
+  "es": "Documentos modificados en este periodo",
+  "de": "In diesem Zeitraum geänderte Dokumente",
+  "pt": "Documentos modificados neste período"
+ },
+ "Scrivi le date come {full}. Basta anche il mese ({month}) o l'anno ({year}): vale tutto il periodo. Puoi lasciare vuota una delle due.": {
+  "en": "Write dates like {full}. The month ({month}) or the year ({year}) is enough: it covers the whole period. You can leave one of the two empty.",
+  "fr": "Saisissez les dates ainsi : {full}. Le mois ({month}) ou l’année ({year}) suffit : toute la période est prise en compte. Vous pouvez laisser l’une des deux vide.",
+  "es": "Escribe las fechas así: {full}. Basta también el mes ({month}) o el año ({year}): vale todo el periodo. Puedes dejar una de las dos vacía.",
+  "de": "Schreiben Sie Daten so: {full}. Auch der Monat ({month}) oder das Jahr ({year}) genügt: dann gilt der ganze Zeitraum. Eines der beiden Felder darf leer bleiben.",
+  "pt": "Escreva as datas assim: {full}. Basta também o mês ({month}) ou o ano ({year}): vale todo o período. Você pode deixar uma das duas em branco."
+ },
+ "Il file è danneggiato o in un formato che StillFind non riconosce.": {
+  "en": "The file is damaged or in a format StillFind does not recognise.",
+  "fr": "Le fichier est endommagé ou dans un format que StillFind ne reconnaît pas.",
+  "es": "El archivo está dañado o en un formato que StillFind no reconoce.",
+  "de": "Die Datei ist beschädigt oder in einem Format, das StillFind nicht erkennt.",
+  "pt": "O arquivo está danificado ou em um formato que o StillFind não reconhece."
+ },
+ "Prova ad aprirlo con «Mostra nella cartella». Se non si apre è danneggiato. Se si apre, premi «Rileggi questo file». Altrimenti resta cercabile solo per nome.": {
+  "en": "Try opening it with “Show in folder”. If it does not open, it is damaged. If it opens, press “Read this file again”. Otherwise it can only be found by name.",
+  "fr": "Essayez de l’ouvrir avec « Afficher dans le dossier ». S’il ne s’ouvre pas, il est endommagé. S’il s’ouvre, appuyez sur « Relire ce fichier ». Sinon il ne reste trouvable que par son nom.",
+  "es": "Prueba a abrirlo con «Mostrar en la carpeta». Si no se abre, está dañado. Si se abre, pulsa «Volver a leer este archivo». Si no, solo se podrá encontrar por el nombre.",
+  "de": "Versuchen Sie, sie mit „Im Ordner anzeigen“ zu öffnen. Lässt sie sich nicht öffnen, ist sie beschädigt. Lässt sie sich öffnen, wählen Sie „Diese Datei erneut lesen“. Sonst ist sie nur über den Namen auffindbar.",
+  "pt": "Tente abri-lo com “Mostrar na pasta”. Se não abrir, está danificado. Se abrir, pressione “Ler este arquivo novamente”. Caso contrário, só poderá ser encontrado pelo nome."
+ },
+ "Il PDF è protetto da password.": {
+  "en": "The PDF is password-protected.",
+  "fr": "Le PDF est protégé par un mot de passe.",
+  "es": "El PDF está protegido con contraseña.",
+  "de": "Das PDF ist passwortgeschützt.",
+  "pt": "O PDF está protegido por senha."
+ },
+ "Togli la password dal PDF con il programma che usi di solito, poi premi «Rileggi questo file».": {
+  "en": "Remove the password from the PDF with the program you normally use, then press “Read this file again”.",
+  "fr": "Retirez le mot de passe du PDF avec le programme que vous utilisez d’habitude, puis appuyez sur « Relire ce fichier ».",
+  "es": "Quita la contraseña del PDF con el programa que usas normalmente y pulsa «Volver a leer este archivo».",
+  "de": "Entfernen Sie das Passwort aus dem PDF mit Ihrem üblichen Programm und wählen Sie dann „Diese Datei erneut lesen“.",
+  "pt": "Remova a senha do PDF com o programa que você costuma usar e depois pressione “Ler este arquivo novamente”."
+ },
+ "Il file è più grande del limite impostato.": {
+  "en": "The file is larger than the set limit.",
+  "fr": "Le fichier dépasse la limite définie.",
+  "es": "El archivo es mayor que el límite establecido.",
+  "de": "Die Datei ist größer als das eingestellte Limit.",
+  "pt": "O arquivo é maior que o limite definido."
+ },
+ "Aumenta la dimensione massima nelle Impostazioni, poi premi «Rileggi questo file».": {
+  "en": "Increase the maximum size in Settings, then press “Read this file again”.",
+  "fr": "Augmentez la taille maximale dans les Réglages, puis appuyez sur « Relire ce fichier ».",
+  "es": "Aumenta el tamaño máximo en Ajustes y pulsa «Volver a leer este archivo».",
+  "de": "Erhöhen Sie die maximale Größe in den Einstellungen und wählen Sie dann „Diese Datei erneut lesen“.",
+  "pt": "Aumente o tamanho máximo nas Configurações e depois pressione “Ler este arquivo novamente”."
+ },
+ "Manca il componente che legge i PDF.": {
+  "en": "The component that reads PDFs is missing.",
+  "fr": "Le composant qui lit les PDF est absent.",
+  "es": "Falta el componente que lee los PDF.",
+  "de": "Die Komponente zum Lesen von PDFs fehlt.",
+  "pt": "Falta o componente que lê PDFs."
+ },
+ "Reinstalla StillFind: nell'app distribuita il componente è già incluso.": {
+  "en": "Reinstall StillFind: in the distributed app the component is already included.",
+  "fr": "Réinstallez StillFind : dans l’application distribuée, le composant est déjà inclus.",
+  "es": "Reinstala StillFind: en la aplicación distribuida el componente ya está incluido.",
+  "de": "Installieren Sie StillFind neu: In der ausgelieferten App ist die Komponente bereits enthalten.",
+  "pt": "Reinstale o StillFind: no aplicativo distribuído o componente já está incluído."
+ },
+ "L'OCR non è disponibile.": {
+  "en": "OCR is not available.",
+  "fr": "L’OCR n’est pas disponible.",
+  "es": "El OCR no está disponible.",
+  "de": "OCR ist nicht verfügbar.",
+  "pt": "O OCR não está disponível."
+ },
+ "Nell'app distribuita l'OCR è già incluso: reinstalla StillFind, poi premi «Rileggi questo file».": {
+  "en": "In the distributed app OCR is already included: reinstall StillFind, then press “Read this file again”.",
+  "fr": "Dans l’application distribuée, l’OCR est déjà inclus : réinstallez StillFind, puis appuyez sur « Relire ce fichier ».",
+  "es": "En la aplicación distribuida el OCR ya está incluido: reinstala StillFind y pulsa «Volver a leer este archivo».",
+  "de": "In der ausgelieferten App ist OCR bereits enthalten: Installieren Sie StillFind neu und wählen Sie dann „Diese Datei erneut lesen“.",
+  "pt": "No aplicativo distribuído o OCR já está incluído: reinstale o StillFind e depois pressione “Ler este arquivo novamente”."
+ },
+ "Non riesco a trasformare le pagine del PDF in immagini per l'OCR.": {
+  "en": "I can’t turn the PDF pages into images for OCR.",
+  "fr": "Impossible de transformer les pages du PDF en images pour l’OCR.",
+  "es": "No puedo convertir las páginas del PDF en imágenes para el OCR.",
+  "de": "Die PDF-Seiten lassen sich nicht in Bilder für die OCR umwandeln.",
+  "pt": "Não consigo transformar as páginas do PDF em imagens para o OCR."
+ },
+ "Reinstalla StillFind, poi premi «Rileggi questo file».": {
+  "en": "Reinstall StillFind, then press “Read this file again”.",
+  "fr": "Réinstallez StillFind, puis appuyez sur « Relire ce fichier ».",
+  "es": "Reinstala StillFind y pulsa «Volver a leer este archivo».",
+  "de": "Installieren Sie StillFind neu und wählen Sie dann „Diese Datei erneut lesen“.",
+  "pt": "Reinstale o StillFind e depois pressione “Ler este arquivo novamente”."
+ },
+ "Il testo è stato letto solo in parte (alcune pagine non si leggono).": {
+  "en": "The text was read only in part (some pages cannot be read).",
+  "fr": "Le texte n’a été lu qu’en partie (certaines pages sont illisibles).",
+  "es": "El texto se leyó solo en parte (algunas páginas no se pueden leer).",
+  "de": "Der Text wurde nur teilweise gelesen (einige Seiten sind nicht lesbar).",
+  "pt": "O texto foi lido só em parte (algumas páginas não podem ser lidas)."
+ },
+ "Il resto del documento si trova già. Per riprovare premi «Rileggi questo file».": {
+  "en": "The rest of the document can already be found. To try again, press “Read this file again”.",
+  "fr": "Le reste du document est déjà trouvable. Pour réessayer, appuyez sur « Relire ce fichier ».",
+  "es": "El resto del documento ya se encuentra. Para reintentarlo, pulsa «Volver a leer este archivo».",
+  "de": "Der Rest des Dokuments ist bereits auffindbar. Zum erneuten Versuch wählen Sie „Diese Datei erneut lesen“.",
+  "pt": "O restante do documento já é encontrado. Para tentar de novo, pressione “Ler este arquivo novamente”."
+ },
+ "La firma digitale non contiene un documento leggibile.": {
+  "en": "The digital signature does not contain a readable document.",
+  "fr": "La signature numérique ne contient aucun document lisible.",
+  "es": "La firma digital no contiene un documento legible.",
+  "de": "Die digitale Signatur enthält kein lesbares Dokument.",
+  "pt": "A assinatura digital não contém um documento legível."
+ },
+ "Apri il file con il programma di firma: potrebbe essere una firma separata dal documento.": {
+  "en": "Open the file with the signing program: it may be a signature kept apart from the document.",
+  "fr": "Ouvrez le fichier avec le programme de signature : il peut s’agir d’une signature séparée du document.",
+  "es": "Abre el archivo con el programa de firma: podría ser una firma separada del documento.",
+  "de": "Öffnen Sie die Datei mit dem Signaturprogramm: Es könnte eine vom Dokument getrennte Signatur sein.",
+  "pt": "Abra o arquivo com o programa de assinatura: pode ser uma assinatura separada do documento."
+ },
+ "Il file contiene un elemento interno troppo grande.": {
+  "en": "The file contains an internal element that is too large.",
+  "fr": "Le fichier contient un élément interne trop volumineux.",
+  "es": "El archivo contiene un elemento interno demasiado grande.",
+  "de": "Die Datei enthält ein zu großes internes Element.",
+  "pt": "O arquivo contém um elemento interno grande demais."
+ },
+ "Apri il file e salvalo di nuovo, oppure ignoralo: si trova comunque cercando il suo nome.": {
+  "en": "Open the file and save it again, or ignore it: it can still be found by searching for its name.",
+  "fr": "Ouvrez le fichier et enregistrez-le à nouveau, ou ignorez-le : il reste trouvable en recherchant son nom.",
+  "es": "Abre el archivo y guárdalo de nuevo, o ignóralo: se puede encontrar igualmente buscando su nombre.",
+  "de": "Öffnen Sie die Datei und speichern Sie sie erneut oder ignorieren Sie sie: Über den Namen bleibt sie auffindbar.",
+  "pt": "Abra o arquivo e salve-o novamente, ou ignore-o: ele ainda pode ser encontrado pesquisando o nome."
+ },
+ "Stato dell'archivio": {
+  "en": "Archive status",
+  "fr": "État de l’archive",
+  "es": "Estado del archivo",
+  "de": "Status des Archivs",
+  "pt": "Estado do arquivo"
+ },
+ "Non letti": {
+  "en": "Not read",
+  "fr": "Non lus",
+  "es": "Sin leer",
+  "de": "Nicht gelesen",
+  "pt": "Não lidos"
+ },
+ "PDF senza testo": {
+  "en": "PDFs without text",
+  "fr": "PDF sans texte",
+  "es": "PDF sin texto",
+  "de": "PDFs ohne Text",
+  "pt": "PDFs sem texto"
+ },
+ "L'archivio è vuoto: StillFind non ha ancora letto documenti.": {
+  "en": "The archive is empty: StillFind has not read any documents yet.",
+  "fr": "L’archive est vide : StillFind n’a pas encore lu de documents.",
+  "es": "El archivo está vacío: StillFind aún no ha leído documentos.",
+  "de": "Das Archiv ist leer: StillFind hat noch keine Dokumente gelesen.",
+  "pt": "O arquivo está vazio: o StillFind ainda não leu documentos."
+ },
+ "Questi file non si sono potuti leggere: restano cercabili solo per nome. Seleziona un file per vedere il motivo e che cosa fare. Se hai già risolto il problema, riprova a leggerli tutti.": {
+  "en": "These files could not be read: they can only be found by name. Select a file to see why and what to do. If you have already fixed the problem, try reading them all again.",
+  "fr": "Ces fichiers n’ont pas pu être lus : ils ne sont trouvables que par leur nom. Sélectionnez un fichier pour voir la raison et que faire. Si vous avez déjà résolu le problème, essayez de tous les relire.",
+  "es": "Estos archivos no se pudieron leer: solo se encuentran por el nombre. Selecciona un archivo para ver el motivo y qué hacer. Si ya resolviste el problema, intenta leerlos todos de nuevo.",
+  "de": "Diese Dateien konnten nicht gelesen werden: Sie sind nur über den Namen auffindbar. Wählen Sie eine Datei, um den Grund und das weitere Vorgehen zu sehen. Wenn Sie das Problem bereits behoben haben, lesen Sie alle erneut.",
+  "pt": "Estes arquivos não puderam ser lidos: só são encontrados pelo nome. Selecione um arquivo para ver o motivo e o que fazer. Se você já resolveu o problema, tente lê-los todos novamente."
+ },
+ "Riprova a leggerli tutti": {
+  "en": "Try reading them all again",
+  "fr": "Essayer de tous les relire",
+  "es": "Intentar leerlos todos de nuevo",
+  "de": "Alle erneut lesen",
+  "pt": "Tentar ler todos novamente"
+ },
+ "Nessun file con problemi: tutti i documenti sono stati letti.": {
+  "en": "No files with problems: all documents were read.",
+  "fr": "Aucun fichier problématique : tous les documents ont été lus.",
+  "es": "Ningún archivo con problemas: todos los documentos se leyeron.",
+  "de": "Keine Dateien mit Problemen: Alle Dokumente wurden gelesen.",
+  "pt": "Nenhum arquivo com problemas: todos os documentos foram lidos."
+ },
+ "Questi PDF sono scansioni (immagini di pagine), quindi non contengono testo da cercare. L'OCR è acceso: premi il pulsante e StillFind li legge in background. Puoi continuare a cercare intanto.": {
+  "en": "These PDFs are scans (page images), so they contain no text to search. OCR is on: press the button and StillFind reads them in the background. You can keep searching meanwhile.",
+  "fr": "Ces PDF sont des numérisations (images de pages), ils ne contiennent donc pas de texte à rechercher. L’OCR est activé : appuyez sur le bouton et StillFind les lit en arrière-plan. Vous pouvez continuer à rechercher entre-temps.",
+  "es": "Estos PDF son escaneos (imágenes de páginas), así que no contienen texto que buscar. El OCR está activado: pulsa el botón y StillFind los lee en segundo plano. Mientras tanto puedes seguir buscando.",
+  "de": "Diese PDFs sind Scans (Seitenbilder) und enthalten daher keinen durchsuchbaren Text. OCR ist aktiv: Klicken Sie auf die Schaltfläche, und StillFind liest sie im Hintergrund. Sie können währenddessen weitersuchen.",
+  "pt": "Estes PDFs são digitalizações (imagens de páginas), portanto não contêm texto para pesquisar. O OCR está ativado: pressione o botão e o StillFind os lê em segundo plano. Você pode continuar pesquisando enquanto isso."
+ },
+ "Questi PDF sono scansioni (immagini di pagine), quindi non contengono testo da cercare. Per leggerli serve l'OCR, che oggi è spento. È già incluso nell'app: basta accenderlo nelle Impostazioni, poi StillFind li legge da solo.": {
+  "en": "These PDFs are scans (page images), so they contain no text to search. Reading them needs OCR, which is off at the moment. It is already included in the app: just turn it on in Settings and StillFind reads them by itself.",
+  "fr": "Ces PDF sont des numérisations (images de pages), ils ne contiennent donc pas de texte à rechercher. Pour les lire, il faut l’OCR, qui est désactivé pour l’instant. Il est déjà inclus dans l’application : il suffit de l’activer dans les Réglages, puis StillFind les lit tout seul.",
+  "es": "Estos PDF son escaneos (imágenes de páginas), así que no contienen texto que buscar. Para leerlos hace falta el OCR, que ahora está desactivado. Ya está incluido en la aplicación: basta con activarlo en Ajustes y StillFind los lee solo.",
+  "de": "Diese PDFs sind Scans (Seitenbilder) und enthalten daher keinen durchsuchbaren Text. Zum Lesen wird OCR benötigt, das derzeit ausgeschaltet ist. Es ist bereits in der App enthalten: Aktivieren Sie es einfach in den Einstellungen, dann liest StillFind sie selbstständig.",
+  "pt": "Estes PDFs são digitalizações (imagens de páginas), portanto não contêm texto para pesquisar. Para lê-los é preciso o OCR, que está desativado agora. Ele já está incluído no aplicativo: basta ativá-lo nas Configurações e o StillFind os lê sozinho."
+ },
+ "Nessun PDF privo di testo.": {
+  "en": "No PDFs without text.",
+  "fr": "Aucun PDF sans texte.",
+  "es": "Ningún PDF sin texto.",
+  "de": "Keine PDFs ohne Text.",
+  "pt": "Nenhum PDF sem texto."
+ },
+ "{total} documenti nell'archivio, {attention} da controllare.": {
+  "en": "{total} documents in the archive, {attention} to check.",
+  "fr": "{total} documents dans l’archive, {attention} à vérifier.",
+  "es": "{total} documentos en el archivo, {attention} por revisar.",
+  "de": "{total} Dokumente im Archiv, {attention} zu prüfen.",
+  "pt": "{total} documentos no arquivo, {attention} a verificar."
+ },
+ "Tutto a posto: {total} documenti letti e pronti da cercare.": {
+  "en": "All good: {total} documents read and ready to search.",
+  "fr": "Tout va bien : {total} documents lus et prêts à être recherchés.",
+  "es": "Todo en orden: {total} documentos leídos y listos para buscar.",
+  "de": "Alles in Ordnung: {total} Dokumente gelesen und bereit zur Suche.",
+  "pt": "Tudo certo: {total} documentos lidos e prontos para pesquisar."
+ },
+ "Documenti nell'archivio": {
+  "en": "Documents in the archive",
+  "fr": "Documents dans l’archive",
+  "es": "Documentos en el archivo",
+  "de": "Dokumente im Archiv",
+  "pt": "Documentos no arquivo"
+ },
+ "Tutti si possono cercare per nome.": {
+  "en": "All can be searched by name.",
+  "fr": "Tous peuvent être recherchés par nom.",
+  "es": "Todos se pueden buscar por el nombre.",
+  "de": "Alle lassen sich über den Namen suchen.",
+  "pt": "Todos podem ser pesquisados pelo nome."
+ },
+ "Letti con l'OCR": {
+  "en": "Read with OCR",
+  "fr": "Lus avec l’OCR",
+  "es": "Leídos con OCR",
+  "de": "Mit OCR gelesen",
+  "pt": "Lidos com OCR"
+ },
+ "Scansioni e foto trasformate in testo.": {
+  "en": "Scans and photos turned into text.",
+  "fr": "Numérisations et photos transformées en texte.",
+  "es": "Escaneos y fotos convertidos en texto.",
+  "de": "In Text umgewandelte Scans und Fotos.",
+  "pt": "Digitalizações e fotos transformadas em texto."
+ },
+ "Senza testo": {
+  "en": "Without text",
+  "fr": "Sans texte",
+  "es": "Sin texto",
+  "de": "Ohne Text",
+  "pt": "Sem texto"
+ },
+ "Si trovano solo per nome.": {
+  "en": "Found by name only.",
+  "fr": "Trouvables uniquement par nom.",
+  "es": "Solo se encuentran por el nombre.",
+  "de": "Nur über den Namen auffindbar.",
+  "pt": "Encontrados só pelo nome."
+ },
+ "Il contenuto non è stato letto.": {
+  "en": "The content was not read.",
+  "fr": "Le contenu n’a pas été lu.",
+  "es": "El contenido no se leyó.",
+  "de": "Der Inhalt wurde nicht gelesen.",
+  "pt": "O conteúdo não foi lido."
+ },
+ "Leggi ora questi PDF con l'OCR": {
+  "en": "Read these PDFs with OCR now",
+  "fr": "Lire ces PDF avec l’OCR maintenant",
+  "es": "Leer ahora estos PDF con OCR",
+  "de": "Diese PDFs jetzt mit OCR lesen",
+  "pt": "Ler agora estes PDFs com OCR"
+ },
+ "Accendi l'OCR nelle Impostazioni…": {
+  "en": "Turn on OCR in Settings…",
+  "fr": "Activer l’OCR dans les Réglages…",
+  "es": "Activar el OCR en Ajustes…",
+  "de": "OCR in den Einstellungen aktivieren …",
+  "pt": "Ativar o OCR nas Configurações…"
+ },
+ "Rileggi questo file": {
+  "en": "Read this file again",
+  "fr": "Relire ce fichier",
+  "es": "Volver a leer este archivo",
+  "de": "Diese Datei erneut lesen",
+  "pt": "Ler este arquivo novamente"
+ },
+ "Scegli un documento già presente nell'archivio": {
+  "en": "Choose a document already in the archive",
+  "fr": "Choisissez un document déjà présent dans l’archive",
+  "es": "Elige un documento que ya esté en el archivo",
+  "de": "Wählen Sie ein Dokument, das bereits im Archiv ist",
+  "pt": "Escolha um documento já presente no arquivo"
+ },
+ "Il file scelto non è presente nell'archivio.": {
+  "en": "The chosen file is not in the archive.",
+  "fr": "Le fichier choisi n’est pas dans l’archive.",
+  "es": "El archivo elegido no está en el archivo.",
+  "de": "Die gewählte Datei ist nicht im Archiv.",
+  "pt": "O arquivo escolhido não está no arquivo."
+ },
+ "Svuota e rileggi tutto": {
+  "en": "Empty and read everything again",
+  "fr": "Vider et tout relire",
+  "es": "Vaciar y volver a leer todo",
+  "de": "Leeren und alles neu lesen",
+  "pt": "Esvaziar e ler tudo novamente"
+ },
+ "Vuoi svuotare l'archivio e rileggere tutti i documenti da capo?\n\nServe solo se qualcosa non torna. Può richiedere molto tempo; i file originali non vengono toccati. Per i PDF scansionati la lettura delle immagini verrà ripetuta.": {
+  "en": "Do you want to empty the archive and read all the documents again from scratch?\n\nThis is only needed if something doesn’t add up. It can take a long time; the original files are not touched. For scanned PDFs the image reading will be repeated.",
+  "fr": "Voulez-vous vider l’archive et relire tous les documents depuis le début ?\n\nCela n’est utile que si quelque chose ne va pas. Cela peut prendre beaucoup de temps ; les fichiers originaux ne sont pas touchés. Pour les PDF numérisés, la lecture des images sera répétée.",
+  "es": "¿Quieres vaciar el archivo y volver a leer todos los documentos desde cero?\n\nSolo hace falta si algo no cuadra. Puede tardar mucho; los archivos originales no se tocan. En los PDF escaneados se repetirá la lectura de las imágenes.",
+  "de": "Möchten Sie das Archiv leeren und alle Dokumente von vorn lesen?\n\nDas ist nur nötig, wenn etwas nicht stimmt. Es kann lange dauern; die Originaldateien bleiben unberührt. Bei gescannten PDFs wird das Lesen der Bilder wiederholt.",
+  "pt": "Deseja esvaziar o arquivo e ler todos os documentos desde o início?\n\nSó é necessário se algo não bater. Pode demorar muito; os arquivos originais não são alterados. Nos PDFs digitalizados, a leitura das imagens será repetida."
+ },
+ "Perché": {
+  "en": "Why",
+  "fr": "Pourquoi",
+  "es": "Por qué",
+  "de": "Warum",
+  "pt": "Por quê"
+ },
+ "Dimensione": {
+  "en": "Size",
+  "fr": "Taille",
+  "es": "Tamaño",
+  "de": "Größe",
+  "pt": "Tamanho"
+ },
+ "Leggi questo file con l'OCR": {
+  "en": "Read this file with OCR",
+  "fr": "Lire ce fichier avec l’OCR",
+  "es": "Leer este archivo con OCR",
+  "de": "Diese Datei mit OCR lesen",
+  "pt": "Ler este arquivo com OCR"
+ },
+ "Seleziona un file nell'elenco per vedere che cosa fare.": {
+  "en": "Select a file in the list to see what to do.",
+  "fr": "Sélectionnez un fichier dans la liste pour voir que faire.",
+  "es": "Selecciona un archivo de la lista para ver qué hacer.",
+  "de": "Wählen Sie eine Datei in der Liste, um das weitere Vorgehen zu sehen.",
+  "pt": "Selecione um arquivo na lista para ver o que fazer."
+ },
+ "Premi «Leggi questo file con l'OCR» per leggerlo subito.": {
+  "en": "Press “Read this file with OCR” to read it right away.",
+  "fr": "Appuyez sur « Lire ce fichier avec l’OCR » pour le lire tout de suite.",
+  "es": "Pulsa «Leer este archivo con OCR» para leerlo ahora mismo.",
+  "de": "Wählen Sie „Diese Datei mit OCR lesen“, um sie sofort zu lesen.",
+  "pt": "Pressione “Ler este arquivo com OCR” para lê-lo agora."
+ },
+ "Con l'OCR spento questo file si trova solo per nome.": {
+  "en": "With OCR off, this file can only be found by name.",
+  "fr": "Avec l’OCR désactivé, ce fichier n’est trouvable que par son nom.",
+  "es": "Con el OCR desactivado, este archivo solo se encuentra por el nombre.",
+  "de": "Bei ausgeschaltetem OCR ist diese Datei nur über den Namen auffindbar.",
+  "pt": "Com o OCR desativado, este arquivo só é encontrado pelo nome."
+ },
+ "Rileggi un file a scelta…": {
+  "en": "Read a chosen file again…",
+  "fr": "Relire un fichier au choix…",
+  "es": "Volver a leer un archivo a elegir…",
+  "de": "Eine gewählte Datei erneut lesen …",
+  "pt": "Ler novamente um arquivo à escolha…"
+ },
+ "Rileggi un PDF con l'OCR…": {
+  "en": "Read a PDF again with OCR…",
+  "fr": "Relire un PDF avec l’OCR…",
+  "es": "Volver a leer un PDF con OCR…",
+  "de": "Ein PDF erneut mit OCR lesen …",
+  "pt": "Ler um PDF novamente com OCR…"
+ },
+ "Svuota e rileggi tutto…": {
+  "en": "Empty and read everything again…",
+  "fr": "Vider et tout relire…",
+  "es": "Vaciar y volver a leer todo…",
+  "de": "Leeren und alles neu lesen …",
+  "pt": "Esvaziar e ler tudo novamente…"
+ },
+ "Occupa {size}  ·  {path}": {
+  "en": "Takes up {size}  ·  {path}",
+  "fr": "Occupe {size}  ·  {path}",
+  "es": "Ocupa {size}  ·  {path}",
+  "de": "Belegt {size}  ·  {path}",
+  "pt": "Ocupa {size}  ·  {path}"
+ },
+ "{cause}\nCosa fare: {advice}\nDettaglio tecnico: {detail}": {
+  "en": "{cause}\nWhat to do: {advice}\nTechnical detail: {detail}",
+  "fr": "{cause}\nQue faire : {advice}\nDétail technique : {detail}",
+  "es": "{cause}\nQué hacer: {advice}\nDetalle técnico: {detail}",
+  "de": "{cause}\nWas zu tun ist: {advice}\nTechnische Einzelheiten: {detail}",
+  "pt": "{cause}\nO que fazer: {advice}\nDetalhe técnico: {detail}"
+ },
+ "Documento scansionato, senza testo da cercare. {how}": {
+  "en": "Scanned document, with no text to search. {how}",
+  "fr": "Document numérisé, sans texte à rechercher. {how}",
+  "es": "Documento escaneado, sin texto que buscar. {how}",
+  "de": "Gescanntes Dokument ohne durchsuchbaren Text. {how}",
+  "pt": "Documento digitalizado, sem texto para pesquisar. {how}"
+ },
+ "Altre operazioni": {
+  "en": "Other operations",
+  "fr": "Autres opérations",
+  "es": "Otras operaciones",
+  "de": "Weitere Aktionen",
+  "pt": "Outras operações"
+ },
+ "Apri il passaggio": {
+  "en": "Open the passage",
+  "fr": "Ouvrir le passage",
+  "es": "Abrir el pasaje",
+  "de": "Abschnitt öffnen",
+  "pt": "Abrir o trecho"
+ },
+ "Scheda dell’entità": {
+  "en": "Entity card",
+  "fr": "Fiche de l’entité",
+  "es": "Ficha de la entidad",
+  "de": "Entitätenkarte",
+  "pt": "Ficha da entidade"
+ },
+ "Scadenze dei documenti": {
+  "en": "Document deadlines",
+  "fr": "Échéances des documents",
+  "es": "Vencimientos de los documentos",
+  "de": "Dokumentfristen",
+  "pt": "Prazos dos documentos"
+ },
+ "Scadenza": {
+  "en": "Deadline",
+  "fr": "Échéance",
+  "es": "Vencimiento",
+  "de": "Frist",
+  "pt": "Prazo"
+ },
+ "Origine della data": {
+  "en": "Date source",
+  "fr": "Origine de la date",
+  "es": "Origen de la fecha",
+  "de": "Herkunft des Datums",
+  "pt": "Origem da data"
+ },
+ "Passaggio": {
+  "en": "Passage",
+  "fr": "Passage",
+  "es": "Pasaje",
+  "de": "Abschnitt",
+  "pt": "Trecho"
+ },
+ "Prossimi 30 giorni": {
+  "en": "Next 30 days",
+  "fr": "30 prochains jours",
+  "es": "Próximos 30 días",
+  "de": "Nächste 30 Tage",
+  "pt": "Próximos 30 dias"
+ },
+ "Future": {
+  "en": "Upcoming",
+  "fr": "À venir",
+  "es": "Futuros",
+  "de": "Künftige",
+  "pt": "Futuros"
+ },
+ "Tutte": {
+  "en": "All",
+  "fr": "Toutes",
+  "es": "Todos",
+  "de": "Alle",
+  "pt": "Todos"
+ },
+ "Cronologia della pratica": {
+  "en": "Case timeline",
+  "fr": "Chronologie du dossier",
+  "es": "Cronología del expediente",
+  "de": "Verlauf des Vorgangs",
+  "pt": "Cronologia do processo"
+ },
+ "Nessuna scadenza nel periodo scelto.": {
+  "en": "No deadlines in the chosen period.",
+  "fr": "Aucune échéance dans la période choisie.",
+  "es": "Ningún vencimiento en el periodo elegido.",
+  "de": "Keine Fristen im gewählten Zeitraum.",
+  "pt": "Nenhum prazo no período escolhido."
+ },
+ "Documenti duplicati": {
+  "en": "Duplicate documents",
+  "fr": "Documents en double",
+  "es": "Documentos duplicados",
+  "de": "Doppelte Dokumente",
+  "pt": "Documentos duplicados"
+ },
+ "Sto confrontando i file…": {
+  "en": "Comparing the files…",
+  "fr": "Comparaison des fichiers…",
+  "es": "Comparando los archivos…",
+  "de": "Dateien werden verglichen …",
+  "pt": "Comparando os arquivos…"
+ },
+ "{n} gruppo di copie identiche · spazio che puoi liberare: {space}": {
+  "en": {
+   "one": "{n} group of identical copies · space you can free up: {space}",
+   "other": "{n} groups of identical copies · space you can free up: {space}"
+  },
+  "fr": {
+   "one": "{n} groupe de copies identiques · espace libérable : {space}",
+   "other": "{n} groupes de copies identiques · espace libérable : {space}"
+  },
+  "es": {
+   "one": "{n} grupo de copias idénticas · espacio que puedes liberar: {space}",
+   "other": "{n} grupos de copias idénticas · espacio que puedes liberar: {space}"
+  },
+  "de": {
+   "one": "{n} Gruppe identischer Kopien · freizugebender Platz: {space}",
+   "other": "{n} Gruppen identischer Kopien · freizugebender Platz: {space}"
+  },
+  "pt": {
+   "one": "{n} grupo de cópias idênticas · espaço que você pode liberar: {space}",
+   "other": "{n} grupos de cópias idênticas · espaço que você pode liberar: {space}"
+  }
+ },
+ "Non ci sono documenti duplicati.": {
+  "en": "There are no duplicate documents.",
+  "fr": "Il n’y a aucun document en double.",
+  "es": "No hay documentos duplicados.",
+  "de": "Es gibt keine doppelten Dokumente.",
+  "pt": "Não há documentos duplicados."
+ },
+ "{n} copie identiche": {
+  "en": "{n} identical copies",
+  "fr": "{n} copies identiques",
+  "es": "{n} copias idénticas",
+  "de": "{n} identische Kopien",
+  "pt": "{n} cópias idênticas"
+ },
+ "Doppio clic su un file per mostrarlo nella sua cartella. Nessun file viene cancellato.": {
+  "en": "Double-click a file to show it in its folder. No file is deleted.",
+  "fr": "Double-cliquez sur un fichier pour l’afficher dans son dossier. Aucun fichier n’est supprimé.",
+  "es": "Haz doble clic en un archivo para mostrarlo en su carpeta. No se borra ningún archivo.",
+  "de": "Doppelklicken Sie auf eine Datei, um sie in ihrem Ordner anzuzeigen. Es wird keine Datei gelöscht.",
+  "pt": "Clique duas vezes em um arquivo para mostrá-lo na pasta. Nenhum arquivo é apagado."
+ },
+ "Sto confrontando i file… ({done} di {total})": {
+  "en": "Comparing the files… ({done} of {total})",
+  "fr": "Comparaison des fichiers… ({done} sur {total})",
+  "es": "Comparando los archivos… ({done} de {total})",
+  "de": "Dateien werden verglichen … ({done} von {total})",
+  "pt": "Comparando os arquivos… ({done} de {total})"
+ },
+ "Errore: {error}": {
+  "en": "Error: {error}",
+  "fr": "Erreur : {error}",
+  "es": "Error: {error}",
+  "de": "Fehler: {error}",
+  "pt": "Erro: {error}"
+ },
+ "Dimentica": {
+  "en": "Forget",
+  "fr": "Oublier",
+  "es": "Olvidar",
+  "de": "Vergessen",
+  "pt": "Esquecer"
+ },
+ "Dimentica una cartella": {
+  "en": "Forget a folder",
+  "fr": "Oublier un dossier",
+  "es": "Olvidar una carpeta",
+  "de": "Einen Ordner vergessen",
+  "pt": "Esquecer uma pasta"
+ },
+ "La rimozione include le sottocartelle. Gli originali restano sul disco.\nPuoi includere di nuovo la cartella dalle Impostazioni.": {
+  "en": "Removal includes the subfolders. The originals stay on the disk.\nYou can include the folder again from Settings.",
+  "fr": "La suppression inclut les sous-dossiers. Les originaux restent sur le disque.\nVous pourrez réinclure le dossier depuis les Réglages.",
+  "es": "La eliminación incluye las subcarpetas. Los originales permanecen en el disco.\nPuedes incluir la carpeta de nuevo desde Ajustes.",
+  "de": "Das Entfernen schließt Unterordner ein. Die Originale bleiben auf der Festplatte.\nSie können den Ordner später in den Einstellungen wieder aufnehmen.",
+  "pt": "A remoção inclui as subpastas. Os originais permanecem no disco.\nVocê pode incluir a pasta novamente nas Configurações."
+ },
+ "Cartella da dimenticare": {
+  "en": "Folder to forget",
+  "fr": "Dossier à oublier",
+  "es": "Carpeta que olvidar",
+  "de": "Zu vergessender Ordner",
+  "pt": "Pasta a esquecer"
+ },
+ "Cronologia e ricerche salvate": {
+  "en": "History and saved searches",
+  "fr": "Historique et recherches enregistrées",
+  "es": "Historial y búsquedas guardadas",
+  "de": "Verlauf und gespeicherte Suchen",
+  "pt": "Histórico e pesquisas salvas"
+ },
+ "Salva ricerca": {
+  "en": "Save search",
+  "fr": "Enregistrer la recherche",
+  "es": "Guardar búsqueda",
+  "de": "Suche speichern",
+  "pt": "Salvar pesquisa"
+ },
+ "Nome della ricerca": {
+  "en": "Search name",
+  "fr": "Nom de la recherche",
+  "es": "Nombre de la búsqueda",
+  "de": "Name der Suche",
+  "pt": "Nome da pesquisa"
+ },
+ "Cronologia": {
+  "en": "History",
+  "fr": "Historique",
+  "es": "Historial",
+  "de": "Verlauf",
+  "pt": "Histórico"
+ },
+ "Cancellare le ricerche recenti?": {
+  "en": "Delete recent searches?",
+  "fr": "Supprimer les recherches récentes ?",
+  "es": "¿Borrar las búsquedas recientes?",
+  "de": "Letzte Suchen löschen?",
+  "pt": "Apagar as pesquisas recentes?"
+ },
+ "Ricerche salvate": {
+  "en": "Saved searches",
+  "fr": "Recherches enregistrées",
+  "es": "Búsquedas guardadas",
+  "de": "Gespeicherte Suchen",
+  "pt": "Pesquisas salvas"
+ },
+ "Salva ricerca corrente…": {
+  "en": "Save current search…",
+  "fr": "Enregistrer la recherche actuelle…",
+  "es": "Guardar búsqueda actual…",
+  "de": "Aktuelle Suche speichern …",
+  "pt": "Salvar pesquisa atual…"
+ },
+ "Elimina": {
+  "en": "Delete",
+  "fr": "Supprimer",
+  "es": "Eliminar",
+  "de": "Löschen",
+  "pt": "Excluir"
+ },
+ "Svuota cronologia": {
+  "en": "Clear history",
+  "fr": "Vider l’historique",
+  "es": "Vaciar historial",
+  "de": "Verlauf leeren",
+  "pt": "Limpar histórico"
+ },
+ "Ricorda le mie ricerche su questo computer": {
+  "en": "Remember my searches on this computer",
+  "fr": "Mémoriser mes recherches sur cet ordinateur",
+  "es": "Recordar mis búsquedas en este ordenador",
+  "de": "Meine Suchen auf diesem Computer merken",
+  "pt": "Lembrar minhas pesquisas neste computador"
+ },
+ "Ricerca": {
+  "en": "Search",
+  "fr": "Recherche",
+  "es": "Búsqueda",
+  "de": "Suche",
+  "pt": "Pesquisa"
+ },
+ "Testo": {
+  "en": "Text",
+  "fr": "Texte",
+  "es": "Texto",
+  "de": "Text",
+  "pt": "Texto"
+ },
+ "Prepara copia": {
+  "en": "Prepare copy",
+  "fr": "Préparer la copie",
+  "es": "Preparar copia",
+  "de": "Kopie vorbereiten",
+  "pt": "Preparar cópia"
+ },
+ "Termini o singoli valori da oscurare, uno per riga": {
+  "en": "Terms or single values to redact, one per line",
+  "fr": "Termes ou valeurs à caviarder, un par ligne",
+  "es": "Términos o valores sueltos que ocultar, uno por línea",
+  "de": "Zu schwärzende Begriffe oder Einzelwerte, einer pro Zeile",
+  "pt": "Termos ou valores a ocultar, um por linha"
+ },
+ "Copia oscurata": {
+  "en": "Redacted copy",
+  "fr": "Copie caviardée",
+  "es": "Copia oculta",
+  "de": "Geschwärzte Kopie",
+  "pt": "Cópia ocultada"
+ },
+ "Seleziona un documento.": {
+  "en": "Select a document.",
+  "fr": "Sélectionnez un document.",
+  "es": "Selecciona un documento.",
+  "de": "Wählen Sie ein Dokument.",
+  "pt": "Selecione um documento."
+ },
+ "Scegli un PDF o un file di testo.": {
+  "en": "Choose a PDF or a text file.",
+  "fr": "Choisissez un PDF ou un fichier texte.",
+  "es": "Elige un PDF o un archivo de texto.",
+  "de": "Wählen Sie ein PDF oder eine Textdatei.",
+  "pt": "Escolha um PDF ou um arquivo de texto."
+ },
+ "Singoli valori da oscurare (selezione multipla)": {
+  "en": "Single values to redact (multiple selection)",
+  "fr": "Valeurs à caviarder (sélection multiple)",
+  "es": "Valores sueltos que ocultar (selección múltiple)",
+  "de": "Einzelne zu schwärzende Werte (Mehrfachauswahl)",
+  "pt": "Valores a ocultar (seleção múltipla)"
+ },
+ "Rileva anche i dati nelle immagini con OCR": {
+  "en": "Also detect data in images with OCR",
+  "fr": "Détecter aussi les données dans les images avec l’OCR",
+  "es": "Detectar también datos en las imágenes con OCR",
+  "de": "Auch Daten in Bildern per OCR erkennen",
+  "pt": "Detectar também dados nas imagens com OCR"
+ },
+ "Tesseract assente · controlla le immagini e oscura le aree a mano": {
+  "en": "Tesseract missing · check the images and redact areas by hand",
+  "fr": "Tesseract absent · vérifiez les images et caviardez les zones à la main",
+  "es": "Falta Tesseract · revisa las imágenes y oculta las áreas a mano",
+  "de": "Tesseract fehlt · prüfen Sie die Bilder und schwärzen Sie Bereiche von Hand",
+  "pt": "Tesseract ausente · verifique as imagens e oculte as áreas manualmente"
+ },
+ "Per i PDF puoi aggiungere aree a mano su ogni pagina.": {
+  "en": "For PDFs you can add areas by hand on every page.",
+  "fr": "Pour les PDF, vous pouvez ajouter des zones à la main sur chaque page.",
+  "es": "En los PDF puedes añadir áreas a mano en cada página.",
+  "de": "Bei PDFs können Sie auf jeder Seite Bereiche von Hand hinzufügen.",
+  "pt": "Em PDFs você pode adicionar áreas manualmente em cada página."
+ },
+ "Lettura della pagina {page} di {total}…": {
+  "en": "Reading page {page} of {total}…",
+  "fr": "Lecture de la page {page} sur {total}…",
+  "es": "Leyendo la página {page} de {total}…",
+  "de": "Seite {page} von {total} wird gelesen …",
+  "pt": "Lendo a página {page} de {total}…"
+ },
+ "Salva come nuovo file": {
+  "en": "Save as a new file",
+  "fr": "Enregistrer comme nouveau fichier",
+  "es": "Guardar como archivo nuevo",
+  "de": "Als neue Datei speichern",
+  "pt": "Salvar como novo arquivo"
+ },
+ "{n} occorrenza sostituita con [OMISSIS].": {
+  "en": {
+   "one": "{n} match replaced with [OMISSIS].",
+   "other": "{n} matches replaced with [OMISSIS]."
+  },
+  "fr": {
+   "one": "{n} occurrence remplacée par [OMISSIS].",
+   "other": "{n} occurrences remplacées par [OMISSIS]."
+  },
+  "es": {
+   "one": "{n} coincidencia sustituida por [OMISSIS].",
+   "other": "{n} coincidencias sustituidas por [OMISSIS]."
+  },
+  "de": {
+   "one": "{n} Treffer durch [OMISSIS] ersetzt.",
+   "other": "{n} Treffer durch [OMISSIS] ersetzt."
+  },
+  "pt": {
+   "one": "{n} ocorrência substituída por [OMISSIS].",
+   "other": "{n} ocorrências substituídas por [OMISSIS]."
+  }
+ },
+ "Apertura PDF": {
+  "en": "Opening PDF",
+  "fr": "Ouverture du PDF",
+  "es": "Apertura del PDF",
+  "de": "PDF wird geöffnet",
+  "pt": "Abertura do PDF"
+ },
+ "Nessun dato selezionato. Trascina per oscurare una zona o annulla la copia.": {
+  "en": "No data selected. Drag to redact an area or cancel the copy.",
+  "fr": "Aucune donnée sélectionnée. Faites glisser pour caviarder une zone ou annulez la copie.",
+  "es": "Ningún dato seleccionado. Arrastra para ocultar una zona o cancela la copia.",
+  "de": "Keine Daten ausgewählt. Ziehen Sie, um einen Bereich zu schwärzen, oder brechen Sie die Kopie ab.",
+  "pt": "Nenhum dado selecionado. Arraste para ocultar uma área ou cancele a cópia."
+ },
+ "Salva copia oscurata…": {
+  "en": "Save redacted copy…",
+  "fr": "Enregistrer la copie caviardée…",
+  "es": "Guardar copia oculta…",
+  "de": "Geschwärzte Kopie speichern …",
+  "pt": "Salvar cópia ocultada…"
+ },
+ "Oscuramento PDF": {
+  "en": "PDF redaction",
+  "fr": "Caviardage du PDF",
+  "es": "Ocultación del PDF",
+  "de": "PDF schwärzen",
+  "pt": "Ocultação do PDF"
+ },
+ "-oscurato": {
+  "en": "-redacted",
+  "fr": "-caviarde",
+  "es": "-oculto",
+  "de": "-geschwaerzt",
+  "pt": "-ocultado"
+ },
+ "Pagina {page}/{total} · controlla i dati ancora visibili e trascina per coprirli.": {
+  "en": "Page {page}/{total} · check the data still visible and drag to cover it.",
+  "fr": "Page {page}/{total} · vérifiez les données encore visibles et faites glisser pour les couvrir.",
+  "es": "Página {page}/{total} · revisa los datos aún visibles y arrastra para cubrirlos.",
+  "de": "Seite {page}/{total} · prüfen Sie die noch sichtbaren Daten und ziehen Sie, um sie abzudecken.",
+  "pt": "Página {page}/{total} · verifique os dados ainda visíveis e arraste para cobri-los."
+ },
+ "Approva pagina": {
+  "en": "Approve page",
+  "fr": "Approuver la page",
+  "es": "Aprobar página",
+  "de": "Seite freigeben",
+  "pt": "Aprovar página"
+ },
+ "Applica protezione": {
+  "en": "Apply protection",
+  "fr": "Appliquer la protection",
+  "es": "Aplicar protección",
+  "de": "Schutz anwenden",
+  "pt": "Aplicar proteção"
+ },
+ "Copia": {
+  "en": "Copy",
+  "fr": "Copier",
+  "es": "Copiar",
+  "de": "Kopieren",
+  "pt": "Copiar"
+ },
+ "Mostra password…": {
+  "en": "Show password…",
+  "fr": "Afficher le mot de passe…",
+  "es": "Mostrar contraseña…",
+  "de": "Passwort anzeigen …",
+  "pt": "Mostrar senha…"
+ },
+ "Chiave del portachiavi": {
+  "en": "Keychain key",
+  "fr": "Clé du trousseau",
+  "es": "Clave del llavero",
+  "de": "Schlüsselbund-Schlüssel",
+  "pt": "Chave do chaveiro"
+ },
+ "Passphrase della cassaforte": {
+  "en": "Vault passphrase",
+  "fr": "Phrase secrète du coffre-fort",
+  "es": "Frase de contraseña de la caja fuerte",
+  "de": "Passphrase des Tresors",
+  "pt": "Frase secreta do cofre"
+ },
+ "Riabilita visibilità…": {
+  "en": "Restore visibility…",
+  "fr": "Rétablir la visibilité…",
+  "es": "Restablecer visibilidad…",
+  "de": "Sichtbarkeit wiederherstellen …",
+  "pt": "Restaurar visibilidade…"
+ },
+ "Password nascosta. Per mostrarla devi reinserire quella attuale.": {
+  "en": "Password hidden. To show it you must re-enter the current one.",
+  "fr": "Mot de passe masqué. Pour l’afficher, vous devez ressaisir l’actuel.",
+  "es": "Contraseña oculta. Para mostrarla debes volver a introducir la actual.",
+  "de": "Passwort verborgen. Um es anzuzeigen, müssen Sie das aktuelle erneut eingeben.",
+  "pt": "Senha oculta. Para mostrá-la, você precisa digitar novamente a atual."
+ },
+ "Password visibile al clic sul lucchetto. Puoi nasconderla in qualsiasi momento.": {
+  "en": "Password visible when you click the padlock. You can hide it at any time.",
+  "fr": "Mot de passe visible au clic sur le cadenas. Vous pouvez le masquer à tout moment.",
+  "es": "Contraseña visible al hacer clic en el candado. Puedes ocultarla en cualquier momento.",
+  "de": "Passwort sichtbar beim Klick auf das Schloss. Sie können es jederzeit verbergen.",
+  "pt": "Senha visível ao clicar no cadeado. Você pode ocultá-la a qualquer momento."
+ },
+ "La migrazione comprende testo, ricerche salvate e vettori.": {
+  "en": "The migration includes text, saved searches and vectors.",
+  "fr": "La migration comprend le texte, les recherches enregistrées et les vecteurs.",
+  "es": "La migración incluye texto, búsquedas guardadas y vectores.",
+  "de": "Die Migration umfasst Text, gespeicherte Suchen und Vektoren.",
+  "pt": "A migração inclui texto, pesquisas salvas e vetores."
+ },
+ "Cassaforte": {
+  "en": "Vault",
+  "fr": "Coffre-fort",
+  "es": "Caja fuerte",
+  "de": "Tresor",
+  "pt": "Cofre"
+ },
+ "Nuova passphrase": {
+  "en": "New passphrase",
+  "fr": "Nouvelle phrase secrète",
+  "es": "Nueva frase de contraseña",
+  "de": "Neue Passphrase",
+  "pt": "Nova frase secreta"
+ },
+ "Ripeti la nuova passphrase": {
+  "en": "Repeat the new passphrase",
+  "fr": "Répétez la nouvelle phrase secrète",
+  "es": "Repite la nueva frase de contraseña",
+  "de": "Neue Passphrase wiederholen",
+  "pt": "Repita a nova frase secreta"
+ },
+ "Copia e verifica dell’archivio in corso…": {
+  "en": "Copying and verifying the archive…",
+  "fr": "Copie et vérification de l’archive en cours…",
+  "es": "Copiando y verificando el archivo…",
+  "de": "Archiv wird kopiert und geprüft …",
+  "pt": "Copiando e verificando o arquivo…"
+ },
+ "Password e visibilità": {
+  "en": "Password and visibility",
+  "fr": "Mot de passe et visibilité",
+  "es": "Contraseña y visibilidad",
+  "de": "Passwort und Sichtbarkeit",
+  "pt": "Senha e visibilidade"
+ },
+ "La chiave è composta da 64 caratteri esadecimali.": {
+  "en": "The key is made of 64 hexadecimal characters.",
+  "fr": "La clé comporte 64 caractères hexadécimaux.",
+  "es": "La clave se compone de 64 caracteres hexadecimales.",
+  "de": "Der Schlüssel besteht aus 64 Hexadezimalzeichen.",
+  "pt": "A chave é composta por 64 caracteres hexadecimais."
+ },
+ "Mostra password": {
+  "en": "Show password",
+  "fr": "Afficher le mot de passe",
+  "es": "Mostrar contraseña",
+  "de": "Passwort anzeigen",
+  "pt": "Mostrar senha"
+ },
+ "Reinserisci la passphrase attuale o la chiave del portachiavi (64 caratteri):": {
+  "en": "Re-enter the current passphrase or the keychain key (64 characters):",
+  "fr": "Ressaisissez la phrase secrète actuelle ou la clé du trousseau (64 caractères) :",
+  "es": "Vuelve a introducir la frase de contraseña actual o la clave del llavero (64 caracteres):",
+  "de": "Geben Sie die aktuelle Passphrase oder den Schlüsselbund-Schlüssel (64 Zeichen) erneut ein:",
+  "pt": "Digite novamente a frase secreta atual ou a chave do chaveiro (64 caracteres):"
+ },
+ "Attiva cifratura…": {
+  "en": "Turn on encryption…",
+  "fr": "Activer le chiffrement…",
+  "es": "Activar el cifrado…",
+  "de": "Verschlüsselung aktivieren …",
+  "pt": "Ativar a cifragem…"
+ },
+ "Cassaforte StillFind": {
+  "en": "StillFind vault",
+  "fr": "Coffre-fort StillFind",
+  "es": "Caja fuerte de StillFind",
+  "de": "StillFind-Tresor",
+  "pt": "Cofre do StillFind"
+ },
+ "Passphrase per aprire l’archivio": {
+  "en": "Passphrase to open the archive",
+  "fr": "Phrase secrète pour ouvrir l’archive",
+  "es": "Frase de contraseña para abrir el archivo",
+  "de": "Passphrase zum Öffnen des Archivs",
+  "pt": "Frase secreta para abrir o arquivo"
+ },
+ "Inserisci un tempo da 1 a 1440 minuti.": {
+  "en": "Enter a time from 1 to 1440 minutes.",
+  "fr": "Saisissez une durée de 1 à 1440 minutes.",
+  "es": "Introduce un tiempo de 1 a 1440 minutos.",
+  "de": "Geben Sie eine Zeit von 1 bis 1440 Minuten ein.",
+  "pt": "Digite um tempo de 1 a 1440 minutos."
+ },
+ "Le due passphrase devono coincidere.": {
+  "en": "The two passphrases must match.",
+  "fr": "Les deux phrases secrètes doivent être identiques.",
+  "es": "Las dos frases de contraseña deben coincidir.",
+  "de": "Die beiden Passphrasen müssen übereinstimmen.",
+  "pt": "As duas frases secretas devem coincidir."
+ },
+ "Decifra archivio": {
+  "en": "Decrypt archive",
+  "fr": "Déchiffrer l’archive",
+  "es": "Descifrar archivo",
+  "de": "Archiv entschlüsseln",
+  "pt": "Decifrar arquivo"
+ },
+ "Salvare testo, ricerche e vettori in chiaro su questo PC?": {
+  "en": "Save text, searches and vectors unencrypted on this PC?",
+  "fr": "Enregistrer le texte, les recherches et les vecteurs en clair sur ce PC ?",
+  "es": "¿Guardar texto, búsquedas y vectores sin cifrar en este PC?",
+  "de": "Text, Suchen und Vektoren unverschlüsselt auf diesem PC speichern?",
+  "pt": "Salvar texto, pesquisas e vetores sem cifra neste PC?"
+ },
+ "Protezione archivio": {
+  "en": "Archive protection",
+  "fr": "Protection de l’archive",
+  "es": "Protección del archivo",
+  "de": "Archivschutz",
+  "pt": "Proteção do arquivo"
+ },
+ "L’archivio è in chiaro: non c’è una password da mostrare.": {
+  "en": "The archive is unencrypted: there is no password to show.",
+  "fr": "L’archive n’est pas chiffrée : il n’y a pas de mot de passe à afficher.",
+  "es": "El archivo está sin cifrar: no hay contraseña que mostrar.",
+  "de": "Das Archiv ist unverschlüsselt: Es gibt kein Passwort anzuzeigen.",
+  "pt": "O arquivo está sem cifra: não há senha para mostrar."
+ },
+ "Password non disponibile": {
+  "en": "Password not available",
+  "fr": "Mot de passe indisponible",
+  "es": "Contraseña no disponible",
+  "de": "Passwort nicht verfügbar",
+  "pt": "Senha indisponível"
+ },
+ "Rendi invisibile la password…": {
+  "en": "Make the password invisible…",
+  "fr": "Rendre le mot de passe invisible…",
+  "es": "Ocultar la contraseña…",
+  "de": "Passwort verbergen …",
+  "pt": "Tornar a senha invisível…"
+ },
+ "La visibilità si applica subito, anche se annulli le altre impostazioni.": {
+  "en": "Visibility applies immediately, even if you cancel the other settings.",
+  "fr": "La visibilité s’applique immédiatement, même si vous annulez les autres réglages.",
+  "es": "La visibilidad se aplica de inmediato, aunque canceles los demás ajustes.",
+  "de": "Die Sichtbarkeit gilt sofort, auch wenn Sie die übrigen Einstellungen abbrechen.",
+  "pt": "A visibilidade é aplicada imediatamente, mesmo que você cancele as outras configurações."
+ },
+ "Nascondi password": {
+  "en": "Hide password",
+  "fr": "Masquer le mot de passe",
+  "es": "Ocultar contraseña",
+  "de": "Passwort verbergen",
+  "pt": "Ocultar senha"
+ },
+ "Segna e conserva prima la password o la chiave.\n\nUna volta nascosta non sarà più visibile e dovrai reinserire quella attuale per mostrarla di nuovo. Vuoi nasconderla?": {
+  "en": "Write down and keep the password or key first.\n\nOnce hidden it will no longer be visible and you will have to re-enter the current one to show it again. Do you want to hide it?",
+  "fr": "Notez et conservez d’abord le mot de passe ou la clé.\n\nUne fois masqué, il ne sera plus visible et vous devrez ressaisir l’actuel pour l’afficher à nouveau. Voulez-vous le masquer ?",
+  "es": "Anota y guarda antes la contraseña o la clave.\n\nUna vez oculta, ya no será visible y tendrás que volver a introducir la actual para mostrarla de nuevo. ¿Quieres ocultarla?",
+  "de": "Notieren und bewahren Sie zuerst das Passwort oder den Schlüssel auf.\n\nEinmal verborgen, ist es nicht mehr sichtbar, und Sie müssen das aktuelle erneut eingeben, um es wieder anzuzeigen. Möchten Sie es verbergen?",
+  "pt": "Anote e guarde antes a senha ou a chave.\n\nDepois de oculta, ela não ficará mais visível e você precisará digitar novamente a atual para mostrá-la de novo. Deseja ocultá-la?"
+ },
+ "Mostra": {
+  "en": "Show",
+  "fr": "Afficher",
+  "es": "Mostrar",
+  "de": "Anzeigen",
+  "pt": "Mostrar"
+ },
+ "La modalità Portachiavi consente la lettura in background.\nLa Cassaforte richiede la passphrase a ogni apertura.": {
+  "en": "Keychain mode allows reading in the background.\nThe Vault asks for the passphrase every time it is opened.",
+  "fr": "Le mode Trousseau permet la lecture en arrière-plan.\nLe Coffre-fort demande la phrase secrète à chaque ouverture.",
+  "es": "El modo Llavero permite la lectura en segundo plano.\nLa Caja fuerte pide la frase de contraseña en cada apertura.",
+  "de": "Der Schlüsselbund-Modus erlaubt das Lesen im Hintergrund.\nDer Tresor verlangt bei jedem Öffnen die Passphrase.",
+  "pt": "O modo Chaveiro permite a leitura em segundo plano.\nO Cofre pede a frase secreta a cada abertura."
+ },
+ "Minuti di inattività prima del blocco della Cassaforte": {
+  "en": "Minutes of inactivity before the Vault locks",
+  "fr": "Minutes d’inactivité avant le verrouillage du Coffre-fort",
+  "es": "Minutos de inactividad antes de bloquear la Caja fuerte",
+  "de": "Minuten Inaktivität bis zur Sperre des Tresors",
+  "pt": "Minutos de inatividade antes de bloquear o Cofre"
+ },
+ "Visibilità password": {
+  "en": "Password visibility",
+  "fr": "Visibilité du mot de passe",
+  "es": "Visibilidad de la contraseña",
+  "de": "Sichtbarkeit des Passworts",
+  "pt": "Visibilidade da senha"
+ },
+ "Non riesco a salvare la preferenza. Riprova.": {
+  "en": "I can’t save the preference. Try again.",
+  "fr": "Impossible d’enregistrer la préférence. Réessayez.",
+  "es": "No puedo guardar la preferencia. Inténtalo de nuevo.",
+  "de": "Die Einstellung kann nicht gespeichert werden. Versuchen Sie es erneut.",
+  "pt": "Não consigo salvar a preferência. Tente novamente."
+ },
+ "Archivio NON CIFRATO": {
+  "en": "Archive NOT ENCRYPTED",
+  "fr": "Archive NON CHIFFRÉE",
+  "es": "Archivo SIN CIFRAR",
+  "de": "Archiv NICHT VERSCHLÜSSELT",
+  "pt": "Arquivo SEM CIFRA"
+ },
+ "Testo, ricerche salvate e vettori sono in chiaro sul disco.\nPuoi proteggerli con il portachiavi del computer o una passphrase.": {
+  "en": "Text, saved searches and vectors are unencrypted on the disk.\nYou can protect them with the computer’s keychain or a passphrase.",
+  "fr": "Le texte, les recherches enregistrées et les vecteurs sont en clair sur le disque.\nVous pouvez les protéger avec le trousseau de l’ordinateur ou une phrase secrète.",
+  "es": "El texto, las búsquedas guardadas y los vectores están sin cifrar en el disco.\nPuedes protegerlos con el llavero del ordenador o con una frase de contraseña.",
+  "de": "Text, gespeicherte Suchen und Vektoren liegen unverschlüsselt auf der Festplatte.\nSie können sie mit dem Schlüsselbund des Computers oder einer Passphrase schützen.",
+  "pt": "Texto, pesquisas salvas e vetores estão sem cifra no disco.\nVocê pode protegê-los com o chaveiro do computador ou uma frase secreta."
+ },
+ "Reinserisci la password attuale per mostrarla in questa sessione.": {
+  "en": "Re-enter the current password to show it in this session.",
+  "fr": "Ressaisissez le mot de passe actuel pour l’afficher pendant cette session.",
+  "es": "Vuelve a introducir la contraseña actual para mostrarla en esta sesión.",
+  "de": "Geben Sie das aktuelle Passwort erneut ein, um es in dieser Sitzung anzuzeigen.",
+  "pt": "Digite novamente a senha atual para mostrá-la nesta sessão."
+ }
+}

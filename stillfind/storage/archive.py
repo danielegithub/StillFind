@@ -3,6 +3,7 @@
 import os
 
 from stillfind.core import config
+from stillfind.core.i18n import tr
 
 
 class PathKey:
@@ -86,7 +87,7 @@ class ArchiveEraser:
                                         SELECT 1 FROM origini_cache_ocr WHERE percorso_da_togliere(path) LIMIT 1""",
                                      (scope,)).fetchone()
                 if not exists:
-                    raise ValueError("Il percorso selezionato non è presente nell’archivio.")
+                    raise ValueError(tr("Il percorso selezionato non è presente nell’archivio."))
             if folder:
                 con.execute("DELETE FROM sorgenti WHERE percorso_da_togliere(path)")
             con.execute("INSERT OR REPLACE INTO esclusioni(path,cartella) VALUES(?,?)", (scope, int(folder)))

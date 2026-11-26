@@ -6,30 +6,40 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from stillfind.core import facts
+from stillfind.core.i18n import tr
 from stillfind.indexing.relations import RelationGraph
 from stillfind.semantic.search import SemanticSearch
+from stillfind.ui.theme import PAL, font, ghost_button, primary_button
 from stillfind.ui.widgets import read_in_background, make_tree, short_date
 
 
 class RelationsPane(ctk.CTkFrame):
     def __init__(self, parent, app):
-        super().__init__(parent, fg_color="transparent")
+        super().__init__(parent, fg_color=PAL["card"], corner_radius=0, border_width=0)
         self.app = app
         self.key = None
         self._request = None
         self.actions = {}
         self.version_ids = []
-        self.info = ctk.CTkLabel(self, text="", anchor="w")
-        self.info.pack(fill="x", padx=6)
-        self.tree = make_tree(self, [("why", "Collegamento", 165)], branch_title="Entità o documento")
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.info = ctk.CTkLabel(self, text="", anchor="w", justify="left", wraplength=360,
+                                 text_color=PAL["muted"], font=font(12))
+        self.info.grid(row=0, column=0, sticky="ew", padx=12, pady=(4, 0))
+        self.bind("<Configure>", lambda e: self.info.configure(wraplength=max(180, e.width - 24)))
+        body = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0, border_width=0)
+        body.grid(row=1, column=0, sticky="nsew")
+        self.tree = make_tree(body, [("why", tr("Collegamento"), 165)], branch_title=tr("Entità o documento"))
+        self.tree.configure(height=3)
         self.tree.bind("<Double-1>", lambda _: self.open())
         self.tree.bind("<Return>", lambda _: self.open())
-        bar = ctk.CTkFrame(self, fg_color="transparent")
-        bar.pack(fill="x", pady=5)
-        self.btn_open = ctk.CTkButton(bar, text="Apri", width=70, command=self.open)
-        self.btn_open.pack(side="left", padx=4)
-        self.btn_diff = ctk.CTkButton(bar, text="Confronta versioni", width=126, command=self.compare)
-        self.btn_diff.pack(side="left", padx=4)
+        bar = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0, border_width=0)
+        bar.grid(row=2, column=0, sticky="ew", padx=12, pady=8)
+        self.btn_open = primary_button(bar, tr("Apri"), self.open, width=70)
+        self.btn_open.pack(side="left", padx=(0, 8))
+        self.btn_diff = ghost_button(bar, tr("Confronta versioni"), self.compare, width=140)
+        self.btn_diff.pack(side="left")
+        self.reset()
 
     def reset(self):
         self.key = self._request = None
@@ -45,16 +55,16 @@ class RelationsPane(ctk.CTkFrame):
             return
         self.reset()
         self.key = doc_id, meanings
-        self.info.configure(text="Carico i collegamenti…")
+        self.info.configure(text=tr("Carico i collegamenti…"))
 
         def work(con):
             similar, message = [], ""
             if meanings:
                 try:
                     similar = SemanticSearch(con).similar_documents(doc_id)
-                    message = "Nessun documento simile tra quelli già elaborati."
+                    message = tr("Nessun documento simile tra quelli già elaborati.")
                 except (ValueError, OSError, RuntimeError):
-                    message = "I vettori del significato non sono disponibili."
+                    message = tr("I vettori del significato non sono disponibili.")
             graph = RelationGraph(con)
             return (graph.document_entities(doc_id), graph.related_documents(doc_id),
                     graph.document_versions(doc_id), similar, message)
@@ -77,19 +87,20 @@ class RelationsPane(ctk.CTkFrame):
             key = self.tree.insert(group(section), "end", text=name, values=(why,))
             self.actions[key] = action
         for eid, kind, label, offset, roles in entities:
-            add("Entità", label, roles or facts.ENTITY_LABELS[kind], ("entity", eid, label))
+            add(tr("Entità"), label, roles or facts.entity_label(kind), ("entity", eid, label))
         for other, name, stamp, source, reason in related:
-            if reason != "versione":
-                add("Documenti collegati", name, f"{short_date(stamp)} · {reason}", ("document", other, None, None))
+            if reason != RelationGraph.VERSION_REASON:
+                add(tr("Documenti collegati"), name, f"{short_date(stamp)} · {RelationGraph.reason_text(reason)}",
+                    ("document", other, None, None))
         for other, name, score in variants:
             self.version_ids.append(other)
-            add("Versioni", name, f"Testo simile al {score:.0%}", ("version", other))
+            add(tr("Versioni"), name, tr("Testo simile al {pct}", pct=f"{score:.0%}"), ("version", other))
         for row in similar:
-            add("Documenti simili", row["name"], f"Documento simile · {row['score']:.0%}",
+            add(tr("Documenti simili"), row["name"], tr("Documento simile · {pct}", pct=f"{row['score']:.0%}"),
                 ("document", row["id"], row["offset"], row["end"]))
         if message and not similar:
-            self.tree.insert(group("Documenti simili"), "end", text=message)
-        self.info.configure(text="" if self.actions else "Nessun collegamento trovato per questo documento.")
+            self.tree.insert(group(tr("Documenti simili")), "end", text=message)
+        self.info.configure(text="" if self.actions else tr("Nessun collegamento trovato per questo documento."))
         if self.actions:
             self.tree.selection_set(next(iter(self.actions)))
             self.btn_open.configure(state="normal")
@@ -102,6 +113,7 @@ class RelationsPane(ctk.CTkFrame):
         action = self.selected()
         if action:
             if action[0] == "entity":
+                from stillfind.ui.dialogs.document_list import DocumentList
                 DocumentList(self.app, entity=(action[1], action[2]))
             elif action[0] == "version":
                 self.compare()
@@ -109,6 +121,7 @@ class RelationsPane(ctk.CTkFrame):
                 self.app.open_indexed(*action[1:])
 
     def compare(self):
+        from stillfind.ui.dialogs.compare import CompareDialog
         if not self.version_ids or not self.key:
             return
         selected = self.selected()

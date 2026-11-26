@@ -8,6 +8,7 @@ import re
 from datetime import date, timedelta
 
 from stillfind.core import facts
+from stillfind.core.i18n import mark, tr
 from stillfind.core.stemmer import stem_text
 from stillfind.indexing.versions import TextVersions
 
@@ -192,6 +193,18 @@ class RelationGraph:
             JOIN passaggi p ON p.id=m.passaggio_id JOIN docs d ON d.id=p.doc_id LEFT JOIN analisi a ON a.doc_id=d.id
             WHERE m.entita_id=? GROUP BY d.id ORDER BY 3,d.name COLLATE NOCASE,d.id""", (entity_id,)).fetchall()
 
+    REASON_PREFIX = "\x1f"          # i motivi interni dei collegamenti hanno questo prefisso; il resto è il nome di un'entità
+    VERSION_REASON = REASON_PREFIX + "version"
+    REASON_TEXTS = {"contained": mark("documento contenuto"), "replies_to": mark("risponde a"),
+                    "signed_copy": mark("copia firmata"), "reply_received": mark("risposta ricevuta"),
+                    "version": mark("versione")}
+
+    @classmethod
+    def reason_text(cls, reasons: str) -> str:
+        """Motivi dei collegamenti (separati da virgole) nella lingua corrente."""
+        return ",".join(tr(cls.REASON_TEXTS[part[1:]]) if part.startswith(cls.REASON_PREFIX) and part[1:] in cls.REASON_TEXTS
+                        else part for part in reasons.split(","))
+
     def related_documents(self, doc_id):
         con = self.con
         return con.execute(f"""WITH mie AS (
@@ -200,9 +213,9 @@ class RelationGraph:
             SELECT q.doc_id,e.etichetta FROM mie JOIN entita e ON e.id=mie.entita_id
             JOIN menzioni n ON n.entita_id=e.id JOIN passaggi q ON q.id=n.passaggio_id
             WHERE q.doc_id<>? GROUP BY q.doc_id,e.id
-            UNION ALL SELECT a_doc,CASE tipo WHEN 'contiene' THEN 'documento contenuto' WHEN 'risposta' THEN 'risponde a' ELSE 'versione' END
+            UNION ALL SELECT a_doc,CASE tipo WHEN 'contiene' THEN char(31)||'contained' WHEN 'risposta' THEN char(31)||'replies_to' ELSE char(31)||'version' END
             FROM collegamenti WHERE da_doc=?
-            UNION ALL SELECT da_doc,CASE tipo WHEN 'contiene' THEN 'copia firmata' WHEN 'risposta' THEN 'risposta ricevuta' ELSE 'versione' END
+            UNION ALL SELECT da_doc,CASE tipo WHEN 'contiene' THEN char(31)||'signed_copy' WHEN 'risposta' THEN char(31)||'reply_received' ELSE char(31)||'version' END
             FROM collegamenti WHERE a_doc=?)
             SELECT {self.CHRONO_COLUMNS},group_concat(DISTINCT motivo) FROM rapporti JOIN docs d ON d.id=other
             LEFT JOIN analisi a ON a.doc_id=d.id GROUP BY d.id ORDER BY 3,d.name COLLATE NOCASE,d.id""",

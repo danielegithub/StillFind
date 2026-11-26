@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import re
 
+from stillfind.core.i18n import tr
 from stillfind.core.stemmer import strip_accents
 from stillfind.search.query import Query, SearchFilters, WHERE_ALL, WHERE_CONTENT, WHERE_NAME
 
@@ -13,10 +14,10 @@ HIT_START, HIT_END = "\x01", "\x02"  # marcatori usati da snippet()
 
 def section_label(kind, title, number, state) -> str:
     if kind == "sheet":
-        return f"Foglio {title}"
+        return tr("Foglio {title}", title=title)
     if kind == "slide":
-        return f"Slide {title}"
-    return f"Pag. {number}" + (" · OCR" if state == "ocr" else "")
+        return tr("Slide {title}", title=title)
+    return tr("Pag. {number}", number=number) + (" · OCR" if state == "ocr" else "")
 
 
 class SearchEngine:
@@ -177,6 +178,22 @@ class SearchEngine:
             if row:
                 r["location"] = section_label(*row)
                 r["page"] = row[2] if row[0] == "page" else None
+
+    # ---- stato dei vettori
+
+    def add_embedding(self, rows: list[dict], cfg: dict, limit: int | None = None) -> None:
+        """Aggiunge a ogni riga `embedding`: lo stato dei vettori del documento (vedi
+        `SemanticIndex.document_states`). Una sola interrogazione per gruppo di righe, senza leggere i vettori."""
+        from stillfind.semantic.search import SemanticIndex  # import qui: il modulo semantico importa questo
+        shown = rows[:limit]
+        states = SemanticIndex(self.con).document_states([r["id"] for r in shown], cfg)
+        for r in shown:
+            r["embedding"] = states.get(r["id"])
+
+    def embedding_state(self, doc_id: int, cfg: dict) -> dict | None:
+        """Stato aggiornato dei vettori di un solo documento (per l'anteprima). None se non è più nell'archivio."""
+        from stillfind.semantic.search import SemanticIndex
+        return SemanticIndex(self.con).document_states([doc_id], cfg).get(doc_id)
 
     # ---- suggerimenti
     @staticmethod

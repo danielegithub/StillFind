@@ -1,0 +1,37 @@
+{
+ "Lavoratore interrotto.": {
+  "en": "Worker interrupted.",
+  "fr": "Processus de lecture interrompu.",
+  "es": "Proceso de lectura interrumpido.",
+  "de": "Lesevorgang unterbrochen.",
+  "pt": "Processo de leitura interrompido."
+ },
+ "Seleziona un file o una cartella dell’archivio.": {
+  "en": "Select a file or a folder of the archive.",
+  "fr": "Sélectionnez un fichier ou un dossier de l’archive.",
+  "es": "Selecciona un archivo o una carpeta del archivo.",
+  "de": "Wählen Sie eine Datei oder einen Ordner des Archivs.",
+  "pt": "Selecione um arquivo ou uma pasta do arquivo."
+ },
+ "Scegli un PDF o un’immagine per l’OCR.": {
+  "en": "Choose a PDF or an image for OCR.",
+  "fr": "Choisissez un PDF ou une image pour l’OCR.",
+  "es": "Elige un PDF o una imagen para el OCR.",
+  "de": "Wählen Sie ein PDF oder ein Bild für die OCR.",
+  "pt": "Escolha um PDF ou uma imagem para o OCR."
+ },
+ "Seleziona un file già presente nell’archivio.": {
+  "en": "Select a file already in the archive.",
+  "fr": "Sélectionnez un fichier déjà présent dans l’archive.",
+  "es": "Selecciona un archivo que ya esté en el archivo.",
+  "de": "Wählen Sie eine Datei, die bereits im Archiv ist.",
+  "pt": "Selecione um arquivo já presente no arquivo."
+ },
+ "Il percorso selezionato non è presente nell’archivio.": {
+  "en": "The selected path is not in the archive.",
+  "fr": "Le chemin sélectionné n’est pas dans l’archive.",
+  "es": "La ruta seleccionada no está en el archivo.",
+  "de": "Der gewählte Pfad ist nicht im Archiv.",
+  "pt": "O caminho selecionado não está no arquivo."
+ }
+}

@@ -1,31 +1,48 @@
 name: Build StillFind
 
-# Costruisce l'app per Windows, macOS e Linux e verifica che non contenga moduli di rete.
+# Include modelli, Tesseract e lingue; verifica OCR e inferenza nell'app ricollocata.
 # Avvio: scheda "Actions" -> "Build StillFind" -> "Run workflow" (oppure push di un tag v*).
+# Produce archivi compressi e installatori (Windows .exe, macOS .dmg, Linux .deb). Sono ALPHA: vedi packaging/ALPHA.txt.
+# Con un tag v* crea anche una pre-release su GitHub con tutti i file.
 on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+
+permissions:
+  contents: write
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, macos-latest, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Librerie Tk (Linux)
+      - name: Librerie Tk e motore OCR per la build (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev xvfb
+        run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev xvfb tesseract-ocr
+      - name: Motore OCR per la build (macOS)
+        if: runner.os == 'macOS'
+        run: brew install tesseract
+      - name: Motore OCR per la build (Windows)
+        if: runner.os == 'Windows'
+        run: choco install tesseract --yes --no-progress
       - name: Dipendenze
-        run: python -m pip install pyinstaller pypdf customtkinter snowballstemmer "sqlcipher3>=0.6.2" "pypdfium2>=5.10" Pillow numpy onnxruntime sentencepiece
+        run: python -m pip install -r requirements-build.txt
+      - name: Modelli e lingue OCR con verifica SHA-256
+        run: python packaging/prepare_assets.py
       - name: Costruzione e verifica offline
+        if: runner.os != 'Linux'
         run: python build.py
+      - name: Costruzione e verifica offline (Linux con display virtuale)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python build.py
       - name: Archivio (macOS)
         if: runner.os == 'macOS'
         run: cd dist && ditto -c -k --sequesterRsrc --keepParent StillFind.app StillFind-macos.zip
@@ -35,10 +52,58 @@ jobs:
       - name: Archivio (Linux)
         if: runner.os == 'Linux'
         run: cd dist && tar czf StillFind-linux.tar.gz StillFind
+      - name: Icone degli installatori
+        run: python packaging/make_icons.py build/icons
+      - name: Installatore (Windows, Inno Setup)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install innosetup --yes --no-progress
+          $v = (python -c "from stillfind.core.about import __version__; print(__version__)").Trim()
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$v" "/DSourceDir=$PWD\dist\StillFind" "/DIconFile=$PWD\build\icons\stillfind.ico" packaging\windows\stillfind.iss
+      - name: Immagine disco (macOS)
+        if: runner.os == 'macOS'
+        run: sh packaging/macos/build_dmg.sh
+      - name: Pacchetto .deb (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          v=$(python -c "from stillfind.core.about import __version__; print(__version__)")
+          sh packaging/linux/build_deb.sh "$v" build/icons/stillfind.png
       - uses: actions/upload-artifact@v4
         with:
           name: StillFind-${{ runner.os }}
+          if-no-files-found: error
           path: |
             dist/StillFind-macos.zip
+            dist/StillFind-macos.dmg
             dist/StillFind-windows.zip
+            dist/StillFind-windows-setup.exe
             dist/StillFind-linux.tar.gz
+            dist/stillfind_*_amd64.deb
+      - name: Rapporto di verifica del pacchetto
+        uses: actions/upload-artifact@v4
+        with:
+          name: StillFind-verifica-${{ runner.os }}
+          path: dist/bundle-report.json
+          if-no-files-found: error
+
+  release:
+    # Solo con un tag v*: pre-release con tutti i file. Nessuna firma del codice: vedi README.
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: StillFind-*
+          path: release
+          merge-multiple: true
+      - name: Pre-release su GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -f release/bundle-report.json
+          gh release create "${{ github.ref_name }}" release/* --prerelease \
+            --title "StillFind ${{ github.ref_name }} (alpha)" \
+            --notes-file packaging/RELEASE_NOTES_ALPHA.md

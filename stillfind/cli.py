@@ -59,6 +59,9 @@ class CommandLine:
         ap.add_argument("--export", metavar="FILE.csv", help="con --search: salva i risultati in un file CSV")
         ap.add_argument("--self-test-offline", action="store_true",
                         help="verifica che il programma non possa usare la rete")
+        ap.add_argument("--self-test-bundle", action="store_true",
+                        help="verifica modelli, OCR e librerie nell'app compilata")
+        ap.add_argument("--bundle-report", metavar="FILE.json", help=argparse.SUPPRESS)
         ap.add_argument("--version", action="store_true", help="mostra versione, autore e licenza")
         ap.add_argument("--show-search", action="store_true", help="apre o porta in primo piano la ricerca")
         ap.add_argument("--configure-protection", action="store_true", help="apre la configurazione della protezione")
@@ -79,10 +82,14 @@ class CommandLine:
     def run(self) -> None:
         args = self.args
         self._attach_windows_pipes()
+        if args.self_test_bundle:
+            from stillfind.tools.bundle_check import check
+            sys.exit(check(args.bundle_report))
         if args.version:
             print(version_text())
             return
 
+        Settings.load()  # imposta la lingua dell'interfaccia anche nei processi di servizio (icona di sistema…)
         from stillfind.core.private_tmp import PrivateWorkspace
         from stillfind.runtime.signals import AppSignals
         from stillfind.runtime.hotkey import ShortcutProcess

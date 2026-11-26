@@ -10,6 +10,9 @@ from contextlib import closing
 from pathlib import Path
 
 from stillfind.core import facts
+
+from stillfind.core.ocr_languages import OcrLanguages
+from stillfind.core.i18n import tr
 from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.extractors.ocr import ExternalTool
 from stillfind.extractors.pdf_render import scale_for, serialized
@@ -85,7 +88,7 @@ class PdfReview:
     @serialized
     def save(self, dest):
         if not self.done or self.done != self.pages or not self.marks:
-            raise ValueError("Controlla tutte le pagine e seleziona almeno una zona da oscurare.")
+            raise ValueError(tr("Controlla tutte le pagine e seleziona almeno una zona da oscurare."))
         Redactor._new_copy(dest, self.output.save)
 
     @serialized
@@ -96,6 +99,8 @@ class PdfReview:
 
 class Redactor:
     """Copie oscurate di documenti di testo e immagini."""
+
+    PdfReview = PdfReview
 
     @staticmethod
     def spans(text, types, terms):
@@ -135,7 +140,7 @@ class Redactor:
         text = TextDecoder.decode(Path(source).read_bytes())
         found = Redactor.spans(text, types, terms)
         if not found:
-            raise ValueError("Nessuna occorrenza da oscurare.")
+            raise ValueError(tr("Nessuna occorrenza da oscurare."))
         def write(f):
             pos = 0
             for a, b in found:
@@ -158,15 +163,15 @@ class Redactor:
     def _ocr_rects(image, lang, types, terms):
         exe = ExternalTool.which("tesseract")
         if not exe:
-            raise RuntimeError("Per controllare anche il testo nelle immagini serve Tesseract.")
+            raise RuntimeError(tr("Per controllare anche il testo nelle immagini serve Tesseract."))
         data = io.BytesIO()
         image.save(data, format="PNG")
         with PrivateWorkspace.workspace() as tmp:
-            run = subprocess.run([exe, "stdin", "stdout", "-l", lang, "tsv"], input=data.getvalue(),
+            run = subprocess.run([exe, "stdin", "stdout", "-l", OcrLanguages.normalize(lang), "tsv"], input=data.getvalue(),
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=180,
                                  env=PrivateWorkspace.child_environment(tmp))
         if run.returncode:
-            raise RuntimeError("OCR non riuscito. Verifica la lingua installata nelle Impostazioni.")
+            raise RuntimeError(tr("OCR non riuscito. Verifica la lingua installata nelle Impostazioni."))
         words, boxes, offset = [], [], 0
         for row in csv.DictReader(io.StringIO(run.stdout.decode("utf-8", "replace")), delimiter="\t",
                                   quoting=csv.QUOTE_NONE):

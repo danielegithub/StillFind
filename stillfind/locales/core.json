@@ -1,0 +1,795 @@
+{
+ "GNU General Public License versione 3 o successiva (GPL-3.0-or-later)": {
+  "en": "GNU General Public License version 3 or later (GPL-3.0-or-later)",
+  "fr": "Licence publique générale GNU version 3 ou ultérieure (GPL-3.0-or-later)",
+  "es": "Licencia Pública General de GNU versión 3 o posterior (GPL-3.0-or-later)",
+  "de": "GNU General Public License Version 3 oder neuer (GPL-3.0-or-later)",
+  "pt": "Licença Pública Geral GNU versão 3 ou posterior (GPL-3.0-or-later)"
+ },
+ "La protezione dell’indice usa SQLCipher Community di Zetetic e sqlcipher3. L’oscuramento PDF usa PDFium, pypdfium2 e Pillow. Gli avvisi sono in THIRD_PARTY_NOTICES.": {
+  "en": "Index protection uses Zetetic’s SQLCipher Community and sqlcipher3. PDF redaction uses PDFium, pypdfium2 and Pillow. Their notices are in THIRD_PARTY_NOTICES.",
+  "fr": "La protection de l’index utilise SQLCipher Community de Zetetic et sqlcipher3. Le caviardage des PDF utilise PDFium, pypdfium2 et Pillow. Les mentions légales figurent dans THIRD_PARTY_NOTICES.",
+  "es": "La protección del índice usa SQLCipher Community de Zetetic y sqlcipher3. La ocultación de PDF usa PDFium, pypdfium2 y Pillow. Los avisos están en THIRD_PARTY_NOTICES.",
+  "de": "Der Schutz des Index verwendet SQLCipher Community von Zetetic und sqlcipher3. Das Schwärzen von PDFs nutzt PDFium, pypdfium2 und Pillow. Die Hinweise stehen in THIRD_PARTY_NOTICES.",
+  "pt": "A proteção do índice usa o SQLCipher Community da Zetetic e o sqlcipher3. A ocultação de PDF usa PDFium, pypdfium2 e Pillow. Os avisos estão em THIRD_PARTY_NOTICES."
+ },
+ "Nessuna garanzia.": {
+  "en": "No warranty.",
+  "fr": "Aucune garantie.",
+  "es": "Sin garantía.",
+  "de": "Keine Gewährleistung.",
+  "pt": "Sem garantia."
+ },
+ "Chi distribuisce una versione modificata deve conservare questa attribuzione e pubblicare il codice sorgente con la stessa licenza.": {
+  "en": "Anyone who distributes a modified version must keep this attribution and publish the source code under the same licence.",
+  "fr": "Toute personne qui distribue une version modifiée doit conserver cette attribution et publier le code source sous la même licence.",
+  "es": "Quien distribuya una versión modificada debe conservar esta atribución y publicar el código fuente con la misma licencia.",
+  "de": "Wer eine veränderte Version weitergibt, muss diesen Urhebervermerk beibehalten und den Quellcode unter derselben Lizenz veröffentlichen.",
+  "pt": "Quem distribuir uma versão modificada deve manter esta atribuição e publicar o código-fonte com a mesma licença."
+ },
+ "Licenza: {license}": {
+  "en": "Licence: {license}",
+  "fr": "Licence : {license}",
+  "es": "Licencia: {license}",
+  "de": "Lizenz: {license}",
+  "pt": "Licença: {license}"
+ },
+ "Il programma è distribuito nella speranza che sia utile, ma SENZA ALCUNA GARANZIA, nemmeno implicita di commerciabilità o di idoneità a uno scopo particolare.": {
+  "en": "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY, not even the implied warranty of merchantability or fitness for a particular purpose.",
+  "fr": "Ce programme est distribué dans l’espoir qu’il sera utile, mais SANS AUCUNE GARANTIE, pas même la garantie implicite de qualité marchande ou d’adéquation à un usage particulier.",
+  "es": "Este programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA, ni siquiera la garantía implícita de comerciabilidad o idoneidad para un fin determinado.",
+  "de": "Dieses Programm wird in der Hoffnung verbreitet, dass es nützlich ist, jedoch OHNE JEDE GEWÄHRLEISTUNG, auch ohne die stillschweigende Gewährleistung der Marktgängigkeit oder der Eignung für einen bestimmten Zweck.",
+  "pt": "Este programa é distribuído na esperança de que seja útil, mas SEM QUALQUER GARANTIA, nem mesmo a garantia implícita de comercialização ou de adequação a um fim específico."
+ },
+ "StillFind è software libero: puoi ridistribuirlo e modificarlo secondo i termini della {license}, pubblicata dalla Free Software Foundation.": {
+  "en": "StillFind is free software: you can redistribute and modify it under the terms of the {license}, published by the Free Software Foundation.",
+  "fr": "StillFind est un logiciel libre : vous pouvez le redistribuer et le modifier selon les termes de la {license}, publiée par la Free Software Foundation.",
+  "es": "StillFind es software libre: puedes redistribuirlo y modificarlo según los términos de la {license}, publicada por la Free Software Foundation.",
+  "de": "StillFind ist freie Software: Sie können es unter den Bedingungen der {license}, veröffentlicht von der Free Software Foundation, weitergeben und verändern.",
+  "pt": "O StillFind é software livre: você pode redistribuí-lo e modificá-lo de acordo com os termos da {license}, publicada pela Free Software Foundation."
+ },
+ "StillFind, di {author}": {
+  "en": "StillFind, by {author}",
+  "fr": "StillFind, par {author}",
+  "es": "StillFind, de {author}",
+  "de": "StillFind von {author}",
+  "pt": "StillFind, de {author}"
+ },
+ "Codici fiscali": {
+  "en": "Italian tax codes",
+  "fr": "Codes fiscaux italiens",
+  "es": "Códigos fiscales italianos",
+  "de": "Italienische Steuernummern",
+  "pt": "Códigos fiscais italianos"
+ },
+ "Partite IVA": {
+  "en": "VAT numbers",
+  "fr": "Numéros de TVA",
+  "es": "Números de IVA",
+  "de": "USt-IdNrn.",
+  "pt": "Números de IVA"
+ },
+ "IBAN": {
+  "en": "IBAN",
+  "fr": "IBAN",
+  "es": "IBAN",
+  "de": "IBAN",
+  "pt": "IBAN"
+ },
+ "Protocolli e pratiche": {
+  "en": "Protocol and case numbers",
+  "fr": "Numéros de protocole et de dossier",
+  "es": "Números de registro y expediente",
+  "de": "Aktenzeichen und Vorgänge",
+  "pt": "Números de protocolo e processo"
+ },
+ "Email e PEC": {
+  "en": "Email and certified email",
+  "fr": "E-mails et e-mails certifiés",
+  "es": "Correos y correo certificado",
+  "de": "E-Mails und zertifizierte E-Mails",
+  "pt": "E-mails e e-mail certificado"
+ },
+ "Cedenti e cessionari": {
+  "en": "Sellers and buyers",
+  "fr": "Cédants et cessionnaires",
+  "es": "Cedentes y cesionarios",
+  "de": "Verkäufer und Käufer",
+  "pt": "Cedentes e cessionários"
+ },
+ "Conversazioni email": {
+  "en": "Email conversations",
+  "fr": "Conversations par e-mail",
+  "es": "Conversaciones de correo",
+  "de": "E-Mail-Unterhaltungen",
+  "pt": "Conversas de e-mail"
+ },
+ "attivo": {
+  "en": "active",
+  "fr": "actif",
+  "es": "activo",
+  "de": "aktiv",
+  "pt": "ativo"
+ },
+ "in coda": {
+  "en": "queued",
+  "fr": "en attente",
+  "es": "en cola",
+  "de": "in Warteschlange",
+  "pt": "na fila"
+ },
+ "non disponibile": {
+  "en": "unavailable",
+  "fr": "indisponible",
+  "es": "no disponible",
+  "de": "nicht verfügbar",
+  "pt": "indisponível"
+ },
+ "disattivato": {
+  "en": "turned off",
+  "fr": "désactivé",
+  "es": "desactivado",
+  "de": "deaktiviert",
+  "pt": "desativado"
+ },
+ "oggi": {
+  "en": "today",
+  "fr": "aujourd’hui",
+  "es": "hoy",
+  "de": "heute",
+  "pt": "hoje"
+ },
+ "ieri": {
+  "en": "yesterday",
+  "fr": "hier",
+  "es": "ayer",
+  "de": "gestern",
+  "pt": "ontem"
+ },
+ "{n} giorni fa": {
+  "en": "{n} days ago",
+  "fr": "il y a {n} jours",
+  "es": "hace {n} días",
+  "de": "vor {n} Tagen",
+  "pt": "há {n} dias"
+ },
+ "Non capisco la data «{text}». Scrivila così: {full} (oppure {month}, oppure {year}).": {
+  "en": "I don’t understand the date “{text}”. Write it like this: {full} (or {month}, or {year}).",
+  "fr": "Je ne comprends pas la date « {text} ». Écrivez-la ainsi : {full} (ou {month}, ou {year}).",
+  "es": "No entiendo la fecha «{text}». Escríbela así: {full} (o {month}, o {year}).",
+  "de": "Das Datum „{text}“ ist nicht verständlich. Schreiben Sie es so: {full} (oder {month}, oder {year}).",
+  "pt": "Não entendo a data “{text}”. Escreva assim: {full} (ou {month}, ou {year})."
+ },
+ "Embedding attivo · {n} passaggio calcolato con {model}": {
+  "en": {
+   "one": "Embedding active · {n} passage computed with {model}",
+   "other": "Embedding active · {n} passages computed with {model}"
+  },
+  "fr": {
+   "one": "Embedding actif · {n} passage calculé avec {model}",
+   "other": "Embedding actif · {n} passages calculés avec {model}"
+  },
+  "es": {
+   "one": "Embedding activo · {n} pasaje calculado con {model}",
+   "other": "Embedding activo · {n} pasajes calculados con {model}"
+  },
+  "de": {
+   "one": "Embedding aktiv · {n} Abschnitt mit {model} berechnet",
+   "other": "Embedding aktiv · {n} Abschnitte mit {model} berechnet"
+  },
+  "pt": {
+   "one": "Embedding ativo · {n} trecho calculado com {model}",
+   "other": "Embedding ativo · {n} trechos calculados com {model}"
+  }
+ },
+ "Embedding in coda · il testo è già cercabile per parole, i vettori verranno calcolati in background": {
+  "en": "Embedding queued · the text can already be searched by words, the vectors will be computed in the background",
+  "fr": "Embedding en attente · le texte est déjà consultable par mots, les vecteurs seront calculés en arrière-plan",
+  "es": "Embedding en cola · el texto ya se puede buscar por palabras, los vectores se calcularán en segundo plano",
+  "de": "Embedding in der Warteschlange · der Text ist schon per Wortsuche auffindbar, die Vektoren werden im Hintergrund berechnet",
+  "pt": "Embedding na fila · o texto já pode ser pesquisado por palavras, os vetores serão calculados em segundo plano"
+ },
+ "Embedding non disponibile · documento privo di testo leggibile": {
+  "en": "Embedding unavailable · the document has no readable text",
+  "fr": "Embedding indisponible · le document ne contient aucun texte lisible",
+  "es": "Embedding no disponible · el documento no tiene texto legible",
+  "de": "Embedding nicht verfügbar · das Dokument enthält keinen lesbaren Text",
+  "pt": "Embedding indisponível · o documento não tem texto legível"
+ },
+ "Embedding disattivato · attiva «Cerca anche per significato» nelle Impostazioni": {
+  "en": "Embedding turned off · turn on “Also search by meaning” in Settings",
+  "fr": "Embedding désactivé · activez « Rechercher aussi par sens » dans les Réglages",
+  "es": "Embedding desactivado · activa «Buscar también por significado» en Ajustes",
+  "de": "Embedding deaktiviert · aktivieren Sie „Auch nach Bedeutung suchen“ in den Einstellungen",
+  "pt": "Embedding desativado · ative “Pesquisar também por significado” nas Configurações"
+ },
+ "Significato: {state}": {
+  "en": "Meaning: {state}",
+  "fr": "Sens : {state}",
+  "es": "Significado: {state}",
+  "de": "Bedeutung: {state}",
+  "pt": "Significado: {state}"
+ },
+ "Modello: {name} ({format})": {
+  "en": "Model: {name} ({format})",
+  "fr": "Modèle : {name} ({format})",
+  "es": "Modelo: {name} ({format})",
+  "de": "Modell: {name} ({format})",
+  "pt": "Modelo: {name} ({format})"
+ },
+ "Cartella dei modelli: {folder}": {
+  "en": "Models folder: {folder}",
+  "fr": "Dossier des modèles : {folder}",
+  "es": "Carpeta de modelos: {folder}",
+  "de": "Modellordner: {folder}",
+  "pt": "Pasta dos modelos: {folder}"
+ },
+ "Vettori: {dim} dimensioni · calcolati sul processore, senza internet": {
+  "en": "Vectors: {dim} dimensions · computed on the processor, without internet",
+  "fr": "Vecteurs : {dim} dimensions · calculés sur le processeur, sans internet",
+  "es": "Vectores: {dim} dimensiones · calculados en el procesador, sin internet",
+  "de": "Vektoren: {dim} Dimensionen · auf dem Prozessor berechnet, ohne Internet",
+  "pt": "Vetores: {dim} dimensões · calculados no processador, sem internet"
+ },
+ "Impronta SHA-256: {check}": {
+  "en": "SHA-256 fingerprint: {check}",
+  "fr": "Empreinte SHA-256 : {check}",
+  "es": "Huella SHA-256: {check}",
+  "de": "SHA-256-Fingerabdruck: {check}",
+  "pt": "Impressão digital SHA-256: {check}"
+ },
+ "Ricerca per parole: SQLite FTS5 con radici italiane (Snowball IT), sempre attiva": {
+  "en": "Word search: SQLite FTS5 with Italian stems (Snowball IT), always on",
+  "fr": "Recherche par mots : SQLite FTS5 avec racines italiennes (Snowball IT), toujours active",
+  "es": "Búsqueda por palabras: SQLite FTS5 con raíces italianas (Snowball IT), siempre activa",
+  "de": "Wortsuche: SQLite FTS5 mit italienischen Wortstämmen (Snowball IT), immer aktiv",
+  "pt": "Pesquisa por palavras: SQLite FTS5 com radicais italianos (Snowball IT), sempre ativa"
+ },
+ "Lettura dei documenti scansionati attiva\nProgramma: Tesseract, lingue {lang}\nPercorso: {path}\nTutto sul tuo computer, senza internet": {
+  "en": "Reading of scanned documents is on\nProgram: Tesseract, languages {lang}\nPath: {path}\nEverything on your computer, without internet",
+  "fr": "Lecture des documents numérisés activée\nProgramme : Tesseract, langues {lang}\nChemin : {path}\nTout reste sur votre ordinateur, sans internet",
+  "es": "Lectura de documentos escaneados activada\nPrograma: Tesseract, idiomas {lang}\nRuta: {path}\nTodo en tu ordenador, sin internet",
+  "de": "Lesen gescannter Dokumente aktiv\nProgramm: Tesseract, Sprachen {lang}\nPfad: {path}\nAlles auf Ihrem Computer, ohne Internet",
+  "pt": "Leitura de documentos digitalizados ativada\nPrograma: Tesseract, idiomas {lang}\nCaminho: {path}\nTudo no seu computador, sem internet"
+ },
+ "Indicizzato: 100%": {
+  "en": "Indexed: 100%",
+  "fr": "Indexé : 100 %",
+  "es": "Indexado: 100%",
+  "de": "Indiziert: 100 %",
+  "pt": "Indexado: 100%"
+ },
+ "{n} documento": {
+  "en": {
+   "one": "{n} document",
+   "other": "{n} documents"
+  },
+  "fr": {
+   "one": "{n} document",
+   "other": "{n} documents"
+  },
+  "es": {
+   "one": "{n} documento",
+   "other": "{n} documentos"
+  },
+  "de": {
+   "one": "{n} Dokument",
+   "other": "{n} Dokumente"
+  },
+  "pt": {
+   "one": "{n} documento",
+   "other": "{n} documentos"
+  }
+ },
+ "Documenti di testo": {
+  "en": "Text documents",
+  "fr": "Documents texte",
+  "es": "Documentos de texto",
+  "de": "Textdokumente",
+  "pt": "Documentos de texto"
+ },
+ "PDF": {
+  "en": "PDF",
+  "fr": "PDF",
+  "es": "PDF",
+  "de": "PDF",
+  "pt": "PDF"
+ },
+ "Fogli di calcolo": {
+  "en": "Spreadsheets",
+  "fr": "Feuilles de calcul",
+  "es": "Hojas de cálculo",
+  "de": "Tabellen",
+  "pt": "Planilhas"
+ },
+ "Presentazioni": {
+  "en": "Presentations",
+  "fr": "Présentations",
+  "es": "Presentaciones",
+  "de": "Präsentationen",
+  "pt": "Apresentações"
+ },
+ "Email": {
+  "en": "Email",
+  "fr": "E-mails",
+  "es": "Correos",
+  "de": "E-Mails",
+  "pt": "E-mails"
+ },
+ "Archivi e libri": {
+  "en": "Archives and books",
+  "fr": "Archives et livres",
+  "es": "Archivos y libros",
+  "de": "Archive und Bücher",
+  "pt": "Arquivos e livros"
+ },
+ "Pagine web e dati": {
+  "en": "Web pages and data",
+  "fr": "Pages web et données",
+  "es": "Páginas web y datos",
+  "de": "Webseiten und Daten",
+  "pt": "Páginas web e dados"
+ },
+ "File firmati": {
+  "en": "Signed files",
+  "fr": "Fichiers signés",
+  "es": "Archivos firmados",
+  "de": "Signierte Dateien",
+  "pt": "Arquivos assinados"
+ },
+ "Immagini e foto": {
+  "en": "Images and photos",
+  "fr": "Images et photos",
+  "es": "Imágenes y fotos",
+  "de": "Bilder und Fotos",
+  "pt": "Imagens e fotos"
+ },
+ "Qualsiasi data": {
+  "en": "Any date",
+  "fr": "N’importe quelle date",
+  "es": "Cualquier fecha",
+  "de": "Beliebiges Datum",
+  "pt": "Qualquer data"
+ },
+ "Ultima settimana": {
+  "en": "Last week",
+  "fr": "Dernière semaine",
+  "es": "Última semana",
+  "de": "Letzte Woche",
+  "pt": "Última semana"
+ },
+ "Ultimo mese": {
+  "en": "Last month",
+  "fr": "Dernier mois",
+  "es": "Último mes",
+  "de": "Letzter Monat",
+  "pt": "Último mês"
+ },
+ "Quest'anno": {
+  "en": "This year",
+  "fr": "Cette année",
+  "es": "Este año",
+  "de": "Dieses Jahr",
+  "pt": "Este ano"
+ },
+ "Scegli le date…": {
+  "en": "Choose dates…",
+  "fr": "Choisir les dates…",
+  "es": "Elegir fechas…",
+  "de": "Datum wählen…",
+  "pt": "Escolher datas…"
+ },
+ "Nome e contenuto": {
+  "en": "Name and content",
+  "fr": "Nom et contenu",
+  "es": "Nombre y contenido",
+  "de": "Name und Inhalt",
+  "pt": "Nome e conteúdo"
+ },
+ "Solo nel contenuto": {
+  "en": "Content only",
+  "fr": "Contenu uniquement",
+  "es": "Solo en el contenido",
+  "de": "Nur im Inhalt",
+  "pt": "Somente no conteúdo"
+ },
+ "Solo nel nome": {
+  "en": "Name only",
+  "fr": "Nom uniquement",
+  "es": "Solo en el nombre",
+  "de": "Nur im Namen",
+  "pt": "Somente no nome"
+ },
+ "Più pertinenti": {
+  "en": "Most relevant",
+  "fr": "Plus pertinents",
+  "es": "Más relevantes",
+  "de": "Relevanteste zuerst",
+  "pt": "Mais relevantes"
+ },
+ "Più recenti": {
+  "en": "Most recent",
+  "fr": "Plus récents",
+  "es": "Más recientes",
+  "de": "Neueste zuerst",
+  "pt": "Mais recentes"
+ },
+ "Data del documento": {
+  "en": "Document date",
+  "fr": "Date du document",
+  "es": "Fecha del documento",
+  "de": "Dokumentdatum",
+  "pt": "Data do documento"
+ },
+ "Nome (A-Z)": {
+  "en": "Name (A-Z)",
+  "fr": "Nom (A-Z)",
+  "es": "Nombre (A-Z)",
+  "de": "Name (A–Z)",
+  "pt": "Nome (A-Z)"
+ },
+ "Scrivi almeno una data.": {
+  "en": "Enter at least one date.",
+  "fr": "Saisissez au moins une date.",
+  "es": "Escribe al menos una fecha.",
+  "de": "Geben Sie mindestens ein Datum ein.",
+  "pt": "Escreva pelo menos uma data."
+ },
+ "La data finale è prima di quella iniziale.": {
+  "en": "The end date is before the start date.",
+  "fr": "La date de fin précède la date de début.",
+  "es": "La fecha final es anterior a la inicial.",
+  "de": "Das Enddatum liegt vor dem Anfangsdatum.",
+  "pt": "A data final é anterior à data inicial."
+ },
+ "dal {date}": {
+  "en": "from {date}",
+  "fr": "à partir du {date}",
+  "es": "desde el {date}",
+  "de": "ab {date}",
+  "pt": "a partir de {date}"
+ },
+ "fino al {date}": {
+  "en": "until {date}",
+  "fr": "jusqu’au {date}",
+  "es": "hasta el {date}",
+  "de": "bis {date}",
+  "pt": "até {date}"
+ },
+ "Embedding da aggiornare · il file è cambiato dopo l'ultimo calcolo: il testo è già cercabile per parole, i vettori verranno ricalcolati in background": {
+  "en": "Embedding to update · the file changed after the last computation: the text can already be searched by words, the vectors will be recomputed in the background",
+  "fr": "Embedding à mettre à jour · le fichier a changé depuis le dernier calcul : le texte est déjà consultable par mots, les vecteurs seront recalculés en arrière-plan",
+  "es": "Embedding por actualizar · el archivo cambió después del último cálculo: el texto ya se puede buscar por palabras, los vectores se recalcularán en segundo plano",
+  "de": "Embedding wird aktualisiert · die Datei hat sich seit der letzten Berechnung geändert: der Text ist schon per Wortsuche auffindbar, die Vektoren werden im Hintergrund neu berechnet",
+  "pt": "Embedding a atualizar · o arquivo mudou depois do último cálculo: o texto já pode ser pesquisado por palavras, os vetores serão recalculados em segundo plano"
+ },
+ "Embedding non disponibile · il modello non è presente nella cartella dell'app": {
+  "en": "Embedding unavailable · the model is not in the app folder",
+  "fr": "Embedding indisponible · le modèle n’est pas dans le dossier de l’application",
+  "es": "Embedding no disponible · el modelo no está en la carpeta de la aplicación",
+  "de": "Embedding nicht verfügbar · das Modell befindet sich nicht im App-Ordner",
+  "pt": "Embedding indisponível · o modelo não está na pasta do aplicativo"
+ },
+ "Embedding non disponibile · mancano i componenti che lo eseguono": {
+  "en": "Embedding unavailable · the components that run it are missing",
+  "fr": "Embedding indisponible · les composants qui l’exécutent sont absents",
+  "es": "Embedding no disponible · faltan los componentes que lo ejecutan",
+  "de": "Embedding nicht verfügbar · die ausführenden Komponenten fehlen",
+  "pt": "Embedding indisponível · faltam os componentes que o executam"
+ },
+ "OCR: Tesseract ({lang})": {
+  "en": "OCR: Tesseract ({lang})",
+  "fr": "OCR : Tesseract ({lang})",
+  "es": "OCR: Tesseract ({lang})",
+  "de": "OCR: Tesseract ({lang})",
+  "pt": "OCR: Tesseract ({lang})"
+ },
+ "L'OCR è attivo nelle Impostazioni, ma Tesseract non è stato trovato: i documenti scansionati non si leggono.": {
+  "en": "OCR is turned on in Settings, but Tesseract was not found: scanned documents cannot be read.",
+  "fr": "L’OCR est activé dans les Réglages, mais Tesseract est introuvable : les documents numérisés ne peuvent pas être lus.",
+  "es": "El OCR está activado en Ajustes, pero no se encontró Tesseract: los documentos escaneados no se pueden leer.",
+  "de": "OCR ist in den Einstellungen aktiviert, aber Tesseract wurde nicht gefunden: gescannte Dokumente können nicht gelesen werden.",
+  "pt": "O OCR está ativado nas Configurações, mas o Tesseract não foi encontrado: os documentos digitalizados não podem ser lidos."
+ },
+ "I PDF scansionati e le immagini non vengono letti. Si attiva da Impostazioni → Lettura e OCR.": {
+  "en": "Scanned PDFs and images are not read. Turn it on in Settings → Reading and OCR.",
+  "fr": "Les PDF numérisés et les images ne sont pas lus. Activez-le dans Réglages → Lecture et OCR.",
+  "es": "Los PDF escaneados y las imágenes no se leen. Se activa en Ajustes → Lectura y OCR.",
+  "de": "Gescannte PDFs und Bilder werden nicht gelesen. Aktivieren Sie das unter Einstellungen → Lesen und OCR.",
+  "pt": "PDFs digitalizados e imagens não são lidos. Ative em Configurações → Leitura e OCR."
+ },
+ "Rimozione dall’archivio…": {
+  "en": "Removing from the archive…",
+  "fr": "Suppression de l’archive…",
+  "es": "Eliminando del archivo…",
+  "de": "Wird aus dem Archiv entfernt …",
+  "pt": "Removendo do arquivo…"
+ },
+ "doc.": {
+  "en": "docs",
+  "fr": "docs",
+  "es": "docs",
+  "de": "Dok.",
+  "pt": "docs"
+ },
+ "file": {
+  "en": "files",
+  "fr": "fichiers",
+  "es": "archivos",
+  "de": "Dateien",
+  "pt": "arquivos"
+ },
+ "Indicizzazione interrotta: {pct}%": {
+  "en": "Indexing stopped: {pct}%",
+  "fr": "Indexation interrompue : {pct} %",
+  "es": "Indexación detenida: {pct}%",
+  "de": "Indizierung angehalten: {pct} %",
+  "pt": "Indexação interrompida: {pct}%"
+ },
+ "Indicizzazione in pausa: {pct}%": {
+  "en": "Indexing paused: {pct}%",
+  "fr": "Indexation en pause : {pct} %",
+  "es": "Indexación en pausa: {pct}%",
+  "de": "Indizierung pausiert: {pct} %",
+  "pt": "Indexação em pausa: {pct}%"
+ },
+ "{count} · ne restano {left}": {
+  "en": "{count} · {left} left",
+  "fr": "{count} · il en reste {left}",
+  "es": "{count} · quedan {left}",
+  "de": "{count} · noch {left}",
+  "pt": "{count} · restam {left}"
+ },
+ "Indicizzazione interrotta": {
+  "en": "Indexing stopped",
+  "fr": "Indexation interrompue",
+  "es": "Indexación detenida",
+  "de": "Indizierung angehalten",
+  "pt": "Indexação interrompida"
+ },
+ "Indicizzazione in pausa": {
+  "en": "Indexing paused",
+  "fr": "Indexation en pause",
+  "es": "Indexación en pausa",
+  "de": "Indizierung pausiert",
+  "pt": "Indexação em pausa"
+ },
+ "Nessun documento ancora": {
+  "en": "No documents yet",
+  "fr": "Aucun document pour l’instant",
+  "es": "Aún no hay documentos",
+  "de": "Noch keine Dokumente",
+  "pt": "Nenhum documento ainda"
+ },
+ "Il documento ha raggiunto il tetto di {n} passaggi: il resto non è cercabile per significato.": {
+  "en": "The document reached the limit of {n} passages: the rest cannot be searched by meaning.",
+  "fr": "Le document a atteint la limite de {n} passages : le reste n’est pas consultable par sens.",
+  "es": "El documento alcanzó el límite de {n} pasajes: el resto no se puede buscar por significado.",
+  "de": "Das Dokument hat die Grenze von {n} Abschnitten erreicht: der Rest ist nicht per Bedeutung durchsuchbar.",
+  "pt": "O documento atingiu o limite de {n} trechos: o restante não pode ser pesquisado por significado."
+ },
+ "verificata: il modello è quello atteso": {
+  "en": "verified: the model is the expected one",
+  "fr": "vérifiée : le modèle est bien celui attendu",
+  "es": "verificada: el modelo es el esperado",
+  "de": "geprüft: das Modell ist das erwartete",
+  "pt": "verificada: o modelo é o esperado"
+ },
+ "si controlla la prima volta che il modello serve": {
+  "en": "checked the first time the model is needed",
+  "fr": "vérifiée la première fois que le modèle est utilisé",
+  "es": "se comprueba la primera vez que se necesita el modelo",
+  "de": "wird geprüft, sobald das Modell zum ersten Mal gebraucht wird",
+  "pt": "verificada na primeira vez que o modelo for necessário"
+ },
+ "RIFIUTATA: il file non è quello atteso o non è sicuro, il modello non viene usato": {
+  "en": "REJECTED: the file is not the expected one or is not safe, the model is not used",
+  "fr": "REFUSÉE : le fichier n’est pas celui attendu ou n’est pas sûr, le modèle n’est pas utilisé",
+  "es": "RECHAZADA: el archivo no es el esperado o no es seguro, el modelo no se usa",
+  "de": "ABGELEHNT: die Datei ist nicht die erwartete oder nicht sicher, das Modell wird nicht verwendet",
+  "pt": "RECUSADA: o arquivo não é o esperado ou não é seguro, o modelo não é usado"
+ },
+ "non eseguita": {
+  "en": "not performed",
+  "fr": "non effectuée",
+  "es": "no realizada",
+  "de": "nicht durchgeführt",
+  "pt": "não realizada"
+ },
+ "OCR: Tesseract assente": {
+  "en": "OCR: Tesseract missing",
+  "fr": "OCR : Tesseract absent",
+  "es": "OCR: falta Tesseract",
+  "de": "OCR: Tesseract fehlt",
+  "pt": "OCR: Tesseract ausente"
+ },
+ "OCR: spento": {
+  "en": "OCR: off",
+  "fr": "OCR : désactivé",
+  "es": "OCR: desactivado",
+  "de": "OCR: aus",
+  "pt": "OCR: desativado"
+ },
+ "Scansione cartelle…": {
+  "en": "Scanning folders…",
+  "fr": "Analyse des dossiers…",
+  "es": "Examinando carpetas…",
+  "de": "Ordner werden durchsucht …",
+  "pt": "Examinando pastas…"
+ },
+ "{n} file trovati": {
+  "en": "{n} files found",
+  "fr": "{n} fichiers trouvés",
+  "es": "{n} archivos encontrados",
+  "de": "{n} Dateien gefunden",
+  "pt": "{n} arquivos encontrados"
+ },
+ "Embedding in pausa: {pct}%": {
+  "en": "Embedding paused: {pct}%",
+  "fr": "Embedding en pause : {pct} %",
+  "es": "Embedding en pausa: {pct}%",
+  "de": "Embedding pausiert: {pct} %",
+  "pt": "Embedding em pausa: {pct}%"
+ },
+ "Embedding: {pct}%": {
+  "en": "Embedding: {pct}%",
+  "fr": "Embedding : {pct} %",
+  "es": "Embedding: {pct}%",
+  "de": "Embedding: {pct} %",
+  "pt": "Embedding: {pct}%"
+ },
+ "Indicizzazione: {pct}%": {
+  "en": "Indexing: {pct}%",
+  "fr": "Indexation : {pct} %",
+  "es": "Indexación: {pct}%",
+  "de": "Indizierung: {pct} %",
+  "pt": "Indexação: {pct}%"
+ },
+ "Ricerca per significato attiva": {
+  "en": "Search by meaning is on",
+  "fr": "Recherche par sens activée",
+  "es": "Búsqueda por significado activada",
+  "de": "Bedeutungssuche aktiv",
+  "pt": "Pesquisa por significado ativada"
+ },
+ "Ricerca per significato spenta": {
+  "en": "Search by meaning is off",
+  "fr": "Recherche par sens désactivée",
+  "es": "Búsqueda por significado desactivada",
+  "de": "Bedeutungssuche aus",
+  "pt": "Pesquisa por significado desativada"
+ },
+ "Ricerca per significato non disponibile: il modello non c'è nella cartella indicata": {
+  "en": "Search by meaning unavailable: the model is not in the indicated folder",
+  "fr": "Recherche par sens indisponible : le modèle n’est pas dans le dossier indiqué",
+  "es": "Búsqueda por significado no disponible: el modelo no está en la carpeta indicada",
+  "de": "Bedeutungssuche nicht verfügbar: das Modell befindet sich nicht im angegebenen Ordner",
+  "pt": "Pesquisa por significado indisponível: o modelo não está na pasta indicada"
+ },
+ "Ricerca per significato non disponibile: mancano i componenti che la eseguono": {
+  "en": "Search by meaning unavailable: the components that run it are missing",
+  "fr": "Recherche par sens indisponible : les composants qui l’exécutent sont absents",
+  "es": "Búsqueda por significado no disponible: faltan los componentes que la ejecutan",
+  "de": "Bedeutungssuche nicht verfügbar: die ausführenden Komponenten fehlen",
+  "pt": "Pesquisa por significado indisponível: faltam os componentes que a executam"
+ },
+ "Ricerca per significato non disponibile: il modello è stato rifiutato": {
+  "en": "Search by meaning unavailable: the model was rejected",
+  "fr": "Recherche par sens indisponible : le modèle a été refusé",
+  "es": "Búsqueda por significado no disponible: el modelo fue rechazado",
+  "de": "Bedeutungssuche nicht verfügbar: das Modell wurde abgelehnt",
+  "pt": "Pesquisa por significado indisponível: o modelo foi recusado"
+ },
+ "Embedding: preparazione…": {
+  "en": "Embedding: preparing…",
+  "fr": "Embedding : préparation…",
+  "es": "Embedding: preparando…",
+  "de": "Embedding: Vorbereitung …",
+  "pt": "Embedding: preparando…"
+ },
+ "spento": {
+  "en": "off",
+  "fr": "désactivé",
+  "es": "desactivado",
+  "de": "aus",
+  "pt": "desativado"
+ },
+ "modello assente": {
+  "en": "model missing",
+  "fr": "modèle absent",
+  "es": "falta el modelo",
+  "de": "Modell fehlt",
+  "pt": "modelo ausente"
+ },
+ "componenti mancanti": {
+  "en": "components missing",
+  "fr": "composants absents",
+  "es": "faltan componentes",
+  "de": "Komponenten fehlen",
+  "pt": "componentes ausentes"
+ },
+ "errore verifica": {
+  "en": "check failed",
+  "fr": "échec de la vérification",
+  "es": "error de verificación",
+  "de": "Prüfung fehlgeschlagen",
+  "pt": "falha na verificação"
+ },
+ "Italiano": {
+  "en": "Italian",
+  "fr": "Italien",
+  "es": "Italiano",
+  "de": "Italienisch",
+  "pt": "Italiano"
+ },
+ "Inglese": {
+  "en": "English",
+  "fr": "Anglais",
+  "es": "Inglés",
+  "de": "Englisch",
+  "pt": "Inglês"
+ },
+ "Francese": {
+  "en": "French",
+  "fr": "Français",
+  "es": "Francés",
+  "de": "Französisch",
+  "pt": "Francês"
+ },
+ "Spagnolo": {
+  "en": "Spanish",
+  "fr": "Espagnol",
+  "es": "Español",
+  "de": "Spanisch",
+  "pt": "Espanhol"
+ },
+ "Tedesco": {
+  "en": "German",
+  "fr": "Allemand",
+  "es": "Alemán",
+  "de": "Deutsch",
+  "pt": "Alemão"
+ },
+ "Portoghese": {
+  "en": "Portuguese",
+  "fr": "Portugais",
+  "es": "Portugués",
+  "de": "Portugiesisch",
+  "pt": "Português"
+ },
+ "documento contenuto": {
+  "en": "contained document",
+  "fr": "document contenu",
+  "es": "documento contenido",
+  "de": "enthaltenes Dokument",
+  "pt": "documento contido"
+ },
+ "risponde a": {
+  "en": "replies to",
+  "fr": "répond à",
+  "es": "responde a",
+  "de": "antwortet auf",
+  "pt": "responde a"
+ },
+ "copia firmata": {
+  "en": "signed copy",
+  "fr": "copie signée",
+  "es": "copia firmada",
+  "de": "signierte Kopie",
+  "pt": "cópia assinada"
+ },
+ "risposta ricevuta": {
+  "en": "reply received",
+  "fr": "réponse reçue",
+  "es": "respuesta recibida",
+  "de": "Antwort erhalten",
+  "pt": "resposta recebida"
+ },
+ "versione": {
+  "en": "version",
+  "fr": "version",
+  "es": "versión",
+  "de": "Version",
+  "pt": "versão"
+ }
+}

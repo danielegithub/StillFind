@@ -8,6 +8,8 @@ import os
 import tempfile
 from pathlib import Path
 
+from stillfind.core import exclusions, i18n
+
 
 def _app_dir():
     if directory := os.environ.get("STILLFIND_HOME") or os.environ.get("CERCADOC_HOME"):
@@ -31,11 +33,15 @@ DEFAULT_CONFIG = {
     "extensions": ["txt", "md", "csv", "log", "rtf", "html", "htm", "xml", "json",
                    "tex", "docx", "xlsx", "pptx", "odt", "ods", "odp", "pdf", "eml", "p7m", "zip", "epub"],
     "formats_version": 2,
-    "exclude_dirs": ["node_modules", "__pycache__", "venv", "Library", "$RECYCLE.BIN"],
+    "exclude_dirs": list(exclusions.DEFAULT_DIRS),    # nomi (anche con * e ?), validi ovunque
+    "exclude_files": list(exclusions.DEFAULT_FILES),  # idem, per i file
+    "exclusions_version": 1,  # 1 = elenchi predefiniti ampliati (vedi `core/exclusions.py`)
     "max_file_mb": 50,
     "max_chars_per_file": 5_000_000,
     "ocr": False,            # richiede Tesseract installato (vedi README)
     "ocr_lang": "ita+eng",
+    "intro_seen": False,     # presentazione iniziale già vista o saltata (le installazioni esistenti non la vedono)
+    "ui_language": "",       # it, en, fr, es, de, pt; vuoto = non ancora scelta (primo avvio)
     "ocr_max_pages": 50,
     "auto_scan_seconds": 60,  # controllo automatico di file nuovi/modificati/spostati (0 = mai)
     "offline_retention_days": 0,  # 0 = conserva i documenti delle sorgenti scollegate
@@ -44,6 +50,9 @@ DEFAULT_CONFIG = {
     "semantic_search": False,  # ricerca per significato (serve il modello in `models/`, vedi stillfind/semantic)
     "deadline_alerts": True,
     "global_shortcut": True,
+    "show_tray": True,        # icona nella barra di sistema
+    "launch_at_login": False,  # avvio all'accesso (l'agente parte in silenzio); vedi runtime/autostart.py
+    "hide_encryption_secret": False,  # sola preferenza: password e chiavi non vengono salvate qui
     "search_history": True,
     "entity_types": ["cf", "piva", "iban", "protocollo", "email", "soggetto", "messaggio"],
     "protocol_prefixes": ["PR", "PROT", "PRATICA", "PROTOCOLLO"],
@@ -73,11 +82,23 @@ class Settings(dict):
                 saved["formats_version"] = 2
             if saved.get("semantic_calibration", 1) == 1 and saved.get("semantic_min_score") == 0.80:
                 saved.pop("semantic_min_score")  # il valore predefinito precedente veniva salvato anche senza modificarlo
+            if saved.get("exclusions_version", 0) < 1 and "exclude_dirs" in saved:
+                # Gli elenchi predefiniti sono stati ampliati: si aggiungono a quelli dell'utente, che restano.
+                mine = [d for d in saved["exclude_dirs"] if isinstance(d, str)]
+                known = {d.casefold() for d in mine}
+                saved["exclude_dirs"] = mine + [d for d in exclusions.DEFAULT_DIRS if d.casefold() not in known]
+            saved["exclusions_version"] = cls.DEFAULTS["exclusions_version"]
             cfg.update(saved)
             cfg["semantic_calibration"] = cls.DEFAULTS["semantic_calibration"]
+            if "ui_language" not in saved:
+                cfg["ui_language"] = "it"  # installazione esistente: l'interfaccia resta com'era
+            if "intro_seen" not in saved:
+                cfg["intro_seen"] = True   # idem: la presentazione è per le nuove installazioni
         except (OSError, ValueError):
             pass
         cfg["folders"] = cls.normalize_folders(cfg["folders"])
+        # Ogni processo (finestra, lavoratore, icona di sistema) mostra i testi nella stessa lingua.
+        i18n.Translator.initialise(cfg.get("ui_language"))
         return cfg
 
     @staticmethod

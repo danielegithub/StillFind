@@ -1,0 +1,10 @@
+pyinstaller>=6.16,<7
+pypdf
+customtkinter
+snowballstemmer
+sqlcipher3>=0.6.2
+pypdfium2>=5.10
+Pillow
+numpy
+onnxruntime
+sentencepiece

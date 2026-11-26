@@ -8,6 +8,7 @@ import unicodedata
 from bisect import bisect_right
 
 from stillfind.core.config import DB_PATH
+from stillfind.core.i18n import mark, tr
 from stillfind.core.labels import thousands
 from stillfind.core.stemmer import stem, strip_accents
 from stillfind.search.engine import HIT_END, HIT_START, section_label
@@ -158,16 +159,16 @@ class DocumentPreview:
         for a, b in hits:
             events.extend(((a, 2, "hit"), (b, 0, "")))
         if layout:
-            states = {"native": "testo digitale", "short": "testo breve, OCR da eseguire",
-                      "error": "errore OCR", "pending": "OCR da eseguire", "ocr_empty": "OCR senza testo",
-                      "native_ocr_empty": "testo digitale, OCR senza testo"}
+            states = {"native": mark("testo digitale"), "short": mark("testo breve, OCR da eseguire"),
+                      "error": mark("errore OCR"), "pending": mark("OCR da eseguire"), "ocr_empty": mark("OCR senza testo"),
+                      "native_ocr_empty": mark("testo digitale, OCR senza testo")}
             first = max(0, bisect_right(layout.section_starts, lo) - 1)
             for start, kind, title, number, state in layout.sections[first:]:
                 if start > hi or start == hi < len(content):
                     break
                 heading = section_label(kind, title, number, state)
                 if state in states:
-                    heading += " · " + states[state]
+                    heading += " · " + tr(states[state])
                 events.append((max(lo, start), 1, heading))
         pos, tag, parts = lo, "", []
         for offset, event, value in sorted(events):
@@ -184,12 +185,12 @@ class DocumentPreview:
     @staticmethod
     def full_text_parts(content: str, terms: list[str], limit: int = FULL_TEXT_LIMIT, layout=None) -> list[tuple[str, str]]:
         if not content.strip() and not (layout and layout.sections):
-            return [("Nessun testo estratto: il file è stato trovato solo per il nome.", "dim")]
+            return [(tr("Nessun testo estratto: il file è stato trovato solo per il nome."), "dim")]
         hi = min(len(content), limit)
         parts = DocumentPreview._full_range(content, 0, hi, DocumentPreview.hit_spans(content[:hi], terms), layout)
         if hi < len(content):
-            parts.append((f"\n\n… Il testo continua: qui si vedono i primi {thousands(limit)} caratteri su "
-                          f"{thousands(len(content))}. «Copia testo» copia tutto il documento.", "dim"))
+            parts.append(("\n\n" + tr("… Il testo continua: qui si vedono i primi {shown} caratteri su {total}. «Copia testo» copia tutto il documento.",
+                                      shown=thousands(limit), total=thousands(len(content))), "dim"))
         return parts
 
     @staticmethod
@@ -261,7 +262,7 @@ class DocumentPreview:
     @staticmethod
     def preview_parts(content: str, terms: list[str], max_n: int = 8, layout=None, preferred=None) -> list[tuple[str, str]]:
         if not content.strip():
-            return [("Nessun testo estratto: il file è stato trovato solo per il nome.", "dim")]
+            return [(tr("Nessun testo estratto: il file è stato trovato solo per il nome."), "dim")]
         layout = layout or Layout()
         parts = []
         for text, marks, label, cut_left, cut_right in DocumentPreview._excerpts(content, terms, 140, max_n, layout, preferred):
@@ -276,7 +277,7 @@ class DocumentPreview:
             parts += [(text[pos:], ""), ("…\n\n" if cut_right else "\n\n", "dim")]
         if not parts:
             if terms:
-                parts.append(("Nessuna occorrenza nel contenuto (trovato nel nome del file). Anteprima iniziale:\n\n", "dim"))
+                parts.append((tr("Nessuna occorrenza nel contenuto (trovato nel nome del file). Anteprima iniziale:") + "\n\n", "dim"))
             # Anche l'anteprima iniziale conserva le intestazioni quando attraversa più sezioni.
             end = min(800, len(content))
             pos = 0

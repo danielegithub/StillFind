@@ -1,0 +1,16 @@
+STILLFIND — VERSIONE ALPHA / ALPHA VERSION
+
+IT
+StillFind è in fase di alpha test. Il programma e i suoi installatori possono contenere errori, comportarsi in modo
+instabile o cambiare senza preavviso. Installandolo accetti di usarlo a tuo rischio: gli autori non si assumono alcuna
+responsabilità per malfunzionamenti, instabilità del sistema, perdita o danneggiamento di dati o altri danni, diretti
+o indiretti, derivanti dall'installazione o dall'uso. Il programma è fornito "così com'è", senza garanzie di alcun
+tipo (vedi la licenza GPL-3.0-or-later). Prima di provarlo fai una copia di sicurezza dei dati importanti e, se
+possibile, usalo su un computer di prova. Segnalare i problemi aiuta a migliorarlo.
+
+EN
+StillFind is in alpha testing. The program and its installers may contain bugs, behave unstably or change without
+notice. By installing it you agree to use it at your own risk: the authors accept no liability for malfunctions,
+system instability, loss or corruption of data or any other direct or indirect damage arising from installing or
+using it. The program is provided "as is", without warranty of any kind (see the GPL-3.0-or-later licence). Back up
+important data before trying it and, if possible, use a test computer. Reporting problems helps improve it.

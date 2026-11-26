@@ -11,7 +11,12 @@ import time
 from contextlib import closing
 from pathlib import Path
 
+from stillfind.core.problems import ReadProblems
+
+from stillfind.core.ocr_languages import OcrLanguages
+from stillfind.core.exclusions import Exclusions
 from stillfind.core.errors import Stopped
+from stillfind.core.i18n import tr
 from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.core.stemmer import stem_text
 from stillfind.core.system import human_size, short_path
@@ -98,39 +103,42 @@ class DocumentStore:
         notext = int(not content.strip())  # i metadati non contano: un PDF scansionato con titolo resta «senza testo»
         if meta:
             content = meta + "\n\n" + content
+        info = info or {}
+        ocr_lang = info.get("ocr_lang", "")
         vals = (name, folder, ext, st_.st_size, st_.st_mtime, notext, int(ocr), blank_pages,
-                st_.st_dev, st_.st_ino, fp, error)
+                st_.st_dev, st_.st_ino, fp, error, ocr_lang)
         if not con.in_transaction:
             con.execute("BEGIN IMMEDIATE")
         existing = con.execute("SELECT id FROM docs WHERE path=?", (path,)).fetchone()
         if existing:
             doc_id = existing[0]
             con.execute("UPDATE docs SET name=?, folder=?, ext=?, size=?, mtime=?, notext=?, ocr=?, "
-                        "blank_pages=?, dev=?, ino=?, fp=?, error=? WHERE id=?", vals + (doc_id,))
+                        "blank_pages=?, dev=?, ino=?, fp=?, error=?, ocr_lang=? WHERE id=?", vals + (doc_id,))
             con.execute("DELETE FROM fts WHERE rowid=?", (doc_id,))
             con.execute("DELETE FROM vec_done WHERE doc_id=?", (doc_id,))  # testo cambiato: vettori da ricalcolare
             con.execute("DELETE FROM pages WHERE doc_id=?", (doc_id,))
             kind = "updated"
         else:
             doc_id = con.execute(
-                "INSERT INTO docs(path,name,folder,ext,size,mtime,notext,ocr,blank_pages,dev,ino,fp,error) "
-                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", (path,) + vals).lastrowid
+                "INSERT INTO docs(path,name,folder,ext,size,mtime,notext,ocr,blank_pages,dev,ino,fp,error,ocr_lang) "
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (path,) + vals).lastrowid
             kind = "added"
         # radici separate (contenuto / nome): servono a «Cerca in: Nel contenuto» e «Nel nome»
         con.execute("INSERT INTO fts(rowid,name,content,stem,nstem) VALUES(?,?,?,?,?)",
                     (doc_id, name, content, stem_text(content), stem_text(name)))
         shift = len(meta) + 2 if meta else 0
-        sections = (info or {}).get("sections", [(s, "page", str(n), "") for n, s in enumerate(pages, 1)])
-        rows = [(doc_id, n, s + shift, kind_, title, state)
+        sections = info.get("sections", [(s, "page", str(n), "") for n, s in enumerate(pages, 1)])
+        page_langs = info.get("page_langs", {})
+        rows = [(doc_id, n, s + shift, kind_, title, state, page_langs.get(n, "") if kind_ == "page" else "")
                 for n, (s, kind_, title, state) in enumerate(sections, 1) if s + shift <= len(content)]
-        con.executemany("INSERT INTO pages(doc_id,n,start,tipo,titolo,lettura) VALUES(?,?,?,?,?,?)", rows)
+        con.executemany("INSERT INTO pages(doc_id,n,start,tipo,titolo,lettura,lingua) VALUES(?,?,?,?,?,?,?)", rows)
         con.execute("UPDATE docs SET struttura=1 WHERE id=?", (doc_id,))
-        starts = [(n if typ == "page" else None, s) for _, n, s, typ, _, _ in rows]
+        starts = [(n if typ == "page" else None, s) for _, n, s, typ, _, _, _ in rows]
         policy = con.execute("SELECT valore FROM regole_grafo WHERE id=1").fetchone()[0]
-        RelationGraph(con).index_document(doc_id, content, starts, ext, info or {}, policy, shift)
+        RelationGraph(con).index_document(doc_id, content, starts, ext, info, policy, shift)
         if ext in ("eml", "zip"):
             con.execute("INSERT OR REPLACE INTO container_state VALUES(?,?)",
-                        (doc_id, int((info or {}).get("container_ocr", False))))
+                        (doc_id, int(info.get("container_ocr", False))))
         return kind
 
     def backfill(self, doc_id, cfg) -> None:
@@ -190,7 +198,7 @@ class Indexer:
 
     POWER_POLL_SECONDS = 2.0  # pausa tra un controllo e l'altro della batteria; si abbassa nei test
     KNOWN_COLUMNS = ("id", "path", "mtime", "size", "notext", "ocr", "blank_pages", "dev", "ino", "fp", "ext",
-                     "error", "regole", "sha256", "has_pages", "container_ocr", "struttura", "next_ocr")
+                     "error", "regole", "sha256", "has_pages", "container_ocr", "struttura", "next_ocr", "ocr_lang")
 
     def __init__(self, con, cfg: dict, progress=None, stop: threading.Event | None = None,
                  retry_errors: bool = False, dry_run: bool = False, target: str | None = None,
@@ -198,6 +206,7 @@ class Indexer:
         self.con, self.cfg, self.progress, self.stop = con, cfg, progress, stop
         self.retry_errors, self.dry_run, self.target, self.force_ocr = retry_errors, dry_run, target, force_ocr
         self.store = DocumentStore(con)
+        self.reocr = False  # fase di rielaborazione OCR: ricalcola solo i documenti già letti con altre lingue
         self.seen: set[str] = set()
         self.seen_dirs: dict[str, str | None] = {}
         self.todo: list[tuple] = []
@@ -251,21 +260,23 @@ class Indexer:
             self.st["current"], self.st["phase"] = "", "done"
             return self.st
         self._cleanup()
+        if not self.st.get("stopped") and not self.force_ocr:
+            self._reprocess_ocr()
         return self.st
 
     def _prepare(self) -> None:
         con, cfg = self.con, self.cfg
         if self.force_ocr:
             if not self.target or Path(self.target).suffix.lower().lstrip(".") not in IMAGE_EXTS | {"pdf"}:
-                raise ValueError("Scegli un PDF o un’immagine per l’OCR.")
+                raise ValueError(tr("Scegli un PDF o un’immagine per l’OCR."))
             if not Tesseract.available():
-                raise RuntimeError("Tesseract non disponibile.")
+                raise RuntimeError(tr("Tesseract non disponibile."))
             cfg = self.cfg = dict(cfg, ocr=True, _force_ocr=True)
         self.exts = {e.lower().lstrip(".") for e in cfg["extensions"]}
         self.ocr_on = bool(cfg.get("ocr")) and Tesseract.available()
         if self.ocr_on:
             self.exts |= IMAGE_EXTS
-        self.excl = set(cfg["exclude_dirs"])
+        self.excl = Exclusions(cfg["exclude_dirs"], cfg.get("exclude_files", ()))
         self.max_bytes = max(1, int(cfg.get("max_file_mb", 50) or 50)) * 1024 * 1024
         self.max_chars = cfg["max_chars_per_file"]
         self.policy = RelationGraph.rules(cfg)
@@ -285,13 +296,17 @@ class Indexer:
             if self.sources:
                 self.sources.save(con)
             con.commit()
-        self.known = {r[1]: dict(zip(self.KNOWN_COLUMNS, r)) for r in con.execute(
+        self.known = self._load_known(self.target)
+
+    def _load_known(self, path: str | None = None) -> dict[str, dict]:
+        """Stato registrato dei documenti (tutti, oppure solo `path`)."""
+        return {r[1]: dict(zip(self.KNOWN_COLUMNS, r)) for r in self.con.execute(
             "SELECT d.id,path,mtime,size,notext,ocr,blank_pages,dev,ino,fp,ext,error,a.regole,a.sha256,"
             "EXISTS(SELECT 1 FROM pages p WHERE p.doc_id=d.id),"
             "(SELECT ocr_checked FROM container_state WHERE doc_id=d.id),d.struttura,"
-            "(SELECT min(n) FROM pages WHERE doc_id=d.id AND lettura IN ('pending','short')) "
+            "(SELECT min(n) FROM pages WHERE doc_id=d.id AND lettura IN ('pending','short')),d.ocr_lang "
             "FROM docs d LEFT JOIN analisi a ON a.doc_id=d.id" +
-            (" WHERE d.path=?" if self.target else ""), (self.target,) if self.target else ())}
+            (" WHERE d.path=?" if path else ""), (path,) if path else ())}
 
     def _skip_folder(self, path) -> bool:
         if not self.excluded_dirs:
@@ -314,7 +329,7 @@ class Indexer:
         if self.target:
             target = self.target
             if target not in known or PathKey.of(target) in self.excluded_files or self._skip_folder(target):
-                raise ValueError("Seleziona un file già presente nell’archivio.")
+                raise ValueError(tr("Seleziona un file già presente nell’archivio."))
             stat = os.stat(target)
             self._queue_file(target, os.path.basename(target), os.path.dirname(target), known[target]["ext"], stat)
             self.seen.add(target)
@@ -330,7 +345,7 @@ class Indexer:
                 if self._stopped():
                     return False
                 if recursive:
-                    dirnames[:] = [d for d in dirnames if not d.startswith(".") and d not in self.excl
+                    dirnames[:] = [d for d in dirnames if not d.startswith(".") and not self.excl.skip_dir(d)
                                    and not self._skip_folder(os.path.join(dirpath, d))
                                    and not sources.unavailable(os.path.join(dirpath, d))]
                     for d in dirnames:
@@ -352,7 +367,7 @@ class Indexer:
         return True
 
     def _visit_file(self, dirpath: str, fn: str) -> None:
-        if fn.startswith((".", "~$")):
+        if fn.startswith((".", "~$")) or self.excl.skip_file(fn):
             return
         ext = os.path.splitext(fn)[1].lower().lstrip(".")
         if ext not in self.exts:
@@ -386,7 +401,7 @@ class Indexer:
             retry_ocr = ocr_on and k["next_ocr"] <= max(1, int(cfg.get("ocr_max_pages", 50) or 50))
         elif k["struttura"] and k["has_pages"]:
             retry_ocr = False
-        page_error = (k["error"] or "").startswith("Lettura parziale · OCR,")
+        page_error = ReadProblems.is_ocr_page_error(k["error"])
         retry_ocr = retry_ocr and (not k["error"] or page_error)
         # i controlli sulle dipendenze (import di pypdf, ricerca di pdftoppm) solo se serve
         retry_err = bool(k["error"]) and (
@@ -403,6 +418,72 @@ class Indexer:
             k["container_ocr"] is None or (ocr_on and not k["container_ocr"]))
         return bool(retry_ocr or retry_err or structured or missing_pages or retry_container or upgrade)
 
+    # ---- rielaborazione OCR dopo un cambio di lingue
+    def _set_pending_ocr(self, language: str) -> None:
+        self.con.execute("UPDATE stato SET rielabora_ocr=? WHERE id=1", (language,))
+
+    def _pending_ocr_language(self) -> str:
+        """Lingue della rielaborazione OCR richiesta e non ancora completata; vuoto se non ce n'è
+        una valida (una richiesta superata da un cambio successivo delle lingue viene tolta)."""
+        row = self.con.execute("SELECT rielabora_ocr FROM stato WHERE id=1").fetchone()
+        pending = row[0] if row else ""
+        if pending and pending != OcrLanguages.normalize(self.cfg.get("ocr_lang")):
+            if not self.dry_run:
+                self._set_pending_ocr("")
+                self.con.commit()
+            return ""
+        return pending
+
+    def _reocr_candidates(self) -> tuple[list[tuple], int]:
+        """Documenti da rileggere con l'OCR nelle lingue attuali e numero di quelli ora irraggiungibili.
+
+        Solo documenti già letti con OCR in lingue diverse (o sconosciute): Word, Excel e PDF digitali non entrano."""
+        if self.target or not self.ocr_on:
+            return [], 0
+        language = self._pending_ocr_language()
+        if not language:
+            return [], 0
+        items, offline = [], 0
+        rows = self.con.execute("SELECT path,name,folder,ext FROM docs WHERE ocr=1 AND ocr_lang<>? ORDER BY path",
+                                (language,)).fetchall()
+        for path, name, folder, ext in rows:
+            if ext not in self.exts or PathKey.of(path) in self.excluded_files or self._skip_folder(path):
+                continue
+            if self.sources and self.sources.unavailable(path):
+                offline += 1  # il disco potrebbe tornare: la richiesta resta in sospeso
+                continue
+            try:
+                stt = os.stat(path)
+            except OSError:
+                continue  # sparito: lo toglie la normale pulizia
+            if stt.st_size <= self.max_bytes:
+                items.append((path, name, folder, ext, stt))
+        return items, offline
+
+    def _reprocess_ocr(self) -> None:
+        """Rilegge con le lingue attuali i documenti già letti con OCR in altre lingue (su richiesta dell'utente).
+
+        I risultati precedenti restano nell'archivio finché la nuova lettura non riesce, documento per documento.
+        Se si interrompe, la richiesta resta in sospeso e riprende alla prossima esecuzione."""
+        if self.target or not self.ocr_on or not self._pending_ocr_language():
+            return  # con l'OCR spento la richiesta resta in attesa
+        items, offline = self._reocr_candidates()
+        if items:
+            for path, *_ in items:
+                self.known.update(self._load_known(path))
+            self.reocr, self.todo, self.ocr_queue = True, items, {item[0] for item in items}
+            self.st["done"] = 0
+            try:
+                if not self._process():
+                    return
+            finally:
+                self.reocr = False
+            self.con.commit()
+        if not offline:
+            self._set_pending_ocr("")
+        self.con.commit()
+        self.st["current"], self.st["phase"] = "", "done"
+
     def _find_orphans(self) -> None:
         """I documenti di un volume assente non sono candidati al riconoscimento delle rinomine."""
         sources = self.sources
@@ -417,7 +498,8 @@ class Indexer:
         st, sources = self.st, self.sources
         expired = sum(1 for p in self.unseen if sources and sources.expired(p))
         st["changes"] = (len(self.todo) + len(self.orphans) + expired + len(self.reconnected)
-                         + sum(k["regole"] != self.policy for k in self.known.values()))
+                         + sum(k["regole"] != self.policy for k in self.known.values())
+                         + len(self._reocr_candidates()[0]))
         if sources and not st["changes"]:
             maintenance = self.pending_vectors or sources.before != sources.after
             if not maintenance and sources.missing - sources.retained:
@@ -521,18 +603,29 @@ class Indexer:
             try:
                 if self.ocr_on and ext == "pdf" and not self.force_ocr:
                     fp = FileFingerprint.of(path, stt.st_size)
-                    cache = OcrCache(con, fp, cfg.get("ocr_lang", "ita+eng"), path)
+                    cache = OcrCache(con, fp, OcrLanguages.normalize(cfg.get("ocr_lang")), path)
                 old = known.get(path)
                 if (cache and old and old["ocr"] and old["mtime"] == stt.st_mtime
                         and old["size"] == stt.st_size and old["fp"] == fp and not target):
-                    info["previous_ocr"] = dict(con.execute(
+                    rows = con.execute(
                         """SELECT n, CASE WHEN lettura='ocr' THEN substr(content,start+1,
                            coalesce((SELECT q.start-1 FROM pages q WHERE q.doc_id=p.doc_id AND q.n=p.n+1),
-                                    length(content))-start) ELSE '' END
+                                    length(content))-start) ELSE '' END, lingua
                            FROM pages p JOIN fts ON fts.rowid=p.doc_id
-                           WHERE doc_id=? AND lettura IN ('ocr','ocr_empty','native_ocr_empty')""", (old["id"],)))
+                           WHERE doc_id=? AND lettura IN ('ocr','ocr_empty','native_ocr_empty')""",
+                        (old["id"],)).fetchall()
+                    # Nella rielaborazione il testo precedente non sostituisce la nuova lettura: serve solo
+                    # a non perdere una pagina che non si riesce a rileggere.
+                    kind = "fallback_ocr" if self.reocr else "previous_ocr"
+                    info[kind] = {n: text for n, text, _ in rows}
+                    info[kind + "_lang"] = {n: lang for n, _, lang in rows}
                 content, ocr_used = registry.extract(path, ext, cfg, stop=self.stop, cache=cache, info=info)
                 content = content[:self.max_chars]
+                if ocr_used:
+                    langs = info.get("ocr_langs")
+                    if langs is None:
+                        langs = {OcrLanguages.normalize(cfg.get("ocr_lang"))}
+                    info["ocr_lang"] = "|".join(sorted(langs))
             except Stopped:
                 con.commit()
                 st["stopped"] = True
@@ -543,9 +636,18 @@ class Indexer:
         else:
             err_msg = f"File oltre il limite ({human_size(stt.st_size)} > {cfg.get('max_file_mb', 50)} MB)"
             st["errors"] += 1
+        if self.reocr:
+            problem = err_msg or ("" if ext == "pdf" else info.get("partial_error", ""))
+            if problem:
+                # La lettura precedente resta valida e ricercabile: si segnala soltanto che questa non è riuscita.
+                if not err_msg:
+                    st["errors"] += 1
+                con.execute("UPDATE docs SET error=? WHERE path=?",
+                            (problem if ReadProblems.is_partial(problem) else ReadProblems.PARTIAL + problem, path))
+                return "skipped"
         if (err_msg and not target and path in known and known[path]["mtime"] == stt.st_mtime
                 and known[path]["size"] == stt.st_size and (not known[path]["struttura"] or ext == "pdf")):
-            con.execute("UPDATE docs SET error=? WHERE path=?", ("Lettura parziale · " + err_msg, path))
+            con.execute("UPDATE docs SET error=? WHERE path=?", (ReadProblems.PARTIAL + err_msg, path))
             return "skipped"
         if target and self.force_ocr and info.get("partial_error"):
             raise RuntimeError(info["partial_error"])

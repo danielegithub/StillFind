@@ -5,46 +5,47 @@ from __future__ import annotations
 
 import queue
 import threading
-import tkinter as tk
 from contextlib import closing
 from pathlib import Path
-from tkinter import ttk, filedialog
+from tkinter import filedialog
+
+import customtkinter as ctk
 
 from stillfind.core import facts
+from stillfind.core.i18n import tr, trn
 from stillfind.storage.database import Database
 from stillfind.tools.library import PersonalDataAudit
+from stillfind.ui.theme import PAL, font, ghost_button, primary_button
+from stillfind.ui.widgets import SquareDialog, SquareEntry, TreeFrame
 
 
-class AuditDialog(tk.Toplevel):
+class AuditDialog(SquareDialog):
     def __init__(self, app):
-        super().__init__(app)
+        super().__init__(app, tr("Mappa dei dati personali"), "980x540", minsize=(760, 380))
         self.app = app
-        self.title("Mappa dei dati personali")
-        self.geometry("920x480")
-        self.transient(app)
-        bar = ttk.Frame(self)
-        bar.pack(fill="x",padx=10,pady=8)
-        ttk.Label(bar,text="Identificativo del soggetto").pack(side="left")
-        self.query = ttk.Entry(bar)
-        self.query.pack(side="left",padx=5,fill="x",expand=True)
-        self.query.bind("<Return>",lambda _: self.scan())
-        ttk.Button(bar,text="Cerca nell’archivio",command=self.scan).pack(side="left")
-        ttk.Button(bar,text="Desktop e Download",command=self.exposure).pack(side="left")
-        ttk.Button(bar,text="Controlla cartella…",command=self.folder).pack(side="left")
-        table = ttk.Frame(self)
-        table.pack(fill="both",expand=True,padx=10)
-        self.tree = ttk.Treeview(table, columns=("name","kind","value","folder"), show="headings")
-        for k,t in zip(self.tree["columns"],("Documento","Tipo","Valore trovato","Cartella")):
-            self.tree.heading(k,text=t)
-        scroll = ttk.Scrollbar(table, command=self.tree.yview)
-        self.tree.configure(yscrollcommand=scroll.set)
-        scroll.pack(side="right", fill="y")
-        self.tree.pack(fill="both",expand=True)
+        self.note = ctk.CTkLabel(self, text=tr("Sono considerate le entità abilitate e il testo già indicizzato."),
+                                 font=font(12), text_color=PAL["muted"], anchor="w", justify="left", wraplength=900)
+        self.note.pack(side="bottom", fill="x", padx=self.MARGIN, pady=(8, self.MARGIN))
+        bar = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0, border_width=0)
+        bar.pack(fill="x", padx=self.MARGIN, pady=(self.MARGIN, 10))
+        bar.grid_columnconfigure(1, weight=1)
+        ctk.CTkLabel(bar, text=tr("Identificativo del soggetto"), font=font(13), text_color=PAL["text"]
+                     ).grid(row=0, column=0, padx=(0, 10))
+        self.query = SquareEntry(bar, height=36, font=font(13))
+        self.query.grid(row=0, column=1, sticky="ew")
+        self.query.bind("<Return>", lambda _: self.scan())
+        primary_button(bar, tr("Cerca nell’archivio"), self.scan).grid(row=0, column=2, padx=(10, 0))
+        ghost_button(bar, tr("Desktop e Download"), self.exposure).grid(row=0, column=3, padx=(8, 0))
+        ghost_button(bar, tr("Controlla cartella…"), self.folder).grid(row=0, column=4, padx=(8, 0))
+        table = TreeFrame(self, [("name", tr("Documento"), 260), ("kind", tr("Tipo"), 140),
+                                 ("value", tr("Valore trovato"), 220), ("folder", tr("Cartella"), 300)])
+        table.pack(fill="both", expand=True, padx=self.MARGIN)
+        self.tree = table.tree
         self.tree.bind("<Double-1>", lambda _: self.open())
-        self.note = ttk.Label(self,text="Sono considerate le entità abilitate e il testo già indicizzato.")
-        self.note.pack(anchor="w",padx=10,pady=5)
+        self.tree.bind("<Return>", lambda _: self.open())
         self.items = {}
         self.seq = 0
+        self.after(100, self.query.focus_set)
         self.scan()
 
     def exposure(self):
@@ -52,7 +53,7 @@ class AuditDialog(tk.Toplevel):
         if folders:
             self.scan(folders)
         else:
-            self.note.configure(text="Nessuna cartella Desktop o Download disponibile.")
+            self.note.configure(text=tr("Nessuna cartella Desktop o Download disponibile."))
 
     def folder(self):
         folder = filedialog.askdirectory(parent=self)
@@ -63,7 +64,7 @@ class AuditDialog(tk.Toplevel):
         result = queue.Queue()
         self.seq += 1
         seq, query = self.seq, self.query.get()
-        self.note.configure(text="Ricerca delle menzioni nell’archivio…")
+        self.note.configure(text=tr("Ricerca delle menzioni nell’archivio…"))
         def work():
             try:
                 with closing(Database.connect()) as con:
@@ -92,16 +93,18 @@ class AuditDialog(tk.Toplevel):
                 if seq != self.seq:
                     return
                 for doc,name,path,kind,value,start,count,end in rows[offset:offset+180]:
-                    label = facts.ENTITY_LABELS.get(kind, "Testo esatto")
+                    label = facts.entity_label(kind, tr("Testo esatto"))
                     row = self.tree.insert("", "end",values=(name,label,value,Path(path).parent))
                     self.items[row] = doc,start,end
                 if offset+180 < len(rows):
                     self.after(1, lambda: display(offset+180))
                 else:
                     files = len({row[0] for row in rows})
-                    coverage = f" · {issues} file nell’archivio da verificare in Diagnostica" if issues else ""
-                    self.note.configure(text=f"{files} file con riscontri nel testo indicizzato{coverage} · "
-                                             "doppio clic per aprire il passaggio")
+                    coverage = (" · " + trn("{n} file nell’archivio da verificare in Diagnostica",
+                                            "{n} file nell’archivio da verificare in Diagnostica", issues)) if issues else ""
+                    self.note.configure(text=trn("{n} file con riscontri nel testo indicizzato",
+                                                 "{n} file con riscontri nel testo indicizzato", files)
+                                        + coverage + " · " + tr("doppio clic per aprire il passaggio"))
             display()
         self.after(10,poll)
 

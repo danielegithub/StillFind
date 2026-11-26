@@ -22,6 +22,7 @@ import re
 import time
 from itertools import islice
 
+from stillfind.core.problems import ReadProblems
 from stillfind.core.config import DB_PATH, DEFAULT_CONFIG
 from stillfind.runtime.background import PowerMonitor
 from stillfind.search.engine import SearchEngine
@@ -85,10 +86,19 @@ class SemanticIndex:
         return all(importlib.util.find_spec(m) is not None for m in ("numpy", "onnxruntime", "sentencepiece"))
 
     @classmethod
+    def availability(cls, cfg: dict, models_dir=None) -> str:
+        """«on» se la ricerca per significato è attiva e utilizzabile; altrimenti il motivo:
+        «off» (spenta nelle Impostazioni), «no_model» (file del modello assenti) o «no_libraries»."""
+        if not cfg.get("semantic_search"):
+            return "off"
+        if not ModelCatalog.is_installed(models.DEFAULT_MODEL, models_dir):
+            return "no_model"
+        return "on" if cls.libraries_available() else "no_libraries"
+
+    @classmethod
     def available(cls, cfg: dict, models_dir=None) -> bool:
         """La ricerca per significato è attiva nelle impostazioni e tutto il necessario è presente."""
-        return bool(cfg.get("semantic_search")) and ModelCatalog.is_installed(models.DEFAULT_MODEL, models_dir) \
-            and cls.libraries_available()
+        return cls.availability(cfg, models_dir) == "on"
 
     def pending_count(self) -> int:
         """Documenti con i vettori da calcolare o da ricalcolare."""
@@ -110,6 +120,46 @@ class SemanticIndex:
         pending = self.pending_count()
         chunks = self.con.execute(f"SELECT COUNT(*) {self.VALID}", (self.model,)).fetchone()[0]
         return {"docs": total, "pending": pending, "done": total - pending, "passages": chunks}
+
+    # Un file privo di testo non ha passaggi da calcolare. «Lettura parziale» invece ha del testo.
+    NO_TEXT = f"d.notext = 1 OR (d.error != '' AND d.error NOT LIKE '%{ReadProblems.PARTIAL_MARK}%')"
+
+    def document_states(self, ids, cfg: dict, models_dir=None) -> dict[int, dict]:
+        """Stato dei vettori di ciascun documento, senza caricare i vettori: solo `docs`, `vec_done` e il
+        conteggio di `vec_chunks`. Per ogni identificativo restituisce un dizionario con `state`:
+          * `no_text`  il file non ha testo leggibile (scansione senza OCR, errore di lettura): niente vettori;
+          * `disabled` la ricerca per significato non è utilizzabile (`reason`: off, no_model, no_libraries);
+          * `ready`    vettori calcolati sulla versione attuale del file (`passages`, `model`, `at_limit`);
+          * `pending`  da calcolare: in coda, oppure `modified` se il file è cambiato dopo l'ultimo calcolo.
+        `at_limit` segnala che i passaggi hanno raggiunto il tetto `semantic_max_passages`."""
+        ids = list(ids)
+        available = self.availability(cfg, models_dir)
+        maximum = max(1, int(cfg.get("semantic_max_passages", PassageSplitter.MAX_PASSAGES)
+                             or PassageSplitter.MAX_PASSAGES))
+        out: dict[int, dict] = {}
+        for i in range(0, len(ids), 400):
+            batch = ids[i:i + 400]
+            slots = ",".join("?" for _ in batch)
+            sql = (f"SELECT d.id, {self.NO_TEXT}, v.doc_id IS NOT NULL, coalesce(v.model, ''), "
+                   "coalesce(v.mtime = d.mtime AND v.size = d.size, 0), "
+                   "(SELECT COUNT(*) FROM vec_chunks c WHERE c.doc_id = d.id) "
+                   f"FROM docs d LEFT JOIN vec_done v ON v.doc_id = d.id WHERE d.id IN ({slots})")
+            for doc, no_text, has_done, done_model, same_file, passages in self.con.execute(sql, batch):
+                valid = bool(same_file) and done_model == self.model
+                if no_text or (valid and not passages):
+                    out[doc] = {"state": "no_text"}
+                elif available != "on":
+                    out[doc] = {"state": "disabled", "reason": available}
+                elif valid:
+                    out[doc] = {"state": "ready", "passages": passages, "model": done_model,
+                                "at_limit": passages >= maximum, "max_passages": maximum}
+                else:
+                    # Quando il file cambia l'indicizzatore toglie `vec_done`, ma i vecchi passaggi restano in
+                    # `vec_chunks` fino al nuovo calcolo: è così che si riconosce un file «modificato».
+                    # model == '' è il segnaposto di un calcolo in corso: il documento è ancora in coda.
+                    modified = passages > 0 and (not has_done or (done_model == self.model and not same_file))
+                    out[doc] = {"state": "pending", "modified": modified}
+        return out
 
     @staticmethod
     def open_store(dim: int | None = None, con=None):

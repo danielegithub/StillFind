@@ -1,0 +1,205 @@
+{
+ "canone mensile": {
+  "en": "monthly rent",
+  "fr": "loyer mensuel",
+  "es": "alquiler mensual",
+  "de": "Monatsmiete",
+  "pt": "aluguel mensal"
+ },
+ "spese riscaldamento": {
+  "en": "heating costs",
+  "fr": "frais de chauffage",
+  "es": "gastos de calefacción",
+  "de": "Heizkosten",
+  "pt": "despesas de aquecimento"
+ },
+ "Avanti": {
+  "en": "Next",
+  "fr": "Suivant",
+  "es": "Siguiente",
+  "de": "Weiter",
+  "pt": "Avançar"
+ },
+ "Cerca dentro i documenti": {
+  "en": "Search inside your documents",
+  "fr": "Rechercher dans les documents",
+  "es": "Busca dentro de los documentos",
+  "de": "In den Dokumenten suchen",
+  "pt": "Pesquise dentro dos documentos"
+ },
+ "Scrivi una parola o una frase: StillFind la trova nel testo, anche all’interno di un PDF.": {
+  "en": "Type a word or a phrase: StillFind finds it in the text, even inside a PDF.",
+  "fr": "Saisissez un mot ou une phrase : StillFind le trouve dans le texte, même à l’intérieur d’un PDF.",
+  "es": "Escribe una palabra o una frase: StillFind la encuentra en el texto, incluso dentro de un PDF.",
+  "de": "Geben Sie ein Wort oder einen Satz ein: StillFind findet ihn im Text, auch innerhalb eines PDFs.",
+  "pt": "Digite uma palavra ou uma frase: o StillFind a encontra no texto, até dentro de um PDF."
+ },
+ "Contratto di locazione ad uso abitativo": {
+  "en": "Residential lease agreement",
+  "fr": "Contrat de location à usage d’habitation",
+  "es": "Contrato de arrendamiento de vivienda",
+  "de": "Mietvertrag für Wohnraum",
+  "pt": "Contrato de locação residencial"
+ },
+ "Art. 3 — Il canone mensile è fissato in 650,00 euro, da versare entro il 5 di ogni mese.": {
+  "en": "Art. 3 — The monthly rent is set at 650.00 euros, payable by the 5th of each month.",
+  "fr": "Art. 3 — Le loyer mensuel est fixé à 650,00 euros, à verser avant le 5 de chaque mois.",
+  "es": "Art. 3 — El alquiler mensual se fija en 650,00 euros, pagaderos antes del día 5 de cada mes.",
+  "de": "Art. 3 — Die Monatsmiete beträgt 650,00 Euro und ist bis zum 5. eines jeden Monats zu zahlen.",
+  "pt": "Art. 3 — O aluguel mensal é fixado em 650,00 euros, a pagar até o dia 5 de cada mês."
+ },
+ "Art. 4 — Le spese condominiali sono a carico del conduttore.": {
+  "en": "Art. 4 — Building service charges are paid by the tenant.",
+  "fr": "Art. 4 — Les charges de copropriété sont à la charge du locataire.",
+  "es": "Art. 4 — Los gastos de comunidad corren a cargo del arrendatario.",
+  "de": "Art. 4 — Die Nebenkosten trägt der Mieter.",
+  "pt": "Art. 4 — As despesas de condomínio ficam a cargo do locatário."
+ },
+ "Ritrova anche un concetto": {
+  "en": "Find a concept too",
+  "fr": "Retrouvez aussi un concept",
+  "es": "Encuentra también un concepto",
+  "de": "Auch ein Konzept wiederfinden",
+  "pt": "Reencontre também um conceito"
+ },
+ "Anche con parole diverse da quelle del documento, StillFind trova il passaggio che parla della stessa cosa.": {
+  "en": "Even with words different from those in the document, StillFind finds the passage that talks about the same thing.",
+  "fr": "Même avec des mots différents de ceux du document, StillFind trouve le passage qui parle de la même chose.",
+  "es": "Incluso con palabras distintas a las del documento, StillFind encuentra el pasaje que habla de lo mismo.",
+  "de": "Auch mit anderen Wörtern als im Dokument findet StillFind die Passage, die vom Gleichen handelt.",
+  "pt": "Mesmo com palavras diferentes das do documento, o StillFind encontra o trecho que fala da mesma coisa."
+ },
+ "Ripartizione caldaia: quota a carico di ciascun inquilino per la stagione invernale.": {
+  "en": "Boiler cost split: share payable by each tenant for the winter season.",
+  "fr": "Répartition de la chaudière : quote-part de chaque locataire pour la saison hivernale.",
+  "es": "Reparto de la caldera: cuota a cargo de cada inquilino para la temporada de invierno.",
+  "de": "Kesselkostenverteilung: Anteil jedes Mieters für die Wintersaison.",
+  "pt": "Rateio da caldeira: cota a cargo de cada inquilino para a temporada de inverno."
+ },
+ "I tuoi documenti restano sul tuo computer": {
+  "en": "Your documents stay on your computer",
+  "fr": "Vos documents restent sur votre ordinateur",
+  "es": "Tus documentos se quedan en tu ordenador",
+  "de": "Ihre Dokumente bleiben auf Ihrem Computer",
+  "pt": "Seus documentos ficam no seu computador"
+ },
+ "StillFind lavora in locale: niente caricamenti, niente account.": {
+  "en": "StillFind works locally: no uploads, no account.",
+  "fr": "StillFind travaille en local : aucun envoi, aucun compte.",
+  "es": "StillFind trabaja en local: sin subidas, sin cuenta.",
+  "de": "StillFind arbeitet lokal: kein Hochladen, kein Konto.",
+  "pt": "O StillFind trabalha localmente: sem envios, sem conta."
+ },
+ "Salta presentazione": {
+  "en": "Skip introduction",
+  "fr": "Passer la présentation",
+  "es": "Saltar presentación",
+  "de": "Präsentation überspringen",
+  "pt": "Pular apresentação"
+ },
+ "I tuoi documenti. Finalmente ritrovati.": {
+  "en": "Your documents. Finally found.",
+  "fr": "Vos documents. Enfin retrouvés.",
+  "es": "Tus documentos. Por fin encontrados.",
+  "de": "Ihre Dokumente. Endlich wiedergefunden.",
+  "pt": "Seus documentos. Finalmente reencontrados."
+ },
+ "Trova quello che cerchi dentro PDF, documenti, email e scansioni, anche quando non ricordi il nome del file.": {
+  "en": "Find what you are looking for inside PDFs, documents, emails and scans, even when you don’t remember the file name.",
+  "fr": "Trouvez ce que vous cherchez dans les PDF, documents, e-mails et numérisations, même quand vous ne vous souvenez pas du nom du fichier.",
+  "es": "Encuentra lo que buscas dentro de PDF, documentos, correos y escaneos, incluso cuando no recuerdas el nombre del archivo.",
+  "de": "Finden Sie, was Sie suchen, in PDFs, Dokumenten, E-Mails und Scans – auch wenn Sie den Dateinamen nicht mehr wissen.",
+  "pt": "Encontre o que você procura dentro de PDFs, documentos, e-mails e digitalizações, mesmo quando não lembra o nome do arquivo."
+ },
+ "Vai alla configurazione": {
+  "en": "Go to setup",
+  "fr": "Aller à la configuration",
+  "es": "Ir a la configuración",
+  "de": "Zur Einrichtung",
+  "pt": "Ir para a configuração"
+ },
+ "Esempio dimostrativo": {
+  "en": "Demo example",
+  "fr": "Exemple de démonstration",
+  "es": "Ejemplo de demostración",
+  "de": "Beispiel zur Demonstration",
+  "pt": "Exemplo de demonstração"
+ },
+ "Serve la ricerca per significato: puoi attivarla durante la configurazione.": {
+  "en": "This needs search by meaning: you can turn it on during setup.",
+  "fr": "Cela nécessite la recherche par sens : vous pouvez l’activer pendant la configuration.",
+  "es": "Hace falta la búsqueda por significado: puedes activarla durante la configuración.",
+  "de": "Dafür ist die Bedeutungssuche nötig: Sie können sie bei der Einrichtung aktivieren.",
+  "pt": "É preciso a pesquisa por significado: você pode ativá-la durante a configuração."
+ },
+ "Elaborazione locale": {
+  "en": "Local processing",
+  "fr": "Traitement local",
+  "es": "Procesamiento local",
+  "de": "Lokale Verarbeitung",
+  "pt": "Processamento local"
+ },
+ "Leggere e indicizzare avviene su questo computer.": {
+  "en": "Reading and indexing happen on this computer.",
+  "fr": "La lecture et l’indexation se font sur cet ordinateur.",
+  "es": "La lectura y la indexación ocurren en este ordenador.",
+  "de": "Lesen und Indizieren geschehen auf diesem Computer.",
+  "pt": "A leitura e a indexação acontecem neste computador."
+ },
+ "Funziona offline": {
+  "en": "Works offline",
+  "fr": "Fonctionne hors ligne",
+  "es": "Funciona sin conexión",
+  "de": "Funktioniert offline",
+  "pt": "Funciona offline"
+ },
+ "Nessuna connessione a internet: nemmeno per la ricerca per significato.": {
+  "en": "No internet connection needed, not even for search by meaning.",
+  "fr": "Aucune connexion internet, même pas pour la recherche par sens.",
+  "es": "Ninguna conexión a internet: ni siquiera para la búsqueda por significado.",
+  "de": "Keine Internetverbindung nötig, auch nicht für die Bedeutungssuche.",
+  "pt": "Nenhuma conexão com a internet, nem mesmo para a pesquisa por significado."
+ },
+ "Archivio cifrabile": {
+  "en": "Encryptable archive",
+  "fr": "Archive chiffrable",
+  "es": "Archivo cifrable",
+  "de": "Verschlüsselbares Archiv",
+  "pt": "Arquivo cifrável"
+ },
+ "Se vuoi, proteggi l’archivio con la cifratura. I documenti originali restano intatti.": {
+  "en": "If you want, protect the archive with encryption. The original documents stay untouched.",
+  "fr": "Si vous le souhaitez, protégez l’archive par le chiffrement. Les documents originaux restent intacts.",
+  "es": "Si quieres, protege el archivo con cifrado. Los documentos originales no se tocan.",
+  "de": "Auf Wunsch schützen Sie das Archiv mit Verschlüsselung. Die Originaldokumente bleiben unberührt.",
+  "pt": "Se quiser, proteja o arquivo com cifragem. Os documentos originais permanecem intactos."
+ },
+ "Passo {i} di {n}": {
+  "en": "Step {i} of {n}",
+  "fr": "Étape {i} sur {n}",
+  "es": "Paso {i} de {n}",
+  "de": "Schritt {i} von {n}",
+  "pt": "Passo {i} de {n}"
+ },
+ "Scopri StillFind": {
+  "en": "Discover StillFind",
+  "fr": "Découvrir StillFind",
+  "es": "Descubre StillFind",
+  "de": "StillFind entdecken",
+  "pt": "Descubra o StillFind"
+ },
+ "Prepariamo il tuo archivio": {
+  "en": "Let’s prepare your archive",
+  "fr": "Préparons votre archive",
+  "es": "Preparemos tu archivo",
+  "de": "Richten wir Ihr Archiv ein",
+  "pt": "Vamos preparar o seu arquivo"
+ },
+ "trovato per significato": {
+  "en": "found by meaning",
+  "fr": "trouvé par le sens",
+  "es": "encontrado por significado",
+  "de": "nach Bedeutung gefunden",
+  "pt": "encontrado por significado"
+ }
+}

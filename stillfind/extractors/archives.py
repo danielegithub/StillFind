@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path, PurePosixPath
 
+from stillfind.core.problems import ReadProblems
 from stillfind.core.errors import Stopped
 from stillfind.core.private_tmp import PrivateWorkspace
 from stillfind.extractors.base import ExtractionRequest, Extractor
@@ -61,7 +62,7 @@ class Members:
 
     def report(self, info):
         if self.failed and info is not None:
-            info["partial_error"] = f"Lettura parziale · {self.failed} elementi non leggibili"
+            info["partial_error"] = f"{ReadProblems.PARTIAL}{self.failed} elementi non leggibili"
 
     def reserve_office(self, file):
         with zipfile.ZipFile(file) as inner:

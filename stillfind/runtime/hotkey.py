@@ -11,6 +11,7 @@ import threading
 from abc import ABC, abstractmethod
 
 from stillfind.core.config import APP_DIR
+from stillfind.core.i18n import tr
 from stillfind.runtime.signals import AppSignals
 
 
@@ -49,9 +50,9 @@ class MacShortcut(ShortcutBackend):
         event = Event(int.from_bytes(b"keyb", "big"), 5)
         ref, hot = C.c_void_p(), C.c_void_p()
         if carbon.InstallEventHandler(target, handler, 1, C.byref(event), None, C.byref(ref)):
-            raise RuntimeError("Registrazione evento macOS fallita.")
+            raise RuntimeError(tr("Registrazione evento macOS fallita."))
         if carbon.RegisterEventHotKey(40, (1 << 8) | (1 << 11), ID(0x43444F43, 1), target, 0, C.byref(hot)):
-            raise RuntimeError("Combinazione già in uso.")
+            raise RuntimeError(tr("Combinazione già in uso."))
         self.ready()
         carbon.RunApplicationEventLoop()
 
@@ -63,7 +64,7 @@ class WindowsShortcut(ShortcutBackend):
         from ctypes.wintypes import MSG
         user = C.windll.user32
         if not user.RegisterHotKey(None, 1, 0x4003, ord("K")):
-            raise RuntimeError("Combinazione già in uso.")
+            raise RuntimeError(tr("Combinazione già in uso."))
         self.ready()
         msg = MSG()
         try:
@@ -79,12 +80,12 @@ class X11Shortcut(ShortcutBackend):
 
     def run(self):
         if not re.match(r"^(?::|unix:|unix/:)\d+(\.\d+)?$", os.environ.get("DISPLAY", "")):
-            raise RuntimeError("È richiesto un display X11 locale.")
+            raise RuntimeError(tr("È richiesto un display X11 locale."))
         lib = C.CDLL("libX11.so.6")
         lib.XOpenDisplay.restype = C.c_void_p
         raw = lib.XOpenDisplay(None)
         if not raw:
-            raise RuntimeError("Display X11 non disponibile.")
+            raise RuntimeError(tr("Display X11 non disponibile."))
         display = C.c_void_p(raw)
         lib.XDefaultRootWindow.restype = C.c_ulong
         root = C.c_ulong(lib.XDefaultRootWindow(display))
@@ -99,7 +100,7 @@ class X11Shortcut(ShortcutBackend):
             lib.XGrabKey(display, key, 12 | locks, root, 0, 1, 1)
         lib.XSync(display, 0)
         if failures:
-            raise RuntimeError("Combinazione già in uso.")
+            raise RuntimeError(tr("Combinazione già in uso."))
         self.ready()
         event = (C.c_long * 24)()
         while True:
@@ -114,7 +115,7 @@ class WaylandShortcut(ShortcutBackend):
     def run(self):
         # Usa direttamente Gio del desktop anche nella distribuzione Python autonoma.
         if any(not a.startswith("unix:") for a in os.environ.get("DBUS_SESSION_BUS_ADDRESS", "").split(";") if a):
-            raise RuntimeError("Bus di sessione non locale.")
+            raise RuntimeError(tr("Bus di sessione non locale."))
         gio, glib = C.CDLL("libgio-2.0.so.0"), C.CDLL("libglib-2.0.so.0")
         ptr, string, integer = C.c_void_p, C.c_char_p, C.c_int
         def function(lib, name, result, *args):
@@ -123,7 +124,7 @@ class WaylandShortcut(ShortcutBackend):
             return fn
         bus = function(gio, "g_bus_get_sync", ptr, integer, ptr, ptr)(2, None, None)
         if not bus:
-            raise RuntimeError("Bus locale della sessione non disponibile.")
+            raise RuntimeError(tr("Bus locale della sessione non disponibile."))
         parse = function(glib, "g_variant_parse", ptr, ptr, string, ptr, ptr, ptr)
         child = function(glib, "g_variant_get_child_value", ptr, ptr, C.c_size_t)
         unref = function(glib, "g_variant_unref", None, ptr)
@@ -146,10 +147,10 @@ class WaylandShortcut(ShortcutBackend):
         def call(method, args):
             params = parse(None, args.encode(), None, None, None)
             if not params:
-                raise RuntimeError("Parametri del portale non validi.")
+                raise RuntimeError(tr("Parametri del portale non validi."))
             response = call_sync(bus, desktop, path, iface, method, params, None, 0, 5000, None, None)
             if not response:
-                raise RuntimeError("Il desktop non offre il portale per le scorciatoie.")
+                raise RuntimeError(tr("Il desktop non offre il portale per le scorciatoie."))
             pending[field(response, 0, lambda v: as_string(v, None))] = method
             unref(response)
         callback = C.CFUNCTYPE(None, ptr, string, string, string, string, ptr, ptr)
@@ -164,17 +165,17 @@ class WaylandShortcut(ShortcutBackend):
                 if not method:
                     return
                 if field(args, 0, as_uint):
-                    raise RuntimeError("Il desktop non ha autorizzato la scorciatoia.")
+                    raise RuntimeError(tr("Il desktop non ha autorizzato la scorciatoia."))
                 if method == b"BindShortcuts":
                     self.ready()
                     return
                 handle = field(args, 1, lambda v: lookup(v, b"session_handle", None))
                 if not handle:
-                    raise RuntimeError("Sessione del portale non disponibile.")
+                    raise RuntimeError(tr("Sessione del portale non disponibile."))
                 session = as_string(handle, None).decode()
                 unref(handle)
                 if not re.fullmatch(r"/[a-zA-Z0-9_/]+", session):
-                    raise RuntimeError("Sessione del portale non valida.")
+                    raise RuntimeError(tr("Sessione del portale non valida."))
                 call(b"BindShortcuts", "(objectpath '" + session + "', [('search', {'description': <'Apri StillFind'>,"
                      "'preferred_trigger': <'CTRL+ALT+k'>})], '', @a{sv} {})")
             except Exception as exc:

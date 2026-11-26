@@ -1,0 +1,23 @@
+{
+ "Nomi separati da virgola (es. Temp, Cache, *.app), esclusi ovunque si trovino. L’elenco iniziale esclude dipendenze, compilazioni e cartelle di sistema.": {
+  "en": "Names separated by commas (e.g. Temp, Cache, *.app), excluded wherever they are. The initial list excludes dependencies, builds and system folders.",
+  "fr": "Noms séparés par des virgules (ex. Temp, Cache, *.app), exclus où qu’ils se trouvent. La liste initiale exclut dépendances, compilations et dossiers système.",
+  "es": "Nombres separados por comas (p. ej. Temp, Cache, *.app), excluidos estén donde estén. La lista inicial excluye dependencias, compilaciones y carpetas del sistema.",
+  "de": "Namen durch Kommas getrennt (z. B. Temp, Cache, *.app), überall ausgeschlossen. Die Anfangsliste schließt Abhängigkeiten, Build-Ordner und Systemordner aus.",
+  "pt": "Nomes separados por vírgula (ex.: Temp, Cache, *.app), excluídos onde quer que estejam. A lista inicial exclui dependências, compilações e pastas do sistema."
+ },
+ "File da escludere": {
+  "en": "Files to exclude",
+  "fr": "Fichiers à exclure",
+  "es": "Archivos que excluir",
+  "de": "Auszuschließende Dateien",
+  "pt": "Arquivos a excluir"
+ },
+ "Nomi o modelli separati da virgola (es. *.lock, package.json): codice sorgente, file generati e di servizio.": {
+  "en": "Names or patterns separated by commas (e.g. *.lock, package.json): source code, generated and system files.",
+  "fr": "Noms ou modèles séparés par des virgules (ex. *.lock, package.json) : code source, fichiers générés et de service.",
+  "es": "Nombres o patrones separados por comas (p. ej. *.lock, package.json): código fuente, archivos generados y de sistema.",
+  "de": "Namen oder Muster durch Kommas getrennt (z. B. *.lock, package.json): Quellcode, generierte und Systemdateien.",
+  "pt": "Nomes ou padrões separados por vírgula (ex.: *.lock, package.json): código-fonte, arquivos gerados e de sistema."
+ }
+}

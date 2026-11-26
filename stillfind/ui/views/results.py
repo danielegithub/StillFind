@@ -7,9 +7,12 @@ import sys
 import tkinter as tk
 
 import customtkinter as ctk
+from PIL import ImageTk
 
 from stillfind.core import labels as ui_text
-from stillfind.ui.theme import col, card
+from stillfind.core.i18n import tr
+from stillfind.ui.theme import col, dark, icon_pil
+from stillfind.ui.widgets import HoverTip
 
 
 class ResultList(ctk.CTkFrame):
@@ -18,17 +21,23 @@ class ResultList(ctk.CTkFrame):
     È un solo widget Text (veloce anche con 500 righe). Selezione con clic, Maiusc per un intervallo,
     ⌘/Ctrl per aggiungere; frecce, Invio, doppio clic."""
 
+    BADGE_SIZE = 16   # lato dell'icona dello stato dei vettori, in pixel
+
     def __init__(self, master, on_change, on_open, on_menu, on_copy):
-        super().__init__(master, fg_color="transparent")
+        super().__init__(master, fg_color="transparent", corner_radius=0, border_width=0)
+        self._photos: dict[tuple[str, bool], ImageTk.PhotoImage] = {}  # Tk non conserva i riferimenti alle immagini
+        self._tip_for: int | None = None
+        self._pointer = (0, 0)
         self.on_change, self.on_open, self.on_menu, self.on_copy = on_change, on_open, on_menu, on_copy
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
-        self.text = tk.Text(self, wrap="word", cursor="arrow", borderwidth=0, highlightthickness=0, padx=14, pady=4,
+        self.text = tk.Text(self, wrap="word", cursor="arrow", borderwidth=0, highlightthickness=1, padx=0, pady=8,
                             exportselection=False, takefocus=True, undo=False, insertwidth=0, spacing1=0, spacing3=0)
         self.text.grid(row=0, column=0, sticky="nsew")
-        sb = ctk.CTkScrollbar(self, command=self.text.yview)
-        sb.grid(row=0, column=1, sticky="ns", padx=(2, 4), pady=6)
-        self.text.configure(yscrollcommand=sb.set)
+        sb = ctk.CTkScrollbar(self, command=self.text.yview, corner_radius=0, border_spacing=0, width=12)
+        sb.grid(row=0, column=1, sticky="ns", padx=(0, 2), pady=2)
+        self.tip = HoverTip(self.text)
+        self.text.configure(yscrollcommand=lambda *args: (sb.set(*args), self._hide_tip()))
         self.results: list[dict] = []
         self.selected: list[int] = []
         self.active: int | None = None
@@ -46,6 +55,9 @@ class ResultList(ctk.CTkFrame):
         t.bind("<Command-Button-1>" if sys.platform == "darwin" else "<Control-Button-1>",
                lambda e: self._click(e, toggle=True))
         t.bind("<Double-Button-1>", self._double)
+        t.bind("<Motion>", self._motion, add="+")
+        for seq in ("<Leave>", "<MouseWheel>", "<Button-4>", "<Button-5>", "<Key>"):
+            t.bind(seq, lambda e: self._hide_tip(), add="+")
         for seq in ("<B1-Motion>", "<Triple-Button-1>", "<ButtonRelease-1>", "<Shift-B1-Motion>"):
             t.bind(seq, lambda e: "break")
         for seq in ("<Button-2>", "<Button-3>") + (("<Control-Button-1>",) if sys.platform == "darwin" else ()):
@@ -67,20 +79,24 @@ class ResultList(ctk.CTkFrame):
     def restyle(self):
         t = self.text
         t.configure(background=col("card"), foreground=col("text"), selectbackground=col("card"),
-                    selectforeground=col("text"), inactiveselectbackground=col("card"))
-        t.tag_configure("pick", background=col("sel"))
-        t.tag_configure("icon", font=("", 15))
-        t.tag_configure("title", font=("", 14, "bold"), foreground=col("text"))
-        t.tag_configure("meta", font=("", 12), foreground=col("muted"))
-        t.tag_configure("snip", font=("", 13), foreground=col("text"), lmargin1=34, lmargin2=34)
-        t.tag_configure("warn", font=("", 12, "italic"), foreground=col("muted"))
-        t.tag_configure("gap", font=("", 7))
-        t.tag_configure("more", font=("", 12, "bold"), foreground=col("accent"), lmargin1=34, lmargin2=34)
-        t.tag_configure("xpage", font=("", 12, "bold"), foreground=col("muted"), lmargin1=48, lmargin2=48)
-        t.tag_configure("xsnip", font=("", 12), foreground=col("text"), lmargin1=48, lmargin2=48)
-        t.tag_configure("xmuted", font=("", 12, "italic"), foreground=col("muted"), lmargin1=34, lmargin2=34)
+                    selectforeground=col("text"), inactiveselectbackground=col("card"),
+                    highlightbackground=col("card"), highlightcolor=col("focus"))
+        inset, nested = 14, 28  # margine sinistro: il testo non tocca il bordo né l'evidenziazione della riga
+        margins = dict(lmargin1=inset, lmargin2=inset, rmargin=inset)
+        t.tag_configure("pick", background=col("sel"), **margins)
+        t.tag_configure("icon", font=("", 9, "bold"), foreground=col("muted"), **margins)
+        t.tag_configure("title", font=("", 12, "bold"), foreground=col("text"), **margins)
+        t.tag_configure("meta", font=("", 10), foreground=col("muted"), spacing3=4, **margins)
+        t.tag_configure("snip", font=("", 11), foreground=col("text"), **margins)
+        t.tag_configure("warn", font=("", 11, "italic"), foreground=col("muted"), **margins)
+        t.tag_configure("gap", font=("", 6), spacing3=6, **margins)
+        t.tag_configure("more", font=("", 10, "bold"), foreground=col("focus"), **margins)
+        t.tag_configure("xpage", font=("", 10, "bold"), foreground=col("muted"), lmargin1=nested, lmargin2=nested, rmargin=inset)
+        t.tag_configure("xsnip", font=("", 11), foreground=col("text"), lmargin1=nested, lmargin2=nested, rmargin=inset)
+        t.tag_configure("xmuted", font=("", 10, "italic"), foreground=col("muted"), **margins)
         t.tag_configure("hit", background=col("hit_bg"), foreground=col("hit_fg"))
         t.tag_raise("hit")
+        self._repaint_badges()
         for name in ("more", "occ"):  # mano sopra le voci cliccabili
             t.tag_bind(name, "<Enter>", lambda e: t.configure(cursor="hand2"))
             t.tag_bind(name, "<Leave>", lambda e: t.configure(cursor="arrow"))
@@ -92,10 +108,12 @@ class ResultList(ctk.CTkFrame):
         t = self.text
         t.configure(state="normal")
         t.delete("1.0", "end")
-        for name in [m for m in t.mark_names() if m.startswith("ins")]:
+        self._hide_tip()
+        for name in [m for m in t.mark_names() if m.startswith(("ins", "bdg"))]:
             t.mark_unset(name)
         for i, segs in enumerate(blocks):
             start = t.index("end-1c")
+            self._insert_badge(i)
             for text, tags in segs[:-1]:
                 t.insert("end", text, tags)
             t.mark_set(f"ins{i}", "end-1c")      # qui, prima dello spazio finale, si inseriscono le «altre occorrenze»
@@ -104,6 +122,62 @@ class ResultList(ctk.CTkFrame):
             t.tag_add(f"res{i}", start, "end-1c")
         t.configure(state="disabled")
         t.yview_moveto(0)
+
+    # ---- stato dei vettori (icona a inizio riga e suggerimento)
+    def _kind(self, i: int) -> str | None:
+        kind = (self.results[i].get("embedding") or {}).get("state")
+        return kind if kind in ui_text.EMBEDDING_NAMES else None
+
+    def _photo(self, kind: str) -> ImageTk.PhotoImage:
+        key = (kind, dark())
+        if key not in self._photos:
+            self._photos[key] = ImageTk.PhotoImage(icon_pil("embedding_" + kind, key[1], self.BADGE_SIZE),
+                                                   master=self.text)
+        return self._photos[key]
+
+    def _insert_badge(self, i: int):
+        kind = self._kind(i)
+        if kind:
+            t = self.text
+            t.mark_set(f"bdg{i}", "end-1c")
+            t.mark_gravity(f"bdg{i}", "left")   # resta davanti all'immagine
+            t.image_create("end", image=self._photo(kind), padx=3, align="center")
+            t.tag_add("icon", f"bdg{i}", "end-1c")  # i margini della riga si leggono dal primo carattere
+
+    def _repaint_badges(self):
+        for i in range(len(self.results)):
+            kind = self._kind(i)
+            if kind and f"bdg{i}" in self.text.mark_names():
+                try:
+                    self.text.image_configure(f"bdg{i}", image=self._photo(kind))
+                except tk.TclError:
+                    pass
+
+    def set_embedding(self, i: int, state: dict | None) -> bool:
+        """Aggiorna lo stato del risultato `i` (per esempio a fine calcolo). True se è cambiato qualcosa."""
+        if not 0 <= i < len(self.results) or self.results[i].get("embedding") == state:
+            return False
+        self.results[i]["embedding"] = state
+        self._hide_tip()
+        self._repaint_badges()
+        return True
+
+    def _hide_tip(self):
+        self._tip_for = None
+        self.tip.hide()
+
+    def _motion(self, e):
+        """Il suggerimento compare dopo una pausa sulla prima riga di un risultato; si sposta o sparisce con il cursore."""
+        self._pointer = (e.x_root, e.y_root)
+        tags = self.text.tag_names(f"@{e.x},{e.y}")
+        i = self._index_at(e)
+        if i is None or i >= len(self.results) or not ({"icon", "title"} & set(tags)) or not self._kind(i):
+            self._hide_tip()
+        elif i != self._tip_for:
+            self.tip.hide()
+            self._tip_for = i
+            self.tip.schedule(ui_text.embedding_tip(self.results[i]["embedding"]),
+                              lambda: (self._pointer[0], self._pointer[1], 1, 18))
 
     def active_result(self) -> dict | None:
         return self.results[self.active] if self.active is not None and self.active < len(self.results) else None
@@ -126,11 +200,11 @@ class ResultList(ctk.CTkFrame):
         base = (f"res{i}", "xline")
         state = self.open_items.get(i, False)
         if state is False:
-            return [("▸ Altre occorrenze\n", base + ("more",))]
+            return [(tr("+ Altre occorrenze") + "\n", base + ("more",))]
         if state is None:
-            return [("Cerco le occorrenze…\n", base + ("xmuted",))]
+            return [(tr("Cerco le occorrenze…") + "\n", base + ("xmuted",))]
         items, total = state
-        segs = [(f"▾ Nascondi le occorrenze ({ui_text.thousands(total)})\n", base + ("more",))]
+        segs = [(tr("− Nascondi le occorrenze ({n})", n=ui_text.thousands(total)) + "\n", base + ("more",))]
         for k, it in enumerate(items):
             tags = base + ("occ", f"occ{k}")
             segs.append((it["location"] + " — " if it.get("location") else "", tags + ("xpage",)))
@@ -138,7 +212,7 @@ class ResultList(ctk.CTkFrame):
             segs.append(("\n", tags + ("xsnip",)))
         more = total - sum(it["count"] for it in items)
         if more > 0:
-            segs.append((f"… e altre {ui_text.thousands(more)}: nell'anteprima si vedono tutte\n", base + ("xmuted",)))
+            segs.append((tr("… e altre {n}: nell'anteprima si vedono tutte", n=ui_text.thousands(more)) + "\n", base + ("xmuted",)))
         return segs
 
     def _refresh_extra(self):
@@ -197,6 +271,7 @@ class ResultList(ctk.CTkFrame):
             self.on_change()
 
     def _click(self, e, extend=False, toggle=False):
+        self._hide_tip()
         self.text.focus_set()
         i = self._index_at(e)
         if i is not None and not extend and not toggle:
