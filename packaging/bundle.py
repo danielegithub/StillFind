@@ -34,27 +34,33 @@ def arguments():
     locales_dir = ROOT / "stillfind/locales"
     if len(list(locales_dir.glob("*.json"))) < 1:
         raise RuntimeError("Cataloghi di traduzione mancanti in stillfind/locales.")
-    args = ["--add-binary", f"{exe}:ocr",
-            "--add-data", f"{ROOT / 'models/model_quantized.onnx'}:models",
-            "--add-data", f"{ROOT / 'models/sentencepiece.bpe.model'}:models",
-            "--add-data", f"{ROOT / '.build-assets/tessdata'}:ocr/tessdata",
-            "--add-data", f"{guide_dir}:guide_assets",
-            "--add-data", f"{locales_dir}:locales",
-            "--add-data", f"{ROOT / 'stillfind/ui/brand'}:brand",
-            "--add-data", f"{ROOT / 'packaging/licenses'}:licenses",
-            "--add-data", f"{ROOT / 'packaging/assets.json'}:."]
+    args = ["--add-binary", f"{exe}{os.pathsep}ocr",
+            "--add-data", f"{ROOT / 'models/model_quantized.onnx'}{os.pathsep}models",
+            "--add-data", f"{ROOT / 'models/sentencepiece.bpe.model'}{os.pathsep}models",
+            "--add-data", f"{ROOT / '.build-assets/tessdata'}{os.pathsep}ocr/tessdata",
+            "--add-data", f"{guide_dir}{os.pathsep}guide_assets",
+            "--add-data", f"{locales_dir}{os.pathsep}locales",
+            "--add-data", f"{ROOT / 'stillfind/ui/brand'}{os.pathsep}brand",
+            "--add-data", f"{ROOT / 'packaging/licenses'}{os.pathsep}licenses",
+            "--add-data", f"{ROOT / 'packaging/assets.json'}{os.pathsep}."]
     if sys.platform == "win32":
         # Le DLL accanto al programma vanno mantenute accanto a tesseract.exe.
         for dll in sorted(exe.parent.glob("*.dll")):
-            args += ["--add-binary", f"{dll}:ocr"]
+            args += ["--add-binary", f"{dll}{os.pathsep}ocr"]
     # Include anche le licenze dei pacchetti Python transitivi.
+    # Si copiano in una cartella sola: una voce `--add-data` per file supera il limite della riga di comando di Windows.
+    python_notices = ROOT / ".build-assets/python-licenses"
+    shutil.rmtree(python_notices, ignore_errors=True)
     for dist in importlib.metadata.distributions():
         name = dist.metadata["Name"]
         for entry in dist.files or []:
             if any(word in str(entry).lower() for word in ("license", "copying", "notice")):
                 source = Path(dist.locate_file(entry))
                 if source.is_file():
-                    args += ["--add-data", f"{source}:licenses/python/{name}/{entry.parent}"]
+                    destination = python_notices / name / entry.parent
+                    destination.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source, destination / source.name)
+    args += ["--add-data", f"{python_notices}{os.pathsep}licenses/python"]
     native_notices = ROOT / ".build-assets/native-licenses"
     native_notices.mkdir(parents=True, exist_ok=True)
     if sys.platform == "darwin":
@@ -98,7 +104,7 @@ def arguments():
                 destination = native_notices / file.relative_to(exe.parent)
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(file, destination)
-    args += ["--add-data", f"{native_notices}:licenses/native"]
+    args += ["--add-data", f"{native_notices}{os.pathsep}licenses/native"]
     return args
 
 

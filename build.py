@@ -22,6 +22,7 @@ la cartella (o l'.app) / uno zip.
 import importlib.util
 import platform
 import re
+import os
 import runpy
 import shutil
 import subprocess
@@ -63,7 +64,7 @@ def main() -> int:
            "--collect-all", "sqlcipher3", "--hidden-import", "PIL.ImageTk",
            "--copy-metadata", "sqlcipher3", "--copy-metadata", "pypdfium2", "--copy-metadata", "Pillow"]
     for name in ("LICENSE", "THIRD_PARTY_NOTICES"):
-        cmd += ["--add-data", str(HERE / name) + ":."]
+        cmd += ["--add-data", str(HERE / name) + os.pathsep + "."]
     cmd += ["--collect-binaries", "onnxruntime", "--collect-data", "onnxruntime", "--hidden-import", "sentencepiece"]
     cmd += bundle_arguments
     for m in sorted(set(NETWORK_MODULES) | set(EXTRA_EXCLUDES)):
