@@ -1,5 +1,7 @@
 # StillFind
 
+**Lingue / Languages:** [Italiano](#stillfind) · [English](#english) · [Français](#français) · [Español](#español) · [Deutsch](#deutsch) · [Português](#português)
+
 > ## ⚠️ Versione ALPHA — solo per prova
 >
 > StillFind è in **alpha test**. Il programma e gli installatori possono contenere errori, comportarsi in modo **instabile** o cambiare senza preavviso. Installandolo lo usi **a tuo rischio**: gli autori **non si assumono alcuna responsabilità** per malfunzionamenti, **instabilità del sistema**, perdita o danneggiamento di dati o altri danni, diretti o indiretti, derivanti dall'installazione o dall'uso. Il programma è fornito "così com'è", senza garanzie di alcun tipo (vedi la licenza GPL-3.0-or-later).
@@ -208,3 +210,200 @@ python3 -m venv .venv-build
 
 Copyright (C) 2026 Daniele Sisto — rilasciato sotto licenza **GNU GPL v3 o successiva** ([LICENSE](LICENSE)).  
 Puoi usarlo, modificarlo e ridistribuirlo gratuitamente; chi distribuisce versioni modificate deve pubblicarne il codice sorgente con la stessa licenza e mantenere l'attribuzione «StillFind, di Daniele Sisto» (GPL-3.0, sez. 7b). Le licenze delle librerie di terze parti sono in [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).
+
+---
+
+# English
+
+> ## ⚠️ ALPHA version — for testing only
+>
+> StillFind is in **alpha testing**. The program and its installers may contain bugs, behave **unstably** or change without notice. By installing it you use it **at your own risk**: the authors accept **no liability** for malfunctions, **system instability**, loss or corruption of data or any other direct or indirect damage arising from installing or using it. The program is provided "as is", without warranty of any kind (see the GPL-3.0-or-later licence).
+>
+> Back up important data before trying it and, if possible, use a test computer. The app does not modify your original documents, but this is not a guarantee.
+
+## What it does
+
+Desktop app to **search inside your documents**, **100% offline**, on **Windows, macOS and Linux** (light and dark theme). It reads PDF (also scanned), Word/Excel/PowerPoint, OpenDocument, email (`.eml`), signed files (`.p7m`), FatturaPA invoices, ZIP/EPUB archives and images, with built-in **OCR** in six languages. Search by words (quotes, `OR`, `NOT`, filters by type, date and folder) and, optionally, **by meaning** with a local model. It also links related documents, compares versions and lists deadlines.
+
+## Installation (alpha)
+
+| | | |
+| --- | --- | --- |
+| Windows | `StillFind-windows-setup.exe` | Run the installer (current user, no administrator). SmartScreen: *More info* → *Run anyway*. Or the portable `StillFind-windows.zip`. |
+| macOS | `StillFind-macos.dmg` | Drag StillFind to *Applications*. First launch: right-click → *Open*. Or `StillFind-macos.zip`. |
+| Linux | `stillfind_<version>_amd64.deb` | `sudo apt install ./stillfind_<version>_amd64.deb`. Or `StillFind-linux.tar.gz`. |
+
+Download the file for your system from the GitHub **Releases** page (versions are marked *pre-release*). The installers are **alpha and unsigned**, so your system may show a security warning. Your data (index and settings) lives in `~/.stillfind/` and stays there after uninstalling.
+
+## 100% offline and private
+
+Nothing leaves your computer: no telemetry, no automatic updates, no downloads. The OCR engine, the language data and the meaning-search model are **included in the app**, so you do not download anything after installing. Network modules are blocked and left out of the package, and the indexing process runs without network access. You can encrypt the local archive (system keychain or passphrase). Verify with `python3 -m stillfind --self-test-offline`.
+
+## Interface and OCR languages
+
+The interface is available in Italian, English, French, Spanish, German and Portuguese. On first start StillFind suggests your system language (or English). Change it later in **Settings → Appearance and System → Language** (applies the next time you open the app). The interface language is independent of the OCR languages, which you choose by name in **Settings → Reading and OCR**.
+
+## Building from source
+
+PyInstaller does not cross-compile: build on the target system.
+
+```bash
+python3 -m venv .venv-build
+.venv-build/bin/python -m pip install -r requirements-build.txt
+.venv-build/bin/python packaging/prepare_assets.py   # downloads the model and OCR data once, checks SHA-256
+.venv-build/bin/python build.py                      # full offline build + package verification
+```
+
+`packaging/prepare_assets.py` is the only step that uses the internet; the finished app never does. Interface texts are written in Italian in the code with `tr("…")` and translated in `stillfind/locales/*.json`; `python -m stillfind.tools.i18n_check` checks that every text has all languages.
+
+## Licence
+
+Copyright (C) 2026 Daniele Sisto — released under the **GNU GPL v3 or later** ([LICENSE](LICENSE)).
+
+
+---
+
+# Français
+
+> ## ⚠️ Version ALPHA — pour essai uniquement
+>
+> StillFind est en **test alpha**. Le programme et ses installateurs peuvent contenir des erreurs, être **instables** ou changer sans préavis. En l'installant, vous l'utilisez **à vos risques** : les auteurs **déclinent toute responsabilité** en cas de dysfonctionnement, d'**instabilité du système**, de perte ou de corruption de données ou de tout autre dommage direct ou indirect. Le programme est fourni « tel quel », sans garantie d'aucune sorte (voir la licence GPL-3.0 ou ultérieure).
+>
+> Faites une sauvegarde de vos données importantes avant de l'essayer et, si possible, utilisez un ordinateur de test.
+
+## Ce que fait StillFind
+
+Application de bureau pour **rechercher dans vos documents**, **100 % hors ligne**, sur **Windows, macOS et Linux** (thème clair et sombre). Elle lit les PDF (même numérisés), Word/Excel/PowerPoint, OpenDocument, e-mails (`.eml`), fichiers signés (`.p7m`), factures FatturaPA, archives ZIP/EPUB et images, avec un **OCR** intégré en six langues. Recherche par mots (guillemets, `OR`, `NOT`, filtres par type, date et dossier) et, en option, **par le sens** avec un modèle local.
+
+## Installation (alpha)
+
+| | | |
+| --- | --- | --- |
+| Windows | `StillFind-windows-setup.exe` | Lancez l'installateur (utilisateur courant, sans administrateur). SmartScreen : *Informations complémentaires* → *Exécuter quand même*. Ou `StillFind-windows.zip` (portable). |
+| macOS | `StillFind-macos.dmg` | Glissez StillFind dans *Applications*. Premier lancement : clic droit → *Ouvrir*. Ou `StillFind-macos.zip`. |
+| Linux | `stillfind_<version>_amd64.deb` | `sudo apt install ./stillfind_<version>_amd64.deb`. Ou `StillFind-linux.tar.gz`. |
+
+Téléchargez le fichier de votre système depuis la page **Releases** de GitHub (versions marquées *pre-release*). Les installateurs sont **alpha et non signés** : le système peut afficher un avertissement de sécurité. Vos données (index et réglages) restent dans `~/.stillfind/`, même après la désinstallation.
+
+## 100 % hors ligne et privé
+
+Rien ne quitte votre ordinateur : pas de télémétrie, pas de mises à jour automatiques, aucun téléchargement. Le moteur OCR, les données de langue et le modèle de recherche par le sens sont **inclus dans l'application** : rien à télécharger après l'installation. Vous pouvez chiffrer l'archive locale (trousseau du système ou phrase secrète). Vérification : `python3 -m stillfind --self-test-offline`.
+
+## Langues de l'interface et de l'OCR
+
+L'interface existe en italien, anglais, français, espagnol, allemand et portugais. Au premier lancement, StillFind propose la langue du système (ou l'anglais). Vous la changez ensuite dans **Réglages → Apparence et système → Langue** (prise en compte à la prochaine ouverture). Elle est indépendante des langues de l'OCR, choisies dans **Réglages → Lecture et OCR**.
+
+## Licence
+
+Copyright (C) 2026 Daniele Sisto — publié sous licence **GNU GPL v3 ou ultérieure** ([LICENSE](LICENSE)).
+
+
+---
+
+# Español
+
+> ## ⚠️ Versión ALPHA — solo para pruebas
+>
+> StillFind está en **pruebas alfa**. El programa y sus instaladores pueden contener errores, comportarse de forma **inestable** o cambiar sin aviso. Al instalarlo lo usas **bajo tu responsabilidad**: los autores **no asumen ninguna responsabilidad** por fallos, **inestabilidad del sistema**, pérdida o daño de datos u otros daños directos o indirectos. El programa se ofrece «tal cual», sin garantías de ningún tipo (ver la licencia GPL-3.0 o posterior).
+>
+> Haz una copia de seguridad de tus datos importantes antes de probarlo y, si puedes, usa un ordenador de pruebas.
+
+## Qué hace
+
+Aplicación de escritorio para **buscar dentro de tus documentos**, **100 % sin conexión**, en **Windows, macOS y Linux** (tema claro y oscuro). Lee PDF (también escaneados), Word/Excel/PowerPoint, OpenDocument, correo (`.eml`), archivos firmados (`.p7m`), facturas FatturaPA, archivos ZIP/EPUB e imágenes, con **OCR** integrado en seis idiomas. Búsqueda por palabras (comillas, `OR`, `NOT`, filtros por tipo, fecha y carpeta) y, opcionalmente, **por significado** con un modelo local.
+
+## Instalación (alpha)
+
+| | | |
+| --- | --- | --- |
+| Windows | `StillFind-windows-setup.exe` | Ejecuta el instalador (usuario actual, sin administrador). SmartScreen: *Más información* → *Ejecutar de todas formas*. O `StillFind-windows.zip` (portátil). |
+| macOS | `StillFind-macos.dmg` | Arrastra StillFind a *Aplicaciones*. Primer inicio: clic derecho → *Abrir*. O `StillFind-macos.zip`. |
+| Linux | `stillfind_<versión>_amd64.deb` | `sudo apt install ./stillfind_<versión>_amd64.deb`. O `StillFind-linux.tar.gz`. |
+
+Descarga el archivo de tu sistema desde la página **Releases** de GitHub (versiones marcadas como *pre-release*). Los instaladores son **alpha y no están firmados**, así que el sistema puede mostrar un aviso de seguridad. Tus datos (índice y ajustes) están en `~/.stillfind/` y siguen ahí tras desinstalar.
+
+## 100 % sin conexión y privado
+
+Nada sale de tu ordenador: sin telemetría, sin actualizaciones automáticas, sin descargas. El motor OCR, los datos de idioma y el modelo de búsqueda por significado están **incluidos en la aplicación**: no hay que descargar nada tras instalarla. Puedes cifrar el archivo local (llavero del sistema o frase de contraseña). Verificación: `python3 -m stillfind --self-test-offline`.
+
+## Idiomas de la interfaz y del OCR
+
+La interfaz está disponible en italiano, inglés, francés, español, alemán y portugués. En el primer inicio StillFind propone el idioma del sistema (o inglés). Después se cambia en **Ajustes → Apariencia y sistema → Idioma** (se aplica al abrir de nuevo la aplicación). Es independiente de los idiomas del OCR, que se eligen en **Ajustes → Lectura y OCR**.
+
+## Licencia
+
+Copyright (C) 2026 Daniele Sisto — publicado bajo la licencia **GNU GPL v3 o posterior** ([LICENSE](LICENSE)).
+
+
+---
+
+# Deutsch
+
+> ## ⚠️ ALPHA-Version — nur zum Testen
+>
+> StillFind befindet sich im **Alpha-Test**. Programm und Installer können Fehler enthalten, sich **instabil** verhalten oder sich ohne Vorankündigung ändern. Mit der Installation nutzen Sie es **auf eigenes Risiko**: Die Autoren **übernehmen keinerlei Haftung** für Fehlfunktionen, **Instabilität des Systems**, Verlust oder Beschädigung von Daten oder sonstige direkte oder indirekte Schäden. Das Programm wird „wie besehen“ ohne jede Gewährleistung bereitgestellt (siehe Lizenz GPL-3.0 oder neuer).
+>
+> Sichern Sie wichtige Daten, bevor Sie es ausprobieren, und nutzen Sie nach Möglichkeit einen Testrechner.
+
+## Was es kann
+
+Desktop-App zum **Durchsuchen Ihrer Dokumente**, **100 % offline**, für **Windows, macOS und Linux** (helles und dunkles Design). Sie liest PDF (auch gescannt), Word/Excel/PowerPoint, OpenDocument, E-Mails (`.eml`), signierte Dateien (`.p7m`), FatturaPA-Rechnungen, ZIP-/EPUB-Archive und Bilder, mit integrierter **OCR** in sechs Sprachen. Suche nach Wörtern (Anführungszeichen, `OR`, `NOT`, Filter nach Typ, Datum und Ordner) und optional **nach Bedeutung** mit einem lokalen Modell.
+
+## Installation (Alpha)
+
+| | | |
+| --- | --- | --- |
+| Windows | `StillFind-windows-setup.exe` | Installer ausführen (aktueller Benutzer, ohne Administrator). SmartScreen: *Weitere Informationen* → *Trotzdem ausführen*. Oder `StillFind-windows.zip` (portabel). |
+| macOS | `StillFind-macos.dmg` | StillFind in *Programme* ziehen. Erster Start: Rechtsklick → *Öffnen*. Oder `StillFind-macos.zip`. |
+| Linux | `stillfind_<Version>_amd64.deb` | `sudo apt install ./stillfind_<Version>_amd64.deb`. Oder `StillFind-linux.tar.gz`. |
+
+Laden Sie die Datei für Ihr System von der GitHub-Seite **Releases** herunter (Versionen sind als *Pre-release* markiert). Die Installer sind **Alpha und nicht signiert**; das System kann daher eine Sicherheitswarnung anzeigen. Ihre Daten (Index und Einstellungen) liegen in `~/.stillfind/` und bleiben auch nach der Deinstallation erhalten.
+
+## 100 % offline und privat
+
+Nichts verlässt Ihren Computer: keine Telemetrie, keine automatischen Updates, keine Downloads. OCR-Engine, Sprachdaten und das Modell für die Bedeutungssuche sind **in der App enthalten** – nach der Installation muss nichts heruntergeladen werden. Das lokale Archiv lässt sich verschlüsseln (Schlüsselbund des Systems oder Passphrase). Prüfung: `python3 -m stillfind --self-test-offline`.
+
+## Sprachen der Oberfläche und der OCR
+
+Die Oberfläche gibt es auf Italienisch, Englisch, Französisch, Spanisch, Deutsch und Portugiesisch. Beim ersten Start schlägt StillFind die Systemsprache vor (oder Englisch). Später ändern Sie sie unter **Einstellungen → Darstellung und System → Sprache** (gilt beim nächsten Öffnen der App). Sie ist unabhängig von den OCR-Sprachen, die Sie unter **Einstellungen → Lesen und OCR** wählen.
+
+## Lizenz
+
+Copyright (C) 2026 Daniele Sisto — veröffentlicht unter der **GNU GPL v3 oder neuer** ([LICENSE](LICENSE)).
+
+
+---
+
+# Português
+
+> ## ⚠️ Versão ALPHA — apenas para testes
+>
+> O StillFind está em **teste alfa**. O programa e os instaladores podem conter erros, comportar-se de forma **instável** ou mudar sem aviso. Ao instalá-lo você o usa **por sua conta e risco**: os autores **não assumem nenhuma responsabilidade** por falhas, **instabilidade do sistema**, perda ou dano de dados ou outros danos diretos ou indiretos. O programa é fornecido “como está”, sem garantias de qualquer tipo (veja a licença GPL-3.0 ou posterior).
+>
+> Faça uma cópia de segurança dos dados importantes antes de testar e, se possível, use um computador de teste.
+
+## O que faz
+
+Aplicativo de desktop para **pesquisar dentro dos seus documentos**, **100% offline**, no **Windows, macOS e Linux** (tema claro e escuro). Lê PDF (também digitalizados), Word/Excel/PowerPoint, OpenDocument, e-mail (`.eml`), arquivos assinados (`.p7m`), faturas FatturaPA, arquivos ZIP/EPUB e imagens, com **OCR** integrado em seis idiomas. Pesquisa por palavras (aspas, `OR`, `NOT`, filtros por tipo, data e pasta) e, opcionalmente, **por significado** com um modelo local.
+
+## Instalação (alpha)
+
+| | | |
+| --- | --- | --- |
+| Windows | `StillFind-windows-setup.exe` | Execute o instalador (usuário atual, sem administrador). SmartScreen: *Mais informações* → *Executar assim mesmo*. Ou `StillFind-windows.zip` (portátil). |
+| macOS | `StillFind-macos.dmg` | Arraste o StillFind para *Aplicativos*. Primeira abertura: botão direito → *Abrir*. Ou `StillFind-macos.zip`. |
+| Linux | `stillfind_<versão>_amd64.deb` | `sudo apt install ./stillfind_<versão>_amd64.deb`. Ou `StillFind-linux.tar.gz`. |
+
+Baixe o arquivo do seu sistema na página **Releases** do GitHub (versões marcadas como *pre-release*). Os instaladores são **alpha e não assinados**, então o sistema pode mostrar um aviso de segurança. Seus dados (índice e configurações) ficam em `~/.stillfind/` e permanecem após desinstalar.
+
+## 100% offline e privado
+
+Nada sai do seu computador: sem telemetria, sem atualizações automáticas, sem downloads. O motor de OCR, os dados de idioma e o modelo de pesquisa por significado estão **incluídos no aplicativo**: não é preciso baixar nada depois de instalar. Você pode cifrar o arquivo local (chaveiro do sistema ou frase secreta). Verificação: `python3 -m stillfind --self-test-offline`.
+
+## Idiomas da interface e do OCR
+
+A interface está disponível em italiano, inglês, francês, espanhol, alemão e português. Na primeira abertura o StillFind sugere o idioma do sistema (ou inglês). Depois você o muda em **Configurações → Aparência e Sistema → Idioma** (vale na próxima abertura do aplicativo). É independente dos idiomas do OCR, escolhidos em **Configurações → Leitura e OCR**.
+
+## Licença
+
+Copyright (C) 2026 Daniele Sisto — publicado sob a licença **GNU GPL v3 ou posterior** ([LICENSE](LICENSE)).
