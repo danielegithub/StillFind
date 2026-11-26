@@ -29,7 +29,7 @@ Dalla pagina **Releases** di GitHub (le versioni sono marcate come *pre-release*
 
 Per toglierlo: disinstalla da *Impostazioni → App* (Windows), trascina l'app nel Cestino (macOS) o `sudo apt remove stillfind` (Linux). I dati (indice e configurazione) restano in `~/.stillfind/` e vanno cancellati a mano se non servono più.
 
-Le Release si creano da sole con un tag `v*` (workflow [`build.yml`](.github/workflows/build.yml)), con gli stessi file e lo stesso avviso alpha ([`packaging/RELEASE_NOTES_ALPHA.md`](packaging/RELEASE_NOTES_ALPHA.md)). Gli installatori mostrano il testo di [`packaging/ALPHA.txt`](packaging/ALPHA.txt) prima dell'installazione (Windows) o accanto all'app (macOS e Linux).
+Le Release si creano da GitHub Actions (workflow [`build.yml`](.github/workflows/build.yml)): *Run workflow* con "Pubblica una nuova release" attivo fa salire la versione da sola (ultimo tag + 1 sull'ultimo numero, la prima è `v0.1.0`), crea il tag e pubblica la pre-release; funziona anche un tag `v*` creato a mano, con gli stessi file e lo stesso avviso alpha ([`packaging/RELEASE_NOTES_ALPHA.md`](packaging/RELEASE_NOTES_ALPHA.md)). Gli installatori mostrano il testo di [`packaging/ALPHA.txt`](packaging/ALPHA.txt) prima dell'installazione (Windows) o accanto all'app (macOS e Linux).
 
 ---
 
